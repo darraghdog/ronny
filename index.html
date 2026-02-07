@@ -568,8 +568,14 @@
   @media (max-width: 900px) {
     .mobile-back-btn { display: inline-block; }
     .header { position: sticky; top: 0; z-index: 20; }
-    .main-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; min-height: calc(100vh - 62px); }
-    .sidebar { max-height: 250px; border-right: none; border-bottom: 1px solid var(--panel-border); }
+    .main-container { display: flex; flex-direction: column; height: auto; }
+    .sidebar { max-height: 250px; border-right: none; border-bottom: 1px solid var(--panel-border); overflow-y: auto; }
+    .editor-area { overflow: visible; }
+    .editor-console-split { display: flex; flex-direction: column; overflow: visible; }
+    .editor-panel { height: 250px; }
+    #codeEditor { height: calc(100% - 36px); }
+    .console-panel { height: 150px; }
+    #consoleOutput { overflow-y: auto; }
     .hero-splash { padding: 24px 16px; gap: 16px; }
     .hero-title { font-size: 36px; letter-spacing: 4px; }
     .hero-mascot { width: 120px; height: 120px; }
@@ -579,7 +585,6 @@
     .user-name { display: none; }
     .btn-signin span { display: none; }
     .btn-signin { padding: 6px 10px; }
-    .editor-console-split { grid-template-rows: 1fr 150px; }
   }
 
   @media (max-width: 600px) {
@@ -593,7 +598,6 @@
     .level-badge { font-size: 10px; padding: 3px 10px; }
     .xp-bar-container { width: 60px; height: 8px; }
 
-    .main-container { height: calc(100vh - 50px); }
     .sidebar { max-height: 200px; }
     .sensei-panel { padding: 10px; }
     .sensei-avatar { font-size: 40px; }
@@ -607,8 +611,9 @@
     .challenge-header { padding: 10px 14px; }
     .challenge-title { font-size: 16px; }
     .challenge-desc { font-size: 12px; }
+    .editor-panel { height: 220px; }
     #codeEditor { font-size: 13px; padding: 10px; line-height: 1.5; }
-    .editor-console-split { grid-template-rows: 1fr 120px; }
+    .console-panel { height: 120px; }
     .btn { font-size: 10px; padding: 5px 12px; }
     .btn-group { gap: 4px; }
     #consoleOutput { font-size: 12px; padding: 8px 10px; }
