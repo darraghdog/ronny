@@ -9,8 +9,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Fira+Code:wght@400;700&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Fira+Code:wght@400;700&display=swap');
 
   :root {
     --accent-pink: #e75e8d;
@@ -595,7 +595,7 @@
     .logo-icon { font-size: 24px; }
     .logo-text { font-size: 20px; letter-spacing: 2px; }
     .logo-sub { font-size: 8px; letter-spacing: 2px; }
-    .stats-bar { gap: 8px; }
+    .stats-bar { gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .stat-item { font-size: 11px; gap: 3px; }
     .stat-icon { font-size: 14px; }
     .level-badge { font-size: 10px; padding: 3px 10px; }
@@ -645,8 +645,8 @@
   <div class="logo" onclick="goHome()">
     <span class="logo-icon">&#x1F40D;</span>
     <div>
-      <div class="logo-text">Go RONNY</div>
-      <div class="logo-sub">Python Challenges for Leaving Cert</div>
+      <div class="logo-text">RONNY</div>
+      <div class="logo-sub">LC Python Challenges</div>
     </div>
   </div>
   <div class="stats-bar">
@@ -666,7 +666,7 @@
     <div class="stat-item">
       <span class="stat-icon">&#x1F3C6;</span>
       <span class="stat-value" id="completedCount">0</span>
-      <span style="color:#666;font-size:9px" id="totalChallenges">/150</span>
+      <span style="color:#666;font-size:9px" id="totalChallenges">/311</span>
     </div>
     <div class="auth-section" id="authSection">
       <button class="btn-signin" id="btnSignIn" onclick="signInWithGoogle()">
@@ -2392,7 +2392,7 @@ key = 5
   starter: 'def calculate_score(pw):\n    length = len(pw)\n    SPECIAL_CHARACTERS = "!@#$%^&*"\n    UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\n    DIGITS = "0123456789"\n    score = 0\n    # Length tier: >= 16: +3, >= 12: +2, >= 8: +1\n    if length >= 16:\n        score += 3\n    elif length >= 12:\n        score += 2\n    elif length >= 8:\n        score += 1\n    has_special = False\n    has_upper = False\n    has_digit = False\n    for char in pw:\n        if char in SPECIAL_CHARACTERS:\n            has_special = True\n        if char in UPPER_CASE_LETTERS:\n            has_upper = True\n        if char in DIGITS:\n            has_digit = True\n    if has_special:\n        score += 1\n    if has_upper:\n        score += 1\n    if has_digit:\n        score += 1\n    # Return the score\n\ntest_passwords = ["abc", "Hello123", "MyP@ssw0rd!!"]\n# Loop and print score for each password\n',
   check: (o) => {
     const lines = o.trim().split("\n");
-    return lines.length >= 3;
+    return lines.length >= 3 && lines.some(l => l.trim() === "0") && lines.some(l => l.trim() === "2") && lines.some(l => l.trim() === "5");
   },
   successMsg: "You built a reusable password scoring function! Functions make code testable."
 },
@@ -2567,7 +2567,7 @@ key = 5
   desc: "<p>Stop the game after <code>max_guesses_allowed</code> guesses. Use <code>guesses = [1, 5, 2, 4]</code> with <code>max_guesses_allowed=3</code> and <code>secret_number=3</code>.</p><p>The player should NOT win (only gets 3 guesses: 1, 5, 2).</p>",
   hint: "Add a check: if guess_count >= max_guesses_allowed: break out of the loop.",
   starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [1, 5, 2, 4]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            print("You took " + str(guess_count) + " guesses.")\n            return\n        elif user_guess < secret_number:\n            print("Too low!")\n        else:\n            print("Too high!")\n        # Stop if max guesses reached\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
-  check: (o) => !o.includes("Congratulations"),
+  check: (o) => !o.includes("Congratulations") && o.includes("Welcome") && (o.includes("Too low") || o.includes("Too high")),
   successMsg: "Limited guesses add real challenge! The player ran out of tries."
 },
 {
@@ -2731,7 +2731,7 @@ key = 5
   desc: "<p>Count how many scores are:<br>1. <strong>Below 40</strong> (answer: 2 — scores 39 and 32)<br>2. <strong>Between 50 and 79 inclusive</strong> (answer: 5 — scores 62, 51, 62, 64, 77)</p><p>Print both counts.</p>",
   hint: "Loop through results and use if statements to count each range.",
   starter: 'results = [39, 32, 62, 88, 51, 62, 64, 81, 77]\n\nbelow_40 = 0\nbetween_50_79 = 0\n\n# Count scores below 40 and between 50-79 inclusive\nfor score in results:\n    pass  # Replace with your counting logic\n\nprint("Below 40:", below_40)\nprint("Between 50-79:", between_50_79)\n',
-  check: (o) => o.includes("2") && o.includes("5"),
+  check: (o) => o.includes("Below 40") && o.includes("2") && o.includes("50-79") && o.includes("5"),
   successMsg: "Range counting! 2 below 40, 5 in the 50-79 band."
 },
 {
@@ -3035,7 +3035,7 @@ key = 5
   desc: "<p>For each unique number (sorted), print the number and how many times it appears. For example, <code>4 appears 3 times</code>.</p>",
   hint: "Loop through sorted unique values. Use numbers.count(n) for each.",
   starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\nunique = sorted(set(numbers))\nprint("Unique:", unique)\n\n# For each unique number, print "X appears Y times"\n',
-  check: (o) => o.includes("4") && o.includes("3"),
+  check: (o) => o.includes("4") && o.includes("3 times") && o.includes("appears"),
   successMsg: "Occurrence counts complete! The number 4 appears most often."
 },
 {
@@ -3091,7 +3091,7 @@ key = 5
   desc: "<p>Find the minimum value in the list and its index. Print <code>Min: 11 at index 5</code>.</p>",
   hint: "Use min(data) for the value and data.index(min(data)) for the position.",
   starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\n# Find and print the minimum value and its index\n# Print "Min: 11 at index 5"\n',
-  check: (o) => o.includes("11") && o.includes("5"),
+  check: (o) => o.includes("Min") && o.includes("11") && o.includes("index") && o.includes("5"),
   successMsg: "Minimum found! This is the first step of selection sort."
 },
 {
@@ -3426,7 +3426,7 @@ key = 5
   desc: "<p>Loop through the guesses. After each guess, show the current state with revealed letters and blanks. For example after guessing \"p\": <code>p _ _ _ _ _</code>.</p>",
   hint: "After each guess, loop through the secret word. If the letter has been guessed, show it; otherwise show _.",
   starter: 'secret_word = "python"\nguesses = ["p", "a", "t", "h", "o", "n", "y"]\nlives = 6\n\n# Process each guess one at a time\n# After each guess, show current state (revealed letters + blanks)\n# E.g. after "p": "p _ _ _ _ _"\n# E.g. after "p","a": "p _ _ _ _ _" (a is not in word)\n# E.g. after "p","a","t": "p _ t _ _ _"\n',
-  check: (o) => o.includes("p") && o.includes("_"),
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 3 && lines.some(l => l.includes("p") && l.includes("_")); },
   successMsg: "Letters reveal one by one! The word takes shape."
 },
 {
@@ -3526,7 +3526,7 @@ key = 5
   desc: "<p>Create a function <code>check_winner(b)</code> that returns <code>\"X\"</code>, <code>\"O\"</code>, <code>\"Draw\"</code>, or <code>\"In progress\"</code>. Test it with the current board and print the result.</p>",
   hint: "Combine row, column, and diagonal checks in one function. Check for empty spaces to distinguish Draw from In progress.",
   starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\nfor row in board:\n    print(" | ".join(row))\n\n# Create check_winner(b) that returns "X", "O", "Draw", or "In progress"\n# Check rows, columns, and diagonals for a winner\n# If no winner and no spaces: "Draw"\n# If no winner and spaces remain: "In progress"\n\n# Print the result of check_winner(board)\n',
-  check: (o) => o.includes("X"),
+  check: (o) => o.includes("X") && (o.includes("check_winner") || o.includes("Winner") || o.includes("winner") || o.trim().split("\n").some(l => l.trim() === "X")),
   successMsg: "Full winner detection! X wins on the diagonal."
 },
 {
@@ -3537,7 +3537,7 @@ key = 5
   desc: "<p>Start with an empty 3x3 board. Apply moves: <code>(0,0,\"X\"),(1,1,\"O\"),(0,1,\"X\"),(1,0,\"O\"),(0,2,\"X\")</code>. Print the board after each move and check for a winner. X should win (top row).</p>",
   hint: "Apply each move to the board, print it, and run your check_winner function each time.",
   starter: 'def check_winner(b):\n    for row in b:\n        if row[0] == row[1] == row[2] and row[0] != " ":\n            return row[0]\n    for i in range(3):\n        if b[0][i] == b[1][i] == b[2][i] and b[0][i] != " ":\n            return b[0][i]\n    if b[0][0] == b[1][1] == b[2][2] and b[0][0] != " ":\n        return b[0][0]\n    if b[0][2] == b[1][1] == b[2][0] and b[0][2] != " ":\n        return b[0][2]\n    for row in b:\n        if " " in row:\n            return "In progress"\n    return "Draw"\n\nboard = [[" "," "," "],[" "," "," "],[" "," "," "]]\nmoves = [(0,0,"X"),(1,1,"O"),(0,1,"X"),(1,0,"O"),(0,2,"X")]\n\n# Apply each move, print board after each, check for winner\n# X should win on the top row after the 5th move\n',
-  check: (o) => o.includes("X wins") || o.includes("X"),
+  check: (o) => o.includes("X wins") && o.trim().split("\n").length >= 5,
   successMsg: "X wins with the top row! A complete game of Noughts and Crosses."
 },
 // ===== Mock 13: Lottery Draw (Chapter 36, ids 275-280) =====
@@ -3928,7 +3928,7 @@ key = 5
   desc: "<p>Count movies in tiers:<br>Rating >= 9.0: <strong>1</strong> (The Dark Knight)<br>Rating >= 8.5 and < 9.0: <strong>5</strong> (Matrix, Interstellar, Pulp Fiction, Forrest Gump, Fight Club)<br>Rating < 8.5: <strong>1</strong> (Inception)<br>Print all three counts.</p>",
   hint: "Use if/elif/else to categorise each movie by rating. Keep three counters.",
   starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\ntotal = sum(r for _, r in movies)\navg = total / len(movies)\nprint("Average:", format(avg, ".2f"))\n\nprint("Above average:")\nfor name, rating in movies:\n    if rating > avg:\n        print(" ", name, "(" + str(rating) + ")")\n\n# Count rating tiers\n# >= 9.0, >= 8.5 and < 9.0, < 8.5\n# Print counts for each tier\n',
-  check: (o) => o.includes("1") && o.includes("5"),
+  check: (o) => o.includes("9.0") && o.includes("8.5") && o.includes("1") && o.includes("5"),
   successMsg: "Tiers counted! Most films cluster in the 8.5-8.9 sweet spot."
 },
 {
@@ -3939,7 +3939,7 @@ key = 5
   desc: "<p>Print all movies sorted by rating from highest to lowest. The Dark Knight (9.0) should appear first.</p>",
   hint: "Use sorted() with key=lambda x: x[1] and reverse=True.",
   starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\ntier_high = sum(1 for _, r in movies if r >= 9.0)\ntier_mid = sum(1 for _, r in movies if 8.5 <= r < 9.0)\ntier_low = sum(1 for _, r in movies if r < 8.5)\nprint("9.0+:", tier_high)\nprint("8.5-8.9:", tier_mid)\nprint("Below 8.5:", tier_low)\n\n# Sort movies by rating highest to lowest and print each\n',
-  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 7 && lines[0].includes("Dark Knight"); },
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 7 && lines.some(l => l.includes("Dark Knight")) && lines.findIndex(l => l.includes("Dark Knight")) < lines.findIndex(l => l.includes("Fight Club")); },
   successMsg: "Ranked by rating! The Dark Knight leads the pack."
 },
 {
@@ -4044,7 +4044,7 @@ const codeCache = {};
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider).catch((err) => {
-    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
+    if (err.code === 'auth/popup-blocked') {
       auth.signInWithRedirect(provider);
     }
   });
@@ -4197,6 +4197,14 @@ auth.onAuthStateChanged(async (user) => {
   currentUser = user;
   authReady = true;
   updateAuthUI(user);
+  if (!user) {
+    // Reset state on sign-out to prevent data leaking between users
+    state.xp = 0; state.level = 1; state.streak = 0;
+    state.completed = new Set(); state.achievements = new Set(); state.hintUsed = new Set();
+    loadState(); // reload from localStorage
+    updateStats();
+    renderSidebar();
+  }
   if (user) {
     const hasCloud = await hasCloudData(user.uid);
     if (hasCloud) {
@@ -4538,7 +4546,16 @@ function hideHero() {
   document.getElementById('editorConsoleSplit').style.display = '';
 }
 
+function saveCurrentCode() {
+  if (state.currentChallenge >= 0) {
+    const ch = challenges[state.currentChallenge];
+    const code = document.getElementById('codeEditor').value;
+    if (code && code !== ch.starter) saveCode(ch.id, code);
+  }
+}
+
 function goHome() {
+  saveCurrentCode();
   state.currentChallenge = -1;
   state.currentChapter = -1;
   state.viewMode = 'chapters';
@@ -4548,8 +4565,10 @@ function goHome() {
 }
 
 function mobileBack() {
+  saveCurrentCode();
   state.currentChallenge = -1;
   state.currentChapter = -1;
+  state.viewMode = 'chapters';
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
