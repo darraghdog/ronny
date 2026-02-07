@@ -671,7 +671,7 @@
     <div class="stat-item">
       <span class="stat-icon">&#x1F3C6;</span>
       <span class="stat-value" id="completedCount">0</span>
-      <span style="color:#666;font-size:9px" id="totalChallenges">/311</span>
+      <span style="color:#666;font-size:9px" id="totalChallenges">/296</span>
     </div>
     <div class="auth-section" id="authSection">
       <button class="btn-signin" id="btnSignIn" onclick="signInWithGoogle()">
@@ -742,7 +742,7 @@
       <div class="hero-subtitle">Python Challenges for Leaving Cert Curriculum</div>
       <div class="hero-stats">
         <div class="hero-stat-card">
-          <div class="hero-stat-value" id="heroTotalChallenges">311</div>
+          <div class="hero-stat-value" id="heroTotalChallenges">296</div>
           <div class="hero-stat-label">Challenges</div>
         </div>
         <div class="hero-stat-card">
@@ -2381,10 +2381,10 @@ key = 5
   chapter: 18,
   name: "Length Scoring",
   difficulty: 3,
-  desc: "<p>Replace the simple length check with <strong>tiered scoring</strong>:<br>&gt;= 16 characters: +3<br>&gt;= 12 characters: +2<br>&gt;= 8 characters: +1<br>otherwise: +0</p><p>With <code>\"Hello123\"</code> (8 chars), expected: <code>Score: 3</code> (length=1 + upper=1 + digit=1)</p>",
+  desc: "<p>Replace the simple length check with <strong>tiered scoring</strong>:<br>&gt;= 16 characters: +3<br>&gt;= 12 characters: +2<br>&gt;= 8 characters: +1<br>otherwise: +0</p><p>With <code>\"Hello1234567\"</code> (12 chars), expected: <code>Score: 4</code> (length=2 + upper=1 + digit=1)</p>",
   hint: "Use if/elif/elif for the length tiers. Check longest first (>=16), then >=12, then >=8.",
-  starter: 'password = "Hello123"\nlength = len(password)\nSPECIAL_CHARACTERS = "!@#$%^&*"\nUPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\nDIGITS = "0123456789"\nscore = 0\n# Replace simple length check with tiered scoring:\n# >= 16: +3, >= 12: +2, >= 8: +1\nif length >= 8:\n    score += 1\nhas_special = False\nhas_upper = False\nhas_digit = False\nfor char in password:\n    if char in SPECIAL_CHARACTERS:\n        has_special = True\n    if char in UPPER_CASE_LETTERS:\n        has_upper = True\n    if char in DIGITS:\n        has_digit = True\nif has_special:\n    score += 1\nif has_upper:\n    score += 1\nif has_digit:\n    score += 1\nprint("Score:", score)\n',
-  check: (o) => o.trim().includes("Score: 3"),
+  starter: 'password = "Hello1234567"\nlength = len(password)\nSPECIAL_CHARACTERS = "!@#$%^&*"\nUPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\nDIGITS = "0123456789"\nscore = 0\n# Replace simple length check with tiered scoring:\n# >= 16: +3, >= 12: +2, >= 8: +1\nif length >= 8:\n    score += 1\nhas_special = False\nhas_upper = False\nhas_digit = False\nfor char in password:\n    if char in SPECIAL_CHARACTERS:\n        has_special = True\n    if char in UPPER_CASE_LETTERS:\n        has_upper = True\n    if char in DIGITS:\n        has_digit = True\nif has_special:\n    score += 1\nif has_upper:\n    score += 1\nif has_digit:\n    score += 1\nprint("Score:", score)\n',
+  check: (o) => o.trim().includes("Score: 4"),
   successMsg: "Tiered length scoring! Longer passwords get more points."
 },
 {
@@ -2630,7 +2630,7 @@ key = 5
   starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# If reel1 is "Cherry", print "Cherry on reel 1!"\n',
   check: (o) => {
     const lines = o.trim().split("\n");
-    return lines.some(l => l.includes("Reel 1:"));
+    return lines.some(l => l.includes("Reel 1:")) && lines.some(l => l.includes("Cherry on reel 1!"));
   },
   successMsg: "Cherry check! Specific fruit bonuses add excitement."
 },
@@ -2639,12 +2639,12 @@ key = 5
   chapter: 22,
   name: "Pair Match",
   difficulty: 3,
-  desc: "<p>Check if any two reels match. If so, print <code>Pair!</code></p>",
+  desc: "<p>Check if any two reels match. If so, print <code>Pair!</code>. If not, print <code>No pair</code>.</p>",
   hint: "Check: if reel1 == reel2 or reel1 == reel3 or reel2 == reel3:",
-  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# Check if any two reels match - print "Pair!" if so\n',
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# Check if any two reels match - print "Pair!" or "No pair"\n',
   check: (o) => {
     const lines = o.trim().split("\n");
-    return lines.some(l => l.includes("Reel"));
+    return lines.some(l => l.includes("Reel")) && (lines.some(l => l.includes("Pair!")) || lines.some(l => l.includes("No pair")));
   },
   successMsg: "Pair detection! Two matching reels means a small win."
 },
@@ -2689,10 +2689,10 @@ key = 5
   chapter: 23,
   name: "Use N not 9",
   difficulty: 1,
-  desc: "<p>The code divides by the hardcoded number <code>9</code>. Replace it with <code>N</code> so the code works for any list size.</p><p>Output should still show <code>61.78</code></p>",
+  desc: "<p>The code divides by the hardcoded number <code>9</code>. Replace it with <code>N</code> so the code works for any list size.</p><p>The list now has 10 results. Expected output: <code>59.6</code></p>",
   hint: "Change total / 9 to total / N.",
-  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / 9\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n',
-  check: (o) => o.includes("61.78"),
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77, 40]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / 9\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n',
+  check: (o) => o.includes("59.6"),
   successMsg: "Using N instead of 9 means the code scales to any number of results!"
 },
 {
@@ -2713,9 +2713,9 @@ key = 5
   difficulty: 2,
   desc: "<p>After computing the mean, call <code>get_grade(arithmetic_mean)</code> and print:<br><code>The grade for the average result is Lower Merit</code></p>",
   hint: "Call get_grade() with the mean value and print the result in the required format.",
-  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    elif result >= 50:\n        grade = "Lower Merit"\n    elif result >= 40:\n        grade = "Pass"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / N\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n# Print: "The grade for the average result is ___"\n',
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    elif result >= 50:\n        grade = "Lower Merit"\n    elif result >= 40:\n        grade = "Pass"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77, 40]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / N\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n# Print: "The grade for the average result is ___"\n',
   check: (o) => o.includes("Lower Merit"),
-  successMsg: "The average score (61.78) gets a Lower Merit grade!"
+  successMsg: "The average score (59.6) gets a Lower Merit grade!"
 },
 {
   id: 201,
@@ -2752,20 +2752,9 @@ key = 5
 }
 ,
 // ===== MOCK EXAM CHALLENGES =====
-// ===== Mock 01: Email Validator (Chapter 24, ids 204-209) =====
+// ===== Mock 01: Email Validator (Chapter 24, ids 204-208) =====
 {
   id: 204,
-  chapter: 24,
-  name: "Count the @",
-  difficulty: 1,
-  desc: "<p>Run the starter code to count how many <code>@</code> symbols are in the email address. It should print <code>@ symbols found: 1</code>.</p>",
-  hint: "The starter code already works. Run it and check the output.",
-  starter: 'email = "student@school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n',
-  check: (o) => o.includes("@ symbols found: 1"),
-  successMsg: "The @ counter works! Every valid email needs exactly one @."
-},
-{
-  id: 205,
   chapter: 24,
   name: "Check for @",
   difficulty: 2,
@@ -2776,7 +2765,7 @@ key = 5
   successMsg: "Good validation! Exactly one @ is required for a valid email."
 },
 {
-  id: 206,
+  id: 205,
   chapter: 24,
   name: "Check Domain Dot",
   difficulty: 2,
@@ -2787,7 +2776,7 @@ key = 5
   successMsg: "Domain check passed! The part after @ must contain a dot."
 },
 {
-  id: 207,
+  id: 206,
   chapter: 24,
   name: "No Spaces Allowed",
   difficulty: 2,
@@ -2798,7 +2787,7 @@ key = 5
   successMsg: "Spaces caught! Email addresses must not contain spaces."
 },
 {
-  id: 208,
+  id: 207,
   chapter: 24,
   name: "Length Check",
   difficulty: 2,
@@ -2809,7 +2798,7 @@ key = 5
   successMsg: "Length validated! Real email addresses have strict length limits."
 },
 {
-  id: 209,
+  id: 208,
   chapter: 24,
   name: "Full Validator",
   difficulty: 3,
@@ -2819,31 +2808,20 @@ key = 5
   check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 4 && o.includes("True") && o.includes("False"); },
   successMsg: "Full validator complete! You built a real email checker from scratch."
 },
-// ===== Mock 02: Caesar Cipher (Chapter 25, ids 210-215) =====
+// ===== Mock 02: Caesar Cipher (Chapter 25, ids 209-213) =====
 {
-  id: 210,
-  chapter: 25,
-  name: "Basic Shift",
-  difficulty: 1,
-  desc: "<p>Encrypt the message <code>\"hello\"</code> by shifting each letter forward by 3 positions in the alphabet. The output should be <code>khoor</code>.</p>",
-  hint: "The starter code already does this. Run it to see the result.",
-  starter: 'message = "hello"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    encrypted += alphabet[pos + shift]\nprint(encrypted)\n',
-  check: (o) => o.trim() === "khoor",
-  successMsg: "Encrypted! Each letter shifted forward by 3 positions."
-},
-{
-  id: 211,
+  id: 209,
   chapter: 25,
   name: "Handle Wrapping",
   difficulty: 2,
   desc: "<p>Fix the code so the shift wraps around the alphabet using <code>% 26</code>. Change the message to <code>\"xyz\"</code> with shift 3. The output should be <code>abc</code>.</p>",
   hint: "Use (pos + shift) % 26 to wrap around. Letters x, y, z shifted by 3 become a, b, c.",
-  starter: 'message = "xyz"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    encrypted += alphabet[(pos + shift) % 26]  # Fix: add wrapping\nprint(encrypted)\n',
+  starter: 'message = "xyz"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    encrypted += alphabet[pos + shift]\nprint(encrypted)\n',
   check: (o) => o.includes("abc"),
   successMsg: "Wrapping works! The alphabet loops around seamlessly."
 },
 {
-  id: 212,
+  id: 210,
   chapter: 25,
   name: "Keep Non-Letters",
   difficulty: 2,
@@ -2854,7 +2832,7 @@ key = 5
   successMsg: "Non-letters preserved! Spaces and punctuation stay as they are."
 },
 {
-  id: 213,
+  id: 211,
   chapter: 25,
   name: "Decrypt",
   difficulty: 3,
@@ -2865,7 +2843,7 @@ key = 5
   successMsg: "Decrypted! Shifting backwards reverses the cipher perfectly."
 },
 {
-  id: 214,
+  id: 212,
   chapter: 25,
   name: "Handle Uppercase",
   difficulty: 3,
@@ -2876,7 +2854,7 @@ key = 5
   successMsg: "Case-sensitive encryption! Uppercase stays uppercase."
 },
 {
-  id: 215,
+  id: 213,
   chapter: 25,
   name: "Crack the Code",
   difficulty: 3,
@@ -2886,20 +2864,9 @@ key = 5
   check: (o) => o.includes("hello"),
   successMsg: "Code cracked! Brute force works when there are only 26 possibilities."
 },
-// ===== Mock 03: Word Counter (Chapter 26, ids 216-221) =====
+// ===== Mock 03: Word Counter (Chapter 26, ids 214-218) =====
 {
-  id: 216,
-  chapter: 26,
-  name: "Count Words",
-  difficulty: 1,
-  desc: "<p>Count the number of words in the sentence and print <code>Words: 9</code>.</p>",
-  hint: "The starter code already does this. Run it to see the word count.",
-  starter: 'text = "The quick brown fox jumps over the lazy dog"\nwords = text.split()\nword_count = len(words)\nprint("Words:", word_count)\n',
-  check: (o) => o.includes("Words: 9"),
-  successMsg: "Nine words counted! split() breaks text into a list of words."
-},
-{
-  id: 217,
+  id: 214,
   chapter: 26,
   name: "Count Characters",
   difficulty: 2,
@@ -2910,7 +2877,7 @@ key = 5
   successMsg: "Character counting done! Spaces make a big difference in the total."
 },
 {
-  id: 218,
+  id: 215,
   chapter: 26,
   name: "Longest Word",
   difficulty: 2,
@@ -2921,7 +2888,7 @@ key = 5
   successMsg: "Longest word found! Comparing lengths is a common text analysis task."
 },
 {
-  id: 219,
+  id: 216,
   chapter: 26,
   name: "Average Length",
   difficulty: 2,
@@ -2932,7 +2899,7 @@ key = 5
   successMsg: "Average calculated! The mean word length tells you about text complexity."
 },
 {
-  id: 220,
+  id: 217,
   chapter: 26,
   name: "Word Frequency",
   difficulty: 3,
@@ -2943,7 +2910,7 @@ key = 5
   successMsg: "Word frequencies mapped! Dictionaries are perfect for counting."
 },
 {
-  id: 221,
+  id: 218,
   chapter: 26,
   name: "Text Analyser",
   difficulty: 3,
@@ -2953,31 +2920,20 @@ key = 5
   check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 4; },
   successMsg: "Text analyser complete! Functions let you reuse analysis logic."
 },
-// ===== Mock 04: Palindrome Checker (Chapter 27, ids 222-226) =====
+// ===== Mock 04: Palindrome Checker (Chapter 27, ids 219-222) =====
 {
-  id: 222,
-  chapter: 27,
-  name: "Check Racecar",
-  difficulty: 1,
-  desc: "<p>Check if <code>\"racecar\"</code> is a palindrome (reads the same forwards and backwards). Print <code>Palindrome!</code> or <code>Not a palindrome.</code></p>",
-  hint: "The starter code already does this. Run it to check the result.",
-  starter: 'word = "racecar"\nreversed_word = word[::-1]\nif word == reversed_word:\n    print("Palindrome!")\nelse:\n    print("Not a palindrome.")\n',
-  check: (o) => o.includes("Palindrome!"),
-  successMsg: "Racecar is a palindrome! It reads the same both ways."
-},
-{
-  id: 223,
+  id: 219,
   chapter: 27,
   name: "Case Insensitive",
   difficulty: 2,
   desc: "<p>Change the word to <code>\"Racecar\"</code> (capital R). Make the palindrome check case-insensitive so it still detects it as a palindrome.</p>",
   hint: "Convert the word to lowercase before comparing: word.lower().",
-  starter: 'word = "Racecar"\n# Make the check case-insensitive\ncheck = word.lower()\nreversed_word = check[::-1]\nif check == reversed_word:\n    print("Palindrome!")\nelse:\n    print("Not a palindrome.")\n',
+  starter: 'word = "Racecar"\n# Make the check case-insensitive\ncheck = word\nreversed_word = check[::-1]\nif check == reversed_word:\n    print("Palindrome!")\nelse:\n    print("Not a palindrome.")\n',
   check: (o) => o.includes("Palindrome!"),
   successMsg: "Case-insensitive check works! Capital letters no longer cause false negatives."
 },
 {
-  id: 224,
+  id: 220,
   chapter: 27,
   name: "Write Function",
   difficulty: 2,
@@ -2988,41 +2944,30 @@ key = 5
   successMsg: "Function created! Now you can reuse the palindrome check easily."
 },
 {
-  id: 225,
+  id: 221,
   chapter: 27,
   name: "Test Multiple",
   difficulty: 3,
   desc: "<p>Test the function with <code>[\"madam\", \"hello\", \"level\", \"python\", \"civic\"]</code>. Print <code>True</code> or <code>False</code> for each word, one per line.</p>",
   hint: "Loop through the list and print is_palindrome(word) for each.",
-  starter: 'def is_palindrome(w):\n    check = w.lower()\n    return check == check[::-1]\n\ntest_words = ["madam", "hello", "level", "python", "civic"]\nfor word in test_words:\n    print(is_palindrome(word))\n',
+  starter: 'def is_palindrome(w):\n    check = w.lower()\n    return check == check[::-1]\n\ntest_words = ["madam", "hello", "level", "python", "civic"]\nfor word in test_words:\n    pass  # Print is_palindrome result for each word\n',
   check: (o) => { const lines = o.trim().split("\n"); return lines.length === 5 && lines[0].trim() === "True" && lines[1].trim() === "False" && lines[2].trim() === "True" && lines[3].trim() === "False" && lines[4].trim() === "True"; },
   successMsg: "All five tested! Three palindromes found in the list."
 },
 {
-  id: 226,
+  id: 222,
   chapter: 27,
   name: "Phrase Palindromes",
   difficulty: 3,
   desc: "<p>Handle phrases by removing spaces and ignoring case. Test with <code>\"A man a plan a canal Panama\"</code>. Print <code>True</code> or <code>False</code>.</p>",
   hint: "Remove spaces with .replace(\" \", \"\") and convert to lowercase before checking.",
-  starter: 'def is_palindrome(w):\n    check = w.lower().replace(" ", "")\n    return check == check[::-1]\n\nphrase = "A man a plan a canal Panama"\nprint(is_palindrome(phrase))\n',
+  starter: 'def is_palindrome(w):\n    check = w.lower()\n    return check == check[::-1]\n\nphrase = "A man a plan a canal Panama"\nprint(is_palindrome(phrase))\n',
   check: (o) => o.trim() === "True",
   successMsg: "Phrase palindrome detected! Ignoring spaces reveals the hidden pattern."
 },
-// ===== Mock 05: Duplicate Finder (Chapter 28, ids 227-232) =====
+// ===== Mock 05: Duplicate Finder (Chapter 28, ids 223-227) =====
 {
-  id: 227,
-  chapter: 28,
-  name: "Print the List",
-  difficulty: 1,
-  desc: "<p>Print the list of numbers and its length. The output should include <code>Length: 9</code>.</p>",
-  hint: "The starter code already does this. Run it to see the output.",
-  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n',
-  check: (o) => o.includes("Length: 9"),
-  successMsg: "List printed! Nine numbers, some of which are duplicated."
-},
-{
-  id: 228,
+  id: 223,
   chapter: 28,
   name: "Find Unique",
   difficulty: 2,
@@ -3033,7 +2978,7 @@ key = 5
   successMsg: "Unique values found! Sets automatically remove duplicates."
 },
 {
-  id: 229,
+  id: 224,
   chapter: 28,
   name: "Count Each",
   difficulty: 2,
@@ -3044,7 +2989,7 @@ key = 5
   successMsg: "Occurrence counts complete! The number 4 appears most often."
 },
 {
-  id: 230,
+  id: 225,
   chapter: 28,
   name: "Find Duplicates",
   difficulty: 2,
@@ -3055,7 +3000,7 @@ key = 5
   successMsg: "Duplicates identified! Three numbers appear more than once."
 },
 {
-  id: 231,
+  id: 226,
   chapter: 28,
   name: "Most Common",
   difficulty: 3,
@@ -3066,7 +3011,7 @@ key = 5
   successMsg: "Most common found! The number 4 appears 3 times."
 },
 {
-  id: 232,
+  id: 227,
   chapter: 28,
   name: "Remove Duplicates",
   difficulty: 3,
@@ -3076,20 +3021,9 @@ key = 5
   check: (o) => o.includes("Cleaned:") && o.includes("[4, 2, 7, 9, 1]"),
   successMsg: "Duplicates removed! Order preserved with first-occurrence kept."
 },
-// ===== Mock 06: Sorting Visualiser (Chapter 29, ids 233-238) =====
+// ===== Mock 06: Sorting Visualiser (Chapter 29, ids 228-232) =====
 {
-  id: 233,
-  chapter: 29,
-  name: "Show Before",
-  difficulty: 1,
-  desc: "<p>Print the unsorted list with the label <code>Before:</code>.</p>",
-  hint: "The starter code already does this. Run it to see the output.",
-  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n',
-  check: (o) => o.includes("Before:"),
-  successMsg: "List displayed! Now you can see what needs sorting."
-},
-{
-  id: 234,
+  id: 228,
   chapter: 29,
   name: "Find Minimum",
   difficulty: 2,
@@ -3100,7 +3034,7 @@ key = 5
   successMsg: "Minimum found! This is the first step of selection sort."
 },
 {
-  id: 235,
+  id: 229,
   chapter: 29,
   name: "One Swap",
   difficulty: 2,
@@ -3111,7 +3045,7 @@ key = 5
   successMsg: "First swap done! The smallest element is now in position."
 },
 {
-  id: 236,
+  id: 230,
   chapter: 29,
   name: "Selection Sort",
   difficulty: 3,
@@ -3122,7 +3056,7 @@ key = 5
   successMsg: "Selection sort complete! The list is fully sorted."
 },
 {
-  id: 237,
+  id: 231,
   chapter: 29,
   name: "Count Swaps",
   difficulty: 3,
@@ -3133,7 +3067,7 @@ key = 5
   successMsg: "Swaps counted! Selection sort minimises the number of swaps."
 },
 {
-  id: 238,
+  id: 232,
   chapter: 29,
   name: "Show Each Step",
   difficulty: 3,
@@ -3143,20 +3077,9 @@ key = 5
   check: (o) => { const lines = o.trim().split("\n").filter(l => l.includes("[")); return lines.length >= 5; },
   successMsg: "Sorting visualised! You can see the list taking shape step by step."
 },
-// ===== MOCK 07: COIN FLIP SIMULATOR (Chapter 30) =====
+// ===== MOCK 07: COIN FLIP SIMULATOR (Chapter 30, ids 233-237) =====
 {
-  id: 239,
-  chapter: 30,
-  name: "Count Flips",
-  difficulty: 1,
-  desc: "<p>The program simulates 50 coin flips. Run the code and confirm it prints <code>Flips: 50</code>.</p>",
-  hint: "The starter code already prints the count. Just run it.",
-  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n',
-  check: (o) => o.includes("Flips: 50"),
-  successMsg: "50 flips recorded! Time to analyse the results."
-},
-{
-  id: 240,
+  id: 233,
   chapter: 30,
   name: "Count Each",
   difficulty: 2,
@@ -3167,7 +3090,7 @@ key = 5
   successMsg: "Counts tallied! Now let\'s look at percentages."
 },
 {
-  id: 241,
+  id: 234,
   chapter: 30,
   name: "Percentage",
   difficulty: 2,
@@ -3178,7 +3101,7 @@ key = 5
   successMsg: "Percentage calculated! Is it close to 50%?"
 },
 {
-  id: 242,
+  id: 235,
   chapter: 30,
   name: "Longest Streak",
   difficulty: 3,
@@ -3189,7 +3112,7 @@ key = 5
   successMsg: "Streak found! Consecutive runs are important in probability."
 },
 {
-  id: 243,
+  id: 236,
   chapter: 30,
   name: "First Ten",
   difficulty: 2,
@@ -3200,7 +3123,7 @@ key = 5
   successMsg: "First ten displayed! A quick snapshot of the sequence."
 },
 {
-  id: 244,
+  id: 237,
   chapter: 30,
   name: "Fair Coin Test",
   difficulty: 3,
@@ -3210,20 +3133,9 @@ key = 5
   check: (o) => o.includes("Fair") || o.includes("Biased"),
   successMsg: "Fairness tested! With 1000 flips the law of large numbers kicks in."
 },
-// ===== MOCK 08: CARD DEALER (Chapter 31) =====
+// ===== MOCK 08: CARD DEALER (Chapter 31, ids 238-242) =====
 {
-  id: 245,
-  chapter: 31,
-  name: "Build Deck",
-  difficulty: 1,
-  desc: "<p>The program builds a standard 52-card deck. Run the code and confirm it prints <code>Deck size: 52</code>.</p>",
-  hint: "The starter code already builds and counts the deck. Just run it.",
-  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\nprint("Deck size:", len(deck))\n',
-  check: (o) => o.includes("Deck size: 52"),
-  successMsg: "52 cards ready! Time to shuffle and deal."
-},
-{
-  id: 246,
+  id: 238,
   chapter: 31,
   name: "Shuffle & Deal",
   difficulty: 2,
@@ -3234,7 +3146,7 @@ key = 5
   successMsg: "Hand dealt! Five cards from a shuffled deck."
 },
 {
-  id: 247,
+  id: 239,
   chapter: 31,
   name: "Count Suits",
   difficulty: 2,
@@ -3245,7 +3157,7 @@ key = 5
   successMsg: "Suit distribution counted! Useful for poker hands."
 },
 {
-  id: 248,
+  id: 240,
   chapter: 31,
   name: "Check for Pair",
   difficulty: 3,
@@ -3256,7 +3168,7 @@ key = 5
   successMsg: "Pair detection complete! A key part of card game logic."
 },
 {
-  id: 249,
+  id: 241,
   chapter: 31,
   name: "Highest Card",
   difficulty: 3,
@@ -3267,7 +3179,7 @@ key = 5
   successMsg: "Highest card identified! Ace high rules."
 },
 {
-  id: 250,
+  id: 242,
   chapter: 31,
   name: "Deal Multiple",
   difficulty: 3,
@@ -3277,20 +3189,9 @@ key = 5
   check: (o) => o.includes("Hand 1:") && o.includes("Hand 2:"),
   successMsg: "Four hands dealt! A full table of cards."
 },
-// ===== MOCK 09: WEATHER STATS (Chapter 32) =====
+// ===== MOCK 09: WEATHER STATS (Chapter 32, ids 243-247) =====
 {
-  id: 251,
-  chapter: 32,
-  name: "Count Days",
-  difficulty: 1,
-  desc: "<p>The program has 14 days of temperature data. Run the code and confirm it prints <code>Days recorded: 14</code>.</p>",
-  hint: "The starter code already prints the count. Just run it.",
-  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n',
-  check: (o) => o.includes("Days recorded: 14"),
-  successMsg: "14 days of data ready for analysis!"
-},
-{
-  id: 252,
+  id: 243,
   chapter: 32,
   name: "Average Temp",
   difficulty: 2,
@@ -3301,7 +3202,7 @@ key = 5
   successMsg: "Average is 10.6 degrees. A cool fortnight!"
 },
 {
-  id: 253,
+  id: 244,
   chapter: 32,
   name: "Hottest Day",
   difficulty: 2,
@@ -3312,7 +3213,7 @@ key = 5
   successMsg: "Friday was the hottest at 16 degrees!"
 },
 {
-  id: 254,
+  id: 245,
   chapter: 32,
   name: "Cold Days",
   difficulty: 2,
@@ -3323,7 +3224,7 @@ key = 5
   successMsg: "6 cold days out of 14. Nearly half!"
 },
 {
-  id: 255,
+  id: 246,
   chapter: 32,
   name: "Week Comparison",
   difficulty: 3,
@@ -3334,7 +3235,7 @@ key = 5
   successMsg: "Week 2 was warmer! The second week had better weather."
 },
 {
-  id: 256,
+  id: 247,
   chapter: 32,
   name: "Daily Report",
   difficulty: 3,
@@ -3344,9 +3245,9 @@ key = 5
   check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 14 && (o.includes("Cold") || o.includes("Mild") || o.includes("Warm")); },
   successMsg: "Full daily report generated! A complete weather summary."
 },
-// ===== MOCK 10: QUIZ GAME (Chapter 33) =====
+// ===== MOCK 10: QUIZ GAME (Chapter 33, ids 248-253) =====
 {
-  id: 257,
+  id: 248,
   chapter: 33,
   name: "Check Answers",
   difficulty: 2,
@@ -3357,7 +3258,7 @@ key = 5
   successMsg: "2 out of 3! The sky is blue, not red."
 },
 {
-  id: 258,
+  id: 249,
   chapter: 33,
   name: "Show Feedback",
   difficulty: 2,
@@ -3368,7 +3269,7 @@ key = 5
   successMsg: "Detailed feedback for each question!"
 },
 {
-  id: 259,
+  id: 250,
   chapter: 33,
   name: "Percentage Score",
   difficulty: 2,
@@ -3379,7 +3280,7 @@ key = 5
   successMsg: "67% -- two thirds correct!"
 },
 {
-  id: 260,
+  id: 251,
   chapter: 33,
   name: "Case Insensitive",
   difficulty: 2,
@@ -3390,7 +3291,7 @@ key = 5
   successMsg: "Case-insensitive matching! Dublin matches dublin."
 },
 {
-  id: 261,
+  id: 252,
   chapter: 33,
   name: "Grade It",
   difficulty: 3,
@@ -3401,7 +3302,7 @@ key = 5
   successMsg: "Merit grade achieved! 67% falls in the 60-79 band."
 },
 {
-  id: 262,
+  id: 253,
   chapter: 33,
   name: "Track Streaks",
   difficulty: 3,
@@ -3411,9 +3312,9 @@ key = 5
   check: (o) => o.includes("Longest streak:"),
   successMsg: "Streak tracking complete! Consecutive runs measure consistency."
 },
-// ===== MOCK 11: HANGMAN (Chapter 34) =====
+// ===== MOCK 11: HANGMAN (Chapter 34, ids 254-259) =====
 {
-  id: 263,
+  id: 254,
   chapter: 34,
   name: "Show Blanks",
   difficulty: 2,
@@ -3424,7 +3325,7 @@ key = 5
   successMsg: "Six blanks for six letters! The game board is set."
 },
 {
-  id: 264,
+  id: 255,
   chapter: 34,
   name: "Process Guesses",
   difficulty: 2,
@@ -3435,7 +3336,7 @@ key = 5
   successMsg: "Letters reveal one by one! The word takes shape."
 },
 {
-  id: 265,
+  id: 256,
   chapter: 34,
   name: "Track Lives",
   difficulty: 2,
@@ -3446,7 +3347,7 @@ key = 5
   successMsg: "Lives tracked! One wrong guess costs one life."
 },
 {
-  id: 266,
+  id: 257,
   chapter: 34,
   name: "Win Detection",
   difficulty: 3,
@@ -3457,7 +3358,7 @@ key = 5
   successMsg: "You win! All letters of python were guessed."
 },
 {
-  id: 267,
+  id: 258,
   chapter: 34,
   name: "Game Over",
   difficulty: 3,
@@ -3468,7 +3369,7 @@ key = 5
   successMsg: "Game over! Six wrong guesses and you are out."
 },
 {
-  id: 268,
+  id: 259,
   chapter: 34,
   name: "Show the Word",
   difficulty: 3,
@@ -3478,9 +3379,9 @@ key = 5
   check: (o) => o.includes("The word was: python"),
   successMsg: "The secret is revealed! A complete Hangman game."
 },
-// ===== MOCK 12: NOUGHTS & CROSSES (Chapter 35) =====
+// ===== MOCK 12: NOUGHTS & CROSSES (Chapter 35, ids 260-265) =====
 {
-  id: 269,
+  id: 260,
   chapter: 35,
   name: "Print Board",
   difficulty: 2,
@@ -3491,7 +3392,7 @@ key = 5
   successMsg: "Board displayed! Three rows with pipe separators."
 },
 {
-  id: 270,
+  id: 261,
   chapter: 35,
   name: "Check Rows",
   difficulty: 2,
@@ -3502,7 +3403,7 @@ key = 5
   successMsg: "No row winner on this board. Let\'s check columns next."
 },
 {
-  id: 271,
+  id: 262,
   chapter: 35,
   name: "Check Columns",
   difficulty: 2,
@@ -3513,7 +3414,7 @@ key = 5
   successMsg: "No column winner either. But what about diagonals?"
 },
 {
-  id: 272,
+  id: 263,
   chapter: 35,
   name: "Check Diagonals",
   difficulty: 3,
@@ -3524,7 +3425,7 @@ key = 5
   successMsg: "X wins on the main diagonal! Three in a row from corner to corner."
 },
 {
-  id: 273,
+  id: 264,
   chapter: 35,
   name: "Full Check",
   difficulty: 3,
@@ -3535,7 +3436,7 @@ key = 5
   successMsg: "Full winner detection! X wins on the diagonal."
 },
 {
-  id: 274,
+  id: 265,
   chapter: 35,
   name: "Play a Game",
   difficulty: 3,
@@ -3545,20 +3446,9 @@ key = 5
   check: (o) => o.includes("X wins") && o.trim().split("\n").length >= 5,
   successMsg: "X wins with the top row! A complete game of Noughts and Crosses."
 },
-// ===== Mock 13: Lottery Draw (Chapter 36, ids 275-280) =====
+// ===== Mock 13: Lottery Draw (Chapter 36, ids 266-270) =====
 {
-  id: 275,
-  chapter: 36,
-  name: "Draw Numbers",
-  difficulty: 1,
-  desc: "<p>Run the starter code to generate and print the 6 winning lottery numbers sorted in ascending order.</p>",
-  hint: "The starter code already works. Run it to see the winning numbers.",
-  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n',
-  check: (o) => o.includes("Winning numbers:"),
-  successMsg: "Winning numbers drawn! The seed ensures reproducible results."
-},
-{
-  id: 276,
+  id: 266,
   chapter: 36,
   name: "My Ticket",
   difficulty: 2,
@@ -3569,7 +3459,7 @@ key = 5
   successMsg: "Ticket created! Now let\'s see how it compares to the winning numbers."
 },
 {
-  id: 277,
+  id: 267,
   chapter: 36,
   name: "Count Matches",
   difficulty: 2,
@@ -3580,7 +3470,7 @@ key = 5
   successMsg: "Matches counted! Every match brings you closer to a prize."
 },
 {
-  id: 278,
+  id: 268,
   chapter: 36,
   name: "Show Matches",
   difficulty: 2,
@@ -3591,7 +3481,7 @@ key = 5
   successMsg: "Matched numbers revealed! Now you can see exactly which ones hit."
 },
 {
-  id: 279,
+  id: 269,
   chapter: 36,
   name: "Prize Tiers",
   difficulty: 3,
@@ -3602,7 +3492,7 @@ key = 5
   successMsg: "Prize system working! The more matches, the bigger the prize."
 },
 {
-  id: 280,
+  id: 270,
   chapter: 36,
   name: "Multiple Tickets",
   difficulty: 3,
@@ -3612,20 +3502,9 @@ key = 5
   check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 3; },
   successMsg: "Multiple tickets checked! A full lottery system in Python."
 },
-// ===== Mock 14: Rock Paper Scissors (Chapter 37, ids 281-286) =====
+// ===== Mock 14: Rock Paper Scissors (Chapter 37, ids 271-275) =====
 {
-  id: 281,
-  chapter: 37,
-  name: "One Round",
-  difficulty: 1,
-  desc: "<p>Play one round where the player chooses <code>Rock</code> and the computer picks randomly (seeded). Print <code>Player: Rock</code> and <code>Computer: [choice]</code>.</p>",
-  hint: "The starter code already picks for the computer. Add a print for the player\'s choice.",
-  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\ncomputer = choice(options)\nprint("Player: Rock")\nprint("Computer:", computer)\n',
-  check: (o) => o.includes("Player: Rock") && o.includes("Computer:"),
-  successMsg: "First round played! Player chose Rock, computer made its pick."
-},
-{
-  id: 282,
+  id: 271,
   chapter: 37,
   name: "Determine Winner",
   difficulty: 2,
@@ -3636,7 +3515,7 @@ key = 5
   successMsg: "Winner determined! The classic rules decide each round."
 },
 {
-  id: 283,
+  id: 272,
   chapter: 37,
   name: "Play 5 Rounds",
   difficulty: 2,
@@ -3647,7 +3526,7 @@ key = 5
   successMsg: "Five rounds played! A proper tournament is taking shape."
 },
 {
-  id: 284,
+  id: 273,
   chapter: 37,
   name: "Track Score",
   difficulty: 2,
@@ -3658,7 +3537,7 @@ key = 5
   successMsg: "Scores tracked! Now we know who is winning overall."
 },
 {
-  id: 285,
+  id: 274,
   chapter: 37,
   name: "Tournament Winner",
   difficulty: 3,
@@ -3669,7 +3548,7 @@ key = 5
   successMsg: "Tournament decided! The overall champion has been crowned."
 },
 {
-  id: 286,
+  id: 275,
   chapter: 37,
   name: "Win Percentage",
   difficulty: 3,
@@ -3679,20 +3558,9 @@ key = 5
   check: (o) => o.includes("%"),
   successMsg: "Win rates calculated! Percentages give a clear picture of performance."
 },
-// ===== Mock 15: Colour Mixer (Chapter 38, ids 287-292) =====
+// ===== Mock 15: Colour Mixer (Chapter 38, ids 276-280) =====
 {
-  id: 287,
-  chapter: 38,
-  name: "Show RGB",
-  difficulty: 1,
-  desc: "<p>Run the starter code to print the RGB colour values. The output should be <code>RGB: 255 128 0</code>.</p>",
-  hint: "The starter code already works. Run it to see the output.",
-  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\n',
-  check: (o) => o.includes("RGB: 255 128 0"),
-  successMsg: "RGB values displayed! This is a warm orange colour."
-},
-{
-  id: 288,
+  id: 276,
   chapter: 38,
   name: "Hex Conversion",
   difficulty: 2,
@@ -3703,7 +3571,7 @@ key = 5
   successMsg: "Hex conversion done! Web developers use hex codes like this every day."
 },
 {
-  id: 289,
+  id: 277,
   chapter: 38,
   name: "Brightness",
   difficulty: 2,
@@ -3714,7 +3582,7 @@ key = 5
   successMsg: "Brightness calculated! The average channel value measures perceived lightness."
 },
 {
-  id: 290,
+  id: 278,
   chapter: 38,
   name: "Classify Colour",
   difficulty: 2,
@@ -3725,7 +3593,7 @@ key = 5
   successMsg: "Colour classified as Medium! Brightness 128 falls in the middle range."
 },
 {
-  id: 291,
+  id: 279,
   chapter: 38,
   name: "Mix Colours",
   difficulty: 3,
@@ -3736,7 +3604,7 @@ key = 5
   successMsg: "Colours mixed! Red and blue make a purple shade."
 },
 {
-  id: 292,
+  id: 280,
   chapter: 38,
   name: "Colour Palette",
   difficulty: 3,
@@ -3746,20 +3614,9 @@ key = 5
   check: (o) => o.includes("Brightest:") && o.includes("Darkest:"),
   successMsg: "Palette analysed! Yellow is brightest and blue is darkest by average."
 },
-// ===== Mock 16: Shop Till (Chapter 39, ids 293-298) =====
+// ===== Mock 16: Shop Till (Chapter 39, ids 281-285) =====
 {
-  id: 293,
-  chapter: 39,
-  name: "Count Items",
-  difficulty: 1,
-  desc: "<p>Run the starter code to print the number of items in the shopping list. The output should include <code>Items: 5</code>.</p>",
-  hint: "The starter code already works. Run it to see the count.",
-  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\nprint("Items:", len(items))\n',
-  check: (o) => o.includes("Items: 5"),
-  successMsg: "Five items in the basket! Time to calculate the bill."
-},
-{
-  id: 294,
+  id: 281,
   chapter: 39,
   name: "Calculate Total",
   difficulty: 2,
@@ -3770,7 +3627,7 @@ key = 5
   successMsg: "Total calculated! Five items come to 13.40."
 },
 {
-  id: 295,
+  id: 282,
   chapter: 39,
   name: "Print Receipt",
   difficulty: 2,
@@ -3781,7 +3638,7 @@ key = 5
   successMsg: "Receipt printed! A clear breakdown of every item and the total."
 },
 {
-  id: 296,
+  id: 283,
   chapter: 39,
   name: "Apply Discount",
   difficulty: 3,
@@ -3792,7 +3649,7 @@ key = 5
   successMsg: "Discount applied! Spending over 10 earns a 10% saving."
 },
 {
-  id: 297,
+  id: 284,
   chapter: 39,
   name: "Most Expensive",
   difficulty: 2,
@@ -3803,7 +3660,7 @@ key = 5
   successMsg: "Most expensive found! Cheese tops the list at 4.50."
 },
 {
-  id: 298,
+  id: 285,
   chapter: 39,
   name: "Price Range",
   difficulty: 3,
@@ -3813,20 +3670,9 @@ key = 5
   check: (o) => o.includes("Cheapest:") && o.includes("Most expensive:") && o.includes("Range:"),
   successMsg: "Price range found! From 1.20 to 4.50, a spread of 3.30."
 },
-// ===== Mock 17: Fitness Tracker (Chapter 40, ids 299-304) =====
+// ===== Mock 17: Fitness Tracker (Chapter 40, ids 286-290) =====
 {
-  id: 299,
-  chapter: 40,
-  name: "Week Total",
-  difficulty: 1,
-  desc: "<p>Run the starter code to print the total steps for the week. The output should include <code>Week total: 64300</code>.</p>",
-  hint: "The starter code already works. Run it to see the total.",
-  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n',
-  check: (o) => o.includes("Week total: 64300"),
-  successMsg: "64,300 steps this week! A solid effort across seven days."
-},
-{
-  id: 300,
+  id: 286,
   chapter: 40,
   name: "Daily Average",
   difficulty: 2,
@@ -3837,7 +3683,7 @@ key = 5
   successMsg: "Average of 9,186 steps per day! Just short of the 10,000 goal."
 },
 {
-  id: 301,
+  id: 287,
   chapter: 40,
   name: "Best Day",
   difficulty: 2,
@@ -3848,7 +3694,7 @@ key = 5
   successMsg: "Saturday wins with 15,000 steps! Weekend walks pay off."
 },
 {
-  id: 302,
+  id: 288,
   chapter: 40,
   name: "Goal Days",
   difficulty: 2,
@@ -3859,7 +3705,7 @@ key = 5
   successMsg: "Two days hit the target! Wednesday and Saturday both cleared 10,000."
 },
 {
-  id: 303,
+  id: 289,
   chapter: 40,
   name: "Daily Status",
   difficulty: 3,
@@ -3870,7 +3716,7 @@ key = 5
   successMsg: "Daily status report complete! You can see exactly which days fell short."
 },
 {
-  id: 304,
+  id: 290,
   chapter: 40,
   name: "Streak Counter",
   difficulty: 3,
@@ -3880,20 +3726,9 @@ key = 5
   check: (o) => o.includes("Longest goal streak:"),
   successMsg: "Streak tracked! With non-consecutive goal days, the longest streak is 1."
 },
-// ===== Mock 18: Movie Ratings (Chapter 41, ids 305-311) =====
+// ===== Mock 18: Movie Ratings (Chapter 41, ids 291-296) =====
 {
-  id: 305,
-  chapter: 41,
-  name: "Count Movies",
-  difficulty: 1,
-  desc: "<p>Run the starter code to print the number of movies. The output should include <code>Movies: 7</code>.</p>",
-  hint: "The starter code already works. Run it to see the count.",
-  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\nprint("Movies:", len(movies))\n',
-  check: (o) => o.includes("Movies: 7"),
-  successMsg: "Seven movies in the collection! All highly rated classics."
-},
-{
-  id: 306,
+  id: 291,
   chapter: 41,
   name: "Average Rating",
   difficulty: 2,
@@ -3904,7 +3739,7 @@ key = 5
   successMsg: "Average rating is 8.74! A very strong collection."
 },
 {
-  id: 307,
+  id: 292,
   chapter: 41,
   name: "Top Rated",
   difficulty: 2,
@@ -3915,7 +3750,7 @@ key = 5
   successMsg: "The Dark Knight tops the list at 9.0! A masterpiece."
 },
 {
-  id: 308,
+  id: 293,
   chapter: 41,
   name: "Above Average",
   difficulty: 2,
@@ -3926,7 +3761,7 @@ key = 5
   successMsg: "Four films beat the average! All rated 8.8 or higher."
 },
 {
-  id: 309,
+  id: 294,
   chapter: 41,
   name: "Rating Tiers",
   difficulty: 3,
@@ -3937,7 +3772,7 @@ key = 5
   successMsg: "Tiers counted! Most films cluster in the 8.5-8.9 sweet spot."
 },
 {
-  id: 310,
+  id: 295,
   chapter: 41,
   name: "Sort by Rating",
   difficulty: 3,
@@ -3948,7 +3783,7 @@ key = 5
   successMsg: "Ranked by rating! The Dark Knight leads the pack."
 },
 {
-  id: 311,
+  id: 296,
   chapter: 41,
   name: "Recommend",
   difficulty: 3,
