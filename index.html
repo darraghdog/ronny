@@ -615,7 +615,7 @@
           <div class="hero-stat-label">XP Earned</div>
         </div>
       </div>
-      <button class="hero-cta" onclick="heroChooseChapter()">Choose a Chapter to Begin &#x2192;</button>
+      <button class="hero-cta" id="heroCta" onclick="heroChooseChapter()">Sign In to Start &#x2192;</button>
     </div>
 
     <div class="challenge-header" id="challengeHeader">
@@ -2053,15 +2053,18 @@ function signOutUser() {
 function updateAuthUI(user) {
   const btnSignIn = document.getElementById('btnSignIn');
   const userProfile = document.getElementById('userProfile');
+  const heroCta = document.getElementById('heroCta');
   if (user) {
     btnSignIn.style.display = 'none';
     userProfile.classList.add('visible');
     document.getElementById('userAvatar').src = user.photoURL || '';
     const firstName = (user.displayName || 'User').split(' ')[0];
     document.getElementById('userName').textContent = firstName;
+    if (heroCta) heroCta.textContent = 'Choose a Chapter to Begin \u2192';
   } else {
     btnSignIn.style.display = '';
     userProfile.classList.remove('visible');
+    if (heroCta) heroCta.textContent = 'Sign In to Start \u2192';
   }
 }
 
@@ -2394,6 +2397,7 @@ function renderChallengeList(chapterId) {
 
 function selectChallenge(index) {
   if (index < 0 || index >= challenges.length) return;
+  if (!currentUser) { signInWithGoogle(); return; }
 
   // Save code from previous challenge before switching
   if (state.currentChallenge >= 0) {
@@ -2476,6 +2480,7 @@ function hideHero() {
 }
 
 function heroChooseChapter() {
+  if (!currentUser) { signInWithGoogle(); return; }
   document.getElementById('sidebarContent').scrollIntoView({ behavior: 'smooth' });
   renderChapterList();
 }
