@@ -639,7 +639,7 @@
 <div class="combo-display" id="comboDisplay"></div>
 
 <div class="header">
-  <div class="logo">
+  <div class="logo" onclick="goHome()" style="cursor:pointer">
     <span class="logo-icon">&#x1F40D;</span>
     <div>
       <div class="logo-text">Go RONNY</div>
@@ -4533,6 +4533,15 @@ function hideHero() {
   document.getElementById('heroSplash').style.display = 'none';
   document.getElementById('challengeHeader').style.display = '';
   document.getElementById('editorConsoleSplit').style.display = '';
+}
+
+function goHome() {
+  state.currentChallenge = -1;
+  state.currentChapter = -1;
+  state.viewMode = 'chapters';
+  showHero();
+  renderChapterList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function mobileBack() {
