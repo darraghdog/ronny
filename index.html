@@ -3977,7 +3977,11 @@ const codeCache = {};
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithRedirect(provider);
+  auth.signInWithPopup(provider).catch((err) => {
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
+      auth.signInWithRedirect(provider);
+    }
+  });
 }
 
 function signOutUser() {
