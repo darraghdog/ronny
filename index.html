@@ -6,20 +6,25 @@
 <title>Ronny - Python Challenges for Leaving Cert CS</title>
 <script src="https://skulpt.org/js/skulpt.min.js"></script>
 <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Press+Start+2P&family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Fira+Code:wght@400;700&display=swap');
 
   :root {
-    --neon-pink: #ff2d95;
-    --neon-blue: #00d4ff;
-    --neon-green: #39ff14;
-    --neon-yellow: #ffe600;
+    --accent-pink: #e75e8d;
+    --accent-pink-light: #ec6090;
+    --neon-blue: #5bc0de;
+    --success-green: #4caf50;
+    --neon-yellow: #ffd700;
     --neon-orange: #ff6b00;
-    --neon-purple: #b026ff;
-    --dark-bg: #0a0a1a;
-    --panel-bg: #12122a;
-    --panel-border: #2a2a5a;
-    --text-light: #e0e0ff;
+    --neon-purple: #9b59b6;
+    --dark-bg: #1e1e1e;
+    --panel-bg: #27292a;
+    --panel-border: #3a3a3a;
+    --text-light: #ffffff;
+    --text-muted: #999;
     --gold: #ffd700;
   }
 
@@ -28,92 +33,72 @@
   body {
     background: var(--dark-bg);
     color: var(--text-light);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
     min-height: 100vh;
   }
 
   body::before {
     content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(255,45,149,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 80%, rgba(176,38,255,0.06) 0%, transparent 50%);
-    z-index: -1;
-    animation: bgPulse 8s ease-in-out infinite alternate;
-  }
-  @keyframes bgPulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-
-  .speed-lines {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.3s;
+    background-image: radial-gradient(circle, #333 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: -1;
+    opacity: 0.3;
   }
-  .speed-lines.active { opacity: 0.15; animation: speedFlash 0.6s ease-out; }
-  @keyframes speedFlash { 0% { opacity: 0.4; } 100% { opacity: 0; } }
+
+  body::after {
+    content: '';
+    position: fixed; top: -50%; right: -20%;
+    width: 60%; height: 120%;
+    background: linear-gradient(135deg, rgba(231,94,141,0.06) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+  }
 
   /* HEADER */
   .header {
-    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
-    border-bottom: 3px solid var(--neon-pink);
+    background: var(--panel-bg);
+    border-bottom: 2px solid var(--panel-border);
     padding: 10px 20px;
     display: flex; align-items: center; justify-content: space-between;
-    position: relative; overflow: hidden; z-index: 10;
+    position: relative; z-index: 10;
   }
-  .header::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue), var(--neon-purple), var(--neon-pink));
-    background-size: 200% 100%;
-    animation: rainbowSlide 3s linear infinite;
-  }
-  @keyframes rainbowSlide { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
 
   .logo { display: flex; align-items: center; gap: 12px; }
-  .logo-icon {
-    font-size: 36px;
-    filter: drop-shadow(0 0 10px var(--neon-pink));
-    animation: logoFloat 3s ease-in-out infinite;
-  }
-  @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .logo-icon { font-size: 36px; }
   .logo-text {
-    font-family: 'Bangers', cursive; font-size: 32px;
-    background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+    font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-pink), var(--neon-blue));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: 3px;
   }
-  .logo-sub { font-size: 11px; color: var(--neon-blue); opacity: 0.8; letter-spacing: 4px; }
+  .logo-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 4px; }
 
   .stats-bar { display: flex; align-items: center; gap: 20px; }
   .stat-item {
     display: flex; align-items: center; gap: 6px;
-    font-family: 'Press Start 2P', monospace; font-size: 11px;
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
   }
   .stat-icon { font-size: 18px; }
-  .stat-value { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
+  .stat-value { color: var(--gold); }
 
   .level-badge {
-    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
-    border: 2px solid var(--neon-pink); border-radius: 20px;
+    background: var(--accent-pink);
+    border: none; border-radius: 25px;
     padding: 4px 14px;
-    font-family: 'Press Start 2P', monospace; font-size: 10px;
-    color: white; box-shadow: 0 0 15px rgba(255,45,149,0.3);
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 700;
+    color: white;
   }
 
   .xp-bar-container {
-    width: 120px; height: 12px; background: #1a1a3a;
+    width: 120px; height: 12px; background: #161616;
     border-radius: 6px; border: 1px solid var(--panel-border); overflow: hidden;
   }
   .xp-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+    background: linear-gradient(90deg, var(--accent-pink), var(--neon-blue));
     border-radius: 6px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-  }
-  .xp-bar-fill::after {
-    content: ''; position: absolute; top: 0; left: 0; right: 0;
-    height: 50%; background: rgba(255,255,255,0.2); border-radius: 6px 6px 0 0;
   }
 
   /* MAIN LAYOUT */
@@ -124,26 +109,27 @@
 
   /* SIDEBAR */
   .sidebar {
-    background: var(--panel-bg);
-    border-right: 2px solid var(--panel-border);
+    background: var(--dark-bg);
+    border-right: 1px solid var(--panel-border);
     overflow-y: auto; display: flex; flex-direction: column;
-    scrollbar-width: thin; scrollbar-color: var(--neon-pink) var(--panel-bg);
+    scrollbar-width: thin; scrollbar-color: var(--accent-pink) var(--dark-bg);
   }
   .sidebar::-webkit-scrollbar { width: 6px; }
-  .sidebar::-webkit-scrollbar-track { background: var(--panel-bg); }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--dark-bg); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--accent-pink); border-radius: 3px; }
 
   .sensei-panel {
-    padding: 15px; border-bottom: 2px solid var(--panel-border);
+    padding: 15px; border-bottom: 1px solid var(--panel-border);
     text-align: center;
-    background: linear-gradient(180deg, rgba(176,38,255,0.1) 0%, transparent 100%);
+    background: var(--panel-bg);
     flex-shrink: 0;
   }
   .sensei-avatar {
     font-size: 64px; display: block; margin-bottom: 5px;
     transition: transform 0.3s;
-    filter: drop-shadow(0 0 15px rgba(176,38,255,0.4));
+    line-height: 1;
   }
+  .sensei-avatar svg { width: 80px; height: 80px; display: inline-block; vertical-align: middle; }
   .sensei-avatar.celebrate { animation: senseiCelebrate 0.6s ease-out; }
   @keyframes senseiCelebrate {
     0% { transform: scale(1) rotate(0); }
@@ -153,49 +139,48 @@
     100% { transform: scale(1) rotate(0); }
   }
   .sensei-speech {
-    background: white; color: #1a1a2e; border-radius: 15px;
-    padding: 8px 12px; font-size: 13px; font-weight: 700;
+    background: var(--panel-border); color: var(--text-light); border-radius: 15px;
+    padding: 8px 12px; font-size: 13px; font-weight: 600;
     position: relative; margin-top: 5px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
     min-height: 36px; display: flex; align-items: center; justify-content: center;
   }
   .sensei-speech::before {
     content: ''; position: absolute; top: -8px; left: 50%;
     transform: translateX(-50%);
     border-left: 8px solid transparent; border-right: 8px solid transparent;
-    border-bottom: 8px solid white;
+    border-bottom: 8px solid var(--panel-border);
   }
-  .rank-display { font-size: 11px; color: #b0b0d0; text-align: center; margin-top: 4px; }
+  .rank-display { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 4px; }
 
   .sidebar-content { flex: 1; overflow-y: auto; padding: 8px; }
 
   /* CHAPTER LIST */
   .chapter-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 12px; margin-bottom: 6px; border-radius: 10px;
+    padding: 15px 20px; margin-bottom: 6px; border-radius: 23px;
     cursor: pointer; transition: all 0.2s;
-    border: 2px solid transparent; position: relative;
+    background: var(--panel-bg); position: relative;
   }
-  .chapter-item:hover {
-    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
-  }
-  .chapter-item.all-done { border-color: rgba(57,255,20,0.3); }
+  .chapter-item:hover { background: #2f3132; }
+  .chapter-item.all-done { border-left: 3px solid var(--success-green); }
+  .ch-icon { min-width: 32px; display: flex; align-items: center; justify-content: center; }
+  .ch-icon svg { width: 32px; height: 32px; }
   .ch-num {
-    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
     color: var(--neon-blue); min-width: 30px;
   }
   .ch-info { flex: 1; min-width: 0; }
   .ch-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ch-progress-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-  .ch-progress-bar { flex: 1; height: 6px; background: #1a1a3a; border-radius: 3px; overflow: hidden; }
+  .ch-progress-bar { flex: 1; height: 6px; background: #161616; border-radius: 3px; overflow: hidden; }
   .ch-progress-fill {
     height: 100%; border-radius: 3px; transition: width 0.5s;
-    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-pink-light));
   }
-  .ch-progress-text { font-size: 10px; color: #888; min-width: 36px; text-align: right; }
+  .ch-progress-text { font-size: 10px; color: var(--text-muted); min-width: 36px; text-align: right; }
   .ch-points-earned {
-    font-family: 'Press Start 2P', monospace; font-size: 8px;
-    color: var(--gold); text-shadow: 0 0 5px rgba(255,215,0,0.3);
+    font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--gold);
     min-width: 50px; text-align: right;
   }
 
@@ -203,69 +188,68 @@
   .back-btn {
     display: flex; align-items: center; gap: 8px;
     padding: 10px 12px; margin-bottom: 8px;
-    font-size: 13px; font-weight: 700; color: var(--neon-blue);
-    cursor: pointer; border-radius: 8px; transition: all 0.2s;
-    border: none; background: rgba(0,212,255,0.1); width: 100%;
+    font-size: 13px; font-weight: 600; color: var(--neon-blue);
+    cursor: pointer; border-radius: 25px; transition: all 0.2s;
+    border: none; background: var(--panel-bg); width: 100%;
   }
-  .back-btn:hover { background: rgba(0,212,255,0.2); }
+  .back-btn:hover { background: #2f3132; }
 
   .ch-header-info {
     padding: 8px 12px 12px; margin-bottom: 8px;
     border-bottom: 1px solid var(--panel-border);
   }
+  .ch-header-icon { display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .ch-header-icon svg { width: 28px; height: 28px; vertical-align: middle; }
   .ch-header-title {
-    font-family: 'Bangers', cursive; font-size: 20px;
-    color: var(--neon-pink); letter-spacing: 1px;
+    font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;
+    color: var(--accent-pink);
   }
   .ch-header-progress { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-  .ch-header-bar { flex: 1; height: 8px; background: #1a1a3a; border-radius: 4px; overflow: hidden; }
+  .ch-header-bar { flex: 1; height: 8px; background: #161616; border-radius: 4px; overflow: hidden; }
   .ch-header-fill {
     height: 100%; border-radius: 4px; transition: width 0.5s;
-    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-pink-light));
   }
-  .ch-header-text { font-size: 11px; color: #aaa; }
+  .ch-header-text { font-size: 11px; color: var(--text-muted); }
 
   /* CHALLENGE ITEMS (inside chapter drill-down) */
   .challenge-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; margin-bottom: 4px; border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 4px; border-radius: 15px;
     cursor: pointer; transition: all 0.2s;
     border: 2px solid transparent; position: relative;
   }
-  .challenge-item:hover {
-    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
-  }
+  .challenge-item:hover { background: var(--panel-bg); }
   .challenge-item.active {
-    background: rgba(0,212,255,0.1); border-color: var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0,212,255,0.15);
+    background: var(--panel-bg); border-left: 3px solid var(--accent-pink);
   }
   .challenge-item.completed { opacity: 0.7; }
-  .challenge-item.completed .ci-status { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
+  .challenge-item.completed .ci-status { color: var(--success-green); }
 
-  .ci-num { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #666; min-width: 24px; }
+  .ci-num { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: #666; min-width: 24px; }
   .ci-status { font-size: 18px; min-width: 22px; text-align: center; }
   .ci-info { flex: 1; min-width: 0; }
   .ci-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ci-diff { font-size: 10px; opacity: 0.6; margin-top: 2px; }
   .ci-points {
-    font-family: 'Press Start 2P', monospace; font-size: 9px;
-    color: var(--gold); text-shadow: 0 0 5px rgba(255,215,0,0.3); white-space: nowrap;
+    font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--gold); white-space: nowrap;
   }
   .diff-star { color: var(--neon-yellow); font-size: 10px; }
 
   /* PROGRESS SECTION */
   .progress-section {
-    padding: 12px 15px; border-top: 2px solid var(--panel-border);
-    background: rgba(0,0,0,0.3); flex-shrink: 0;
+    padding: 12px 15px; border-top: 1px solid var(--panel-border);
+    background: var(--panel-bg); flex-shrink: 0;
   }
   .progress-label {
-    font-family: 'Press Start 2P', monospace; font-size: 8px;
-    color: #888; margin-bottom: 6px; display: flex; justify-content: space-between;
+    font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between;
   }
-  .progress-bar { height: 8px; background: #1a1a3a; border-radius: 4px; overflow: hidden; }
+  .progress-bar { height: 8px; background: #161616; border-radius: 4px; overflow: hidden; }
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    background: linear-gradient(90deg, var(--accent-pink), var(--accent-pink-light));
     border-radius: 4px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -273,63 +257,57 @@
   .editor-area { display: flex; flex-direction: column; overflow: hidden; }
 
   .challenge-header {
-    background: linear-gradient(135deg, rgba(255,45,149,0.1), rgba(0,212,255,0.1));
-    border-bottom: 2px solid var(--panel-border);
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--panel-border);
     padding: 12px 20px; flex-shrink: 0;
   }
-  .challenge-title { font-family: 'Bangers', cursive; font-size: 22px; color: var(--neon-pink); letter-spacing: 1px; }
-  .challenge-desc { font-size: 13px; margin-top: 4px; line-height: 1.5; color: #b0b0d0; }
+  .challenge-title { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--accent-pink); }
+  .challenge-desc { font-size: 13px; margin-top: 4px; line-height: 1.5; color: var(--text-muted); }
   .challenge-hint { font-size: 12px; color: var(--neon-blue); margin-top: 6px; font-style: italic; opacity: 0.8; }
-  .challenge-points-display { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--gold); margin-top: 6px; }
+  .challenge-points-display { font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: var(--gold); margin-top: 6px; }
 
   .editor-console-split { flex: 1; display: grid; grid-template-rows: 1fr 200px; overflow: hidden; }
 
-  .editor-panel { position: relative; border-bottom: 2px solid var(--panel-border); }
+  .editor-panel { position: relative; border-bottom: 1px solid var(--panel-border); }
   .editor-tab-bar {
     display: flex; align-items: center; justify-content: space-between;
-    background: #0d0d20; padding: 0 10px; height: 36px;
+    background: #161616; padding: 0 10px; height: 36px;
     border-bottom: 1px solid var(--panel-border);
   }
   .editor-tab { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--neon-blue); display: flex; align-items: center; gap: 6px; }
 
   .btn-group { display: flex; gap: 6px; }
   .btn {
-    font-family: 'Press Start 2P', monospace; font-size: 9px;
-    padding: 6px 14px; border: 2px solid; border-radius: 6px;
+    font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 6px 16px; border: none; border-radius: 25px;
     cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-    position: relative; overflow: hidden;
   }
-  .btn::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: rgba(255,255,255,0.1); }
   .btn-run {
-    background: linear-gradient(180deg, #00c853, #009624);
-    border-color: var(--neon-green); color: white;
-    box-shadow: 0 0 15px rgba(57,255,20,0.3);
+    background: var(--accent-pink); color: white;
   }
-  .btn-run:hover { box-shadow: 0 0 25px rgba(57,255,20,0.5); transform: translateY(-1px); }
+  .btn-run:hover { background: var(--accent-pink-light); box-shadow: 0 0 10px rgba(231,94,141,0.3); transform: translateY(-1px); }
   .btn-run:active { transform: translateY(1px); }
-  .btn-reset { background: linear-gradient(180deg, #424242, #212121); border-color: #555; color: #ccc; }
-  .btn-reset:hover { border-color: #888; }
+  .btn-reset { background: var(--panel-border); color: #ccc; }
+  .btn-reset:hover { background: #444; }
   .btn-hint {
-    background: linear-gradient(180deg, #e65100, #bf360c);
-    border-color: var(--neon-orange); color: white;
-    box-shadow: 0 0 10px rgba(255,107,0,0.2);
+    background: var(--panel-border); color: #ccc;
   }
-  .btn-hint:hover { box-shadow: 0 0 20px rgba(255,107,0,0.4); }
+  .btn-hint:hover { background: #444; }
 
   #codeEditor {
     width: 100%; height: calc(100% - 36px);
-    background: #0d0d20; color: #e0e0ff;
+    background: var(--dark-bg); color: #e0e0e0;
     font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.6;
     padding: 15px; border: none; outline: none; resize: none; tab-size: 4;
   }
-  #codeEditor::selection { background: rgba(0,212,255,0.3); }
+  #codeEditor::selection { background: rgba(231,94,141,0.3); }
 
-  .console-panel { background: #080818; display: flex; flex-direction: column; }
+  .console-panel { background: #161616; display: flex; flex-direction: column; }
   .console-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 10px; height: 30px; background: #0a0a1e;
+    padding: 0 10px; height: 30px; background: #111;
     border-bottom: 1px solid var(--panel-border);
-    font-family: 'Fira Code', monospace; font-size: 12px; color: var(--neon-green);
+    font-family: 'Fira Code', monospace; font-size: 12px; color: var(--success-green);
   }
   .console-clear { cursor: pointer; color: #666; font-size: 11px; border: none; background: none; font-family: inherit; }
   .console-clear:hover { color: #aaa; }
@@ -341,9 +319,9 @@
   }
   .console-line { margin-bottom: 2px; }
   .console-line.error { color: #ff5252; }
-  .console-line.success { color: var(--neon-green); }
+  .console-line.success { color: var(--success-green); }
   .console-line.info { color: var(--neon-blue); }
-  .console-line.output { color: #e0e0ff; }
+  .console-line.output { color: #e0e0e0; }
 
   /* OVERLAYS */
   .overlay {
@@ -355,10 +333,10 @@
   .overlay.active { opacity: 1; pointer-events: all; }
 
   .success-popup {
-    background: linear-gradient(135deg, #1a0a2e, #16213e);
-    border: 3px solid var(--neon-green); border-radius: 20px;
+    background: var(--panel-bg);
+    border: 2px solid var(--success-green); border-radius: 23px;
     padding: 30px 40px; text-align: center;
-    box-shadow: 0 0 60px rgba(57,255,20,0.3);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
     transform: scale(0.8); transition: transform 0.3s; max-width: 400px;
   }
   .overlay.active .success-popup { transform: scale(1); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -370,22 +348,21 @@
 
   .success-emoji { font-size: 64px; margin-bottom: 10px; animation: bounceEmoji 0.6s ease-out; }
   @keyframes bounceEmoji { 0% { transform: translateY(-30px); opacity: 0; } 60% { transform: translateY(5px); } 100% { transform: translateY(0); opacity: 1; } }
-  .success-title { font-family: 'Bangers', cursive; font-size: 32px; color: var(--neon-green); letter-spacing: 2px; text-shadow: 0 0 20px rgba(57,255,20,0.5); }
-  .success-points { font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--gold); margin: 10px 0; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
-  .success-msg { font-size: 14px; color: #b0b0d0; margin-bottom: 15px; }
+  .success-title { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 700; color: var(--success-green); }
+  .success-points { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); margin: 10px 0; }
+  .success-msg { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; }
   .btn-next {
-    background: linear-gradient(180deg, var(--neon-blue), #0088cc);
-    border: 2px solid var(--neon-blue); border-radius: 10px;
+    background: var(--accent-pink); border: none; border-radius: 25px;
     padding: 10px 30px; color: white;
-    font-family: 'Press Start 2P', monospace; font-size: 10px;
-    cursor: pointer; box-shadow: 0 0 20px rgba(0,212,255,0.3); transition: all 0.2s;
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
   }
-  .btn-next:hover { box-shadow: 0 0 30px rgba(0,212,255,0.5); transform: translateY(-2px); }
+  .btn-next:hover { background: var(--accent-pink-light); transform: translateY(-2px); box-shadow: 0 0 10px rgba(231,94,141,0.3); }
 
   .combo-display {
     position: fixed; top: 80px; right: 20px;
-    font-family: 'Bangers', cursive; font-size: 24px;
-    color: var(--neon-orange); text-shadow: 0 0 15px rgba(255,107,0,0.5);
+    font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700;
+    color: var(--accent-pink);
     opacity: 0; transform: scale(0.5); transition: all 0.3s; z-index: 50; pointer-events: none;
   }
   .combo-display.active { opacity: 1; transform: scale(1); }
@@ -398,7 +375,7 @@
 
   .level-up-flash {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%);
+    background: radial-gradient(circle, rgba(255,215,0,0.15), transparent 70%);
     z-index: 90; opacity: 0; pointer-events: none;
   }
   .level-up-flash.active { animation: levelFlash 1s ease-out; }
@@ -407,40 +384,125 @@
   .achievement-toast {
     position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: linear-gradient(135deg, #1a0a2e, #2a1a4e);
-    border: 2px solid var(--gold); border-radius: 12px;
+    background: var(--panel-bg);
+    border: 2px solid var(--gold); border-radius: 23px;
     padding: 12px 24px; display: flex; align-items: center; gap: 12px;
-    z-index: 150; box-shadow: 0 0 30px rgba(255,215,0,0.3);
+    z-index: 150; box-shadow: 0 0 15px rgba(0,0,0,0.3);
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   .achievement-toast.show { transform: translateX(-50%) translateY(0); }
   .achievement-toast .ach-icon { font-size: 28px; }
-  .achievement-toast .ach-text { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--gold); line-height: 1.6; }
-  .achievement-toast .ach-name { font-size: 11px; color: white; }
+  .achievement-toast .ach-text { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: var(--gold); line-height: 1.6; }
+  .achievement-toast .ach-name { font-size: 13px; color: white; }
 
   /* Scrollbars */
   #codeEditor::-webkit-scrollbar { width: 8px; }
-  #codeEditor::-webkit-scrollbar-track { background: #0d0d20; }
-  #codeEditor::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  #codeEditor::-webkit-scrollbar-track { background: var(--dark-bg); }
+  #codeEditor::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
   #consoleOutput::-webkit-scrollbar { width: 6px; }
-  #consoleOutput::-webkit-scrollbar-track { background: #080818; }
-  #consoleOutput::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+  #consoleOutput::-webkit-scrollbar-track { background: #161616; }
+  #consoleOutput::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
+  /* HERO SPLASH */
+  .hero-splash {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1; padding: 40px 20px; text-align: center; gap: 24px;
+    animation: heroFadeIn 0.6s ease-out;
+  }
+  @keyframes heroFadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+  .hero-mascot { width: 180px; height: 180px; filter: drop-shadow(0 0 20px rgba(231,94,141,0.3)); }
+
+  .hero-title {
+    font-family: 'Poppins', sans-serif; font-size: 56px; font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-pink), var(--neon-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 8px; line-height: 1;
+  }
+  .hero-subtitle {
+    font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;
+    color: var(--text-muted); letter-spacing: 2px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 16px; margin-top: 8px;
+  }
+  .hero-stat-card {
+    background: var(--panel-bg); border: 1px solid var(--panel-border);
+    border-radius: 16px; padding: 16px 24px; min-width: 120px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .hero-stat-card:hover { transform: translateY(-3px); border-color: var(--accent-pink); }
+  .hero-stat-value {
+    font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 900;
+    color: var(--accent-pink);
+  }
+  .hero-stat-label {
+    font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+
+  .hero-cta {
+    background: var(--accent-pink); border: none; border-radius: 30px;
+    padding: 14px 36px; color: white;
+    font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 8px;
+    box-shadow: 0 4px 20px rgba(231,94,141,0.3);
+  }
+  .hero-cta:hover {
+    background: var(--accent-pink-light); transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(231,94,141,0.4);
+  }
+  .hero-cta:active { transform: translateY(1px); }
+
+  /* AUTH SECTION */
+  .auth-section { display: flex; align-items: center; margin-left: 8px; }
+  .btn-signin {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--panel-border); color: var(--text-light);
+    border: none; border-radius: 25px; padding: 6px 16px;
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-signin:hover { background: #444; }
+  .btn-signin svg { width: 16px; height: 16px; }
+  .user-profile {
+    display: none; align-items: center; gap: 8px;
+  }
+  .user-profile.visible { display: flex; }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2px solid var(--accent-pink);
+  }
+  .user-name {
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+    color: var(--text-light); max-width: 100px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .btn-signout {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 16px; cursor: pointer; padding: 2px 6px;
+    line-height: 1; transition: color 0.2s;
+  }
+  .btn-signout:hover { color: var(--accent-pink); }
 
   @media (max-width: 900px) {
     .main-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-    .sidebar { max-height: 250px; border-right: none; border-bottom: 2px solid var(--panel-border); }
+    .sidebar { max-height: 250px; border-right: none; border-bottom: 1px solid var(--panel-border); }
+    .hero-splash { padding: 24px 16px; gap: 16px; }
+    .hero-title { font-size: 36px; letter-spacing: 4px; }
+    .hero-mascot { width: 120px; height: 120px; }
+    .hero-stats { flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .hero-stat-card { min-width: 90px; padding: 12px 16px; }
+    .hero-stat-value { font-size: 22px; }
+    .user-name { display: none; }
+    .btn-signin span { display: none; }
+    .btn-signin { padding: 6px 10px; }
   }
 </style>
 </head>
 <body>
-
-<div class="speed-lines" id="speedLines">
-  <svg width="100%" height="100%">
-    <line x1="0" y1="30%" x2="100%" y2="30%" stroke="white" stroke-width="1" opacity="0.3"/>
-    <line x1="0" y1="50%" x2="100%" y2="48%" stroke="white" stroke-width="2" opacity="0.2"/>
-    <line x1="0" y1="70%" x2="100%" y2="72%" stroke="white" stroke-width="1" opacity="0.3"/>
-  </svg>
-</div>
 
 <div class="level-up-flash" id="levelUpFlash"></div>
 <div class="combo-display" id="comboDisplay"></div>
@@ -472,13 +534,24 @@
       <span class="stat-value" id="completedCount">0</span>
       <span style="color:#666;font-size:9px" id="totalChallenges">/150</span>
     </div>
+    <div class="auth-section" id="authSection">
+      <button class="btn-signin" id="btnSignIn" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        <span>Sign In</span>
+      </button>
+      <div class="user-profile" id="userProfile">
+        <img class="user-avatar" id="userAvatar" src="" alt="avatar">
+        <span class="user-name" id="userName"></span>
+        <button class="btn-signout" id="btnSignOut" onclick="signOutUser()" title="Sign out">&times;</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <div class="main-container">
   <div class="sidebar">
     <div class="sensei-panel">
-      <span class="sensei-avatar" id="senseiAvatar">&#x1F40D;</span>
+      <span class="sensei-avatar" id="senseiAvatar"><svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="30,18 34,8 38,16 40,6 42,16 46,8 50,18" fill="#ffd700" stroke="#e6a800" stroke-width="1"/><ellipse cx="40" cy="26" rx="12" ry="10" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><circle cx="36" cy="24" r="2.5" fill="#e75e8d"/><circle cx="36" cy="23.5" r="1" fill="white"/><circle cx="44" cy="24" r="2.5" fill="#e75e8d"/><circle cx="44" cy="23.5" r="1" fill="white"/><path d="M40 32 L39 36 M40 32 L41 36" stroke="#e75e8d" stroke-width="1" stroke-linecap="round"/><rect x="30" y="35" width="20" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><rect x="26" y="43" width="22" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><rect x="30" y="51" width="24" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><path d="M54 55 Q60 52 62 46" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span>
       <div class="rank-display" id="rankDisplay">Rank: Beginner</div>
       <div class="sensei-speech" id="senseiSpeech">Welcome! Choose a chapter to start!</div>
     </div>
@@ -495,13 +568,63 @@
   </div>
 
   <div class="editor-area">
-    <div class="challenge-header">
+    <div class="hero-splash" id="heroSplash">
+      <svg class="hero-mascot" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Crown -->
+        <polygon points="72,38 78,22 84,34 90,18 96,34 102,22 108,38" fill="#ffd700" stroke="#e6a800" stroke-width="1.5"/>
+        <!-- Head -->
+        <ellipse cx="90" cy="52" rx="22" ry="18" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <!-- Eyes -->
+        <circle cx="82" cy="48" r="4" fill="#e75e8d"/><circle cx="82" cy="47" r="1.5" fill="white"/>
+        <circle cx="98" cy="48" r="4" fill="#e75e8d"/><circle cx="98" cy="47" r="1.5" fill="white"/>
+        <!-- Tongue -->
+        <path d="M90 64 L88 72 M90 64 L92 72" stroke="#e75e8d" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Body segments (coiled) -->
+        <rect x="72" y="68" width="36" height="16" rx="8" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <rect x="60" y="82" width="40" height="16" rx="8" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <rect x="72" y="96" width="44" height="16" rx="8" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <rect x="56" y="110" width="48" height="16" rx="8" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <rect x="66" y="124" width="52" height="16" rx="8" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2.5"/>
+        <!-- Tail -->
+        <path d="M118 132 Q130 128 134 118 Q138 108 130 102" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Belly pattern stripes -->
+        <line x1="82" y1="72" x2="98" y2="72" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+        <line x1="72" y1="88" x2="92" y2="88" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+        <line x1="82" y1="102" x2="108" y2="102" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+        <line x1="68" y1="116" x2="96" y2="116" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+        <line x1="78" y1="130" x2="110" y2="130" stroke="#3a3a3a" stroke-width="1" opacity="0.6"/>
+        <!-- Pixel-style accent dots -->
+        <circle cx="76" cy="75" r="1.5" fill="#5bc0de" opacity="0.5"/>
+        <circle cx="64" cy="89" r="1.5" fill="#5bc0de" opacity="0.5"/>
+        <circle cx="112" cy="103" r="1.5" fill="#5bc0de" opacity="0.5"/>
+        <circle cx="100" cy="117" r="1.5" fill="#5bc0de" opacity="0.5"/>
+      </svg>
+      <div class="hero-title">RONNY</div>
+      <div class="hero-subtitle">Python Challenges for Leaving Cert CS</div>
+      <div class="hero-stats">
+        <div class="hero-stat-card">
+          <div class="hero-stat-value" id="heroTotalChallenges">150</div>
+          <div class="hero-stat-label">Challenges</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-value">15</div>
+          <div class="hero-stat-label">Chapters</div>
+        </div>
+        <div class="hero-stat-card">
+          <div class="hero-stat-value" id="heroXP">0</div>
+          <div class="hero-stat-label">XP Earned</div>
+        </div>
+      </div>
+      <button class="hero-cta" onclick="heroChooseChapter()">Choose a Chapter to Begin &#x2192;</button>
+    </div>
+
+    <div class="challenge-header" id="challengeHeader">
       <div class="challenge-title" id="challengeTitle">Select a Challenge</div>
       <div class="challenge-desc" id="challengeDesc">Choose a chapter from the sidebar, then pick a challenge to begin!</div>
       <div class="challenge-hint" id="challengeHint"></div>
       <div class="challenge-points-display" id="challengePoints"></div>
     </div>
-    <div class="editor-console-split">
+    <div class="editor-console-split" id="editorConsoleSplit">
       <div class="editor-panel">
         <div class="editor-tab-bar">
           <div class="editor-tab"><span>&#x1F40D;</span> solution.py</div>
@@ -1858,21 +1981,21 @@ key = 5
 
 // ===== CHAPTER DEFINITIONS =====
 const CHAPTERS = [
-  { id: 1, name: "Print & Output", icon: "\u{1F4E2}" },
-  { id: 2, name: "Variables & Data Types", icon: "\u{1F4E6}" },
-  { id: 3, name: "Operators", icon: "\u{2795}" },
-  { id: 4, name: "Strings", icon: "\u{1F520}" },
-  { id: 5, name: "Conditionals", icon: "\u{1F6A6}" },
-  { id: 6, name: "For Loops", icon: "\u{1F503}" },
-  { id: 7, name: "While Loops", icon: "\u{1F504}" },
-  { id: 8, name: "Lists", icon: "\u{1F4CB}" },
-  { id: 9, name: "Functions", icon: "\u{2699}\uFE0F" },
-  { id: 10, name: "Dictionaries", icon: "\u{1F4D6}" },
-  { id: 11, name: "2D Lists", icon: "\u{1F4CA}" },
-  { id: 12, name: "Error Handling", icon: "\u{1F6E1}\uFE0F" },
-  { id: 13, name: "Searching & Sorting", icon: "\u{1F50D}" },
-  { id: 14, name: "Data Processing", icon: "\u{1F4C8}" },
-  { id: 15, name: "Boss Challenges", icon: "\u{1F47E}" }
+  { id: 1, name: "Print & Output", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="26" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="8" y="21" font-family="Fira Code,monospace" font-size="12" font-weight="bold" fill="white">&gt;_</text></svg>' },
+  { id: 2, name: "Variables & Data Types", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="24" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="7" y="21" font-family="Fira Code,monospace" font-size="11" font-weight="bold" fill="white">x=</text></svg>' },
+  { id: 3, name: "Operators", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="3" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><text x="6" y="13" font-size="10" fill="white">+</text><text x="20" y="13" font-size="10" fill="white">\u2212</text><text x="5.5" y="27" font-size="10" fill="white">\u00d7</text><text x="20" y="27" font-size="10" fill="white">\u00f7</text></svg>' },
+  { id: 4, name: "Strings", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 8 Q2 16 6 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M26 8 Q30 16 26 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><text x="8" y="20" font-family="Fira Code,monospace" font-size="11" fill="white">abc</text></svg>' },
+  { id: 5, name: "Conditionals", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#e75e8d" stroke-width="2" fill="none"/><text x="12" y="20" font-size="11" fill="white">?</text></svg>' },
+  { id: 6, name: "For Loops", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 A8 8 0 1 1 14 8" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M14 4 L14 12 L20 8 Z" fill="#e75e8d"/></svg>' },
+  { id: 7, name: "While Loops", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 A7 7 0 1 1 12 6" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 2.5 L12 9.5 L17 6 Z" fill="#e75e8d"/><path d="M12 26 A7 7 0 1 1 20 26" stroke="#5bc0de" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 22.5 L20 29.5 L15 26 Z" fill="#5bc0de"/></svg>' },
+  { id: 8, name: "Lists", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="13" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="21" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/></svg>' },
+  { id: 9, name: "Functions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#e75e8d" stroke-width="2"/><path d="M10 12 A4 4 0 0 1 14 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="9" y1="16" x2="15" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><text x="16" y="23" font-family="Fira Code,monospace" font-size="9" fill="white">()</text></svg>' },
+  { id: 10, name: "Dictionaries", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="16" r="5" stroke="#e75e8d" stroke-width="2"/><line x1="16" y1="12.5" x2="28" y2="12.5" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="19.5" x2="28" y2="19.5" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#e75e8d"/></svg>' },
+  { id: 11, name: "2D Lists", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/></svg>' },
+  { id: 12, name: "Error Handling", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 3 L4 28 L28 28 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="24" r="1.5" fill="white"/></svg>' },
+  { id: 13, name: "Searching & Sorting", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="#e75e8d" stroke-width="2"/><line x1="19" y1="19" x2="28" y2="28" stroke="#e75e8d" stroke-width="2.5" stroke-linecap="round"/></svg>' },
+  { id: 14, name: "Data Processing", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="6" height="10" rx="1" fill="#e75e8d"/><rect x="13" y="10" width="6" height="18" rx="1" fill="#e75e8d" opacity="0.7"/><rect x="22" y="4" width="6" height="24" rx="1" fill="#e75e8d" opacity="0.5"/></svg>' },
+  { id: 15, name: "Boss Challenges", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8 L4 4 L4 14 L8 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 8 L28 4 L28 14 L24 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 8 L8 18 Q8 24 16 28 Q24 24 24 18 L24 8 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' }
 ];
 
 const DIFFICULTY_POINTS = { 1: 50, 2: 75, 3: 100, 4: 150, 5: 200 };
@@ -1894,6 +2017,198 @@ const SENSEI_MESSAGES = {
   boss: "Boss challenge! Give it everything!",
   allDone: "ALL CHALLENGES COMPLETE! You are a Ronny Legend!"
 };
+
+// ===== FIREBASE =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCvgXey4g8ETtFcSLJDysHAPFLz4SqS6sk",
+  authDomain: "goronny.firebaseapp.com",
+  projectId: "goronny",
+  storageBucket: "goronny.firebasestorage.app",
+  messagingSenderId: "413524347267",
+  appId: "1:413524347267:web:1fab7caa3917089ee90eb6",
+  measurementId: "G-G1T0ZF2TJV"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+db.enablePersistence().catch(() => {});
+
+let currentUser = null;
+const codeCache = {};
+
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(err => {
+    console.error('Sign-in error:', err);
+    alert('Sign-in error: ' + err.message);
+  });
+}
+
+function signOutUser() {
+  auth.signOut().catch(err => {
+    console.error('Sign-out error:', err);
+  });
+}
+
+function updateAuthUI(user) {
+  const btnSignIn = document.getElementById('btnSignIn');
+  const userProfile = document.getElementById('userProfile');
+  if (user) {
+    btnSignIn.style.display = 'none';
+    userProfile.classList.add('visible');
+    document.getElementById('userAvatar').src = user.photoURL || '';
+    const firstName = (user.displayName || 'User').split(' ')[0];
+    document.getElementById('userName').textContent = firstName;
+  } else {
+    btnSignIn.style.display = '';
+    userProfile.classList.remove('visible');
+  }
+}
+
+function saveStateToLocalStorage() {
+  try {
+    localStorage.setItem('ronnyState', JSON.stringify({
+      xp: state.xp, level: state.level, streak: state.streak,
+      completed: [...state.completed],
+      achievements: [...state.achievements],
+      hintUsed: [...state.hintUsed]
+    }));
+  } catch(e) {}
+}
+
+function saveStateToFirestore(uid) {
+  db.collection('users').doc(uid).set({
+    xp: state.xp,
+    level: state.level,
+    streak: state.streak,
+    completed: [...state.completed],
+    achievements: [...state.achievements],
+    hintUsed: [...state.hintUsed],
+    displayName: currentUser.displayName || '',
+    photoURL: currentUser.photoURL || '',
+    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).catch(err => console.error('Firestore save error:', err));
+}
+
+async function loadStateFromFirestore(uid) {
+  try {
+    const doc = await db.collection('users').doc(uid).get();
+    if (doc.exists) {
+      const s = doc.data();
+      state.xp = s.xp || 0;
+      state.level = s.level || 1;
+      state.streak = s.streak || 0;
+      state.completed = new Set(s.completed || []);
+      state.achievements = new Set(s.achievements || []);
+      state.hintUsed = new Set(s.hintUsed || []);
+      saveStateToLocalStorage();
+      return true;
+    }
+  } catch(e) { console.error('Firestore load error:', e); }
+  return false;
+}
+
+async function hasCloudData(uid) {
+  try {
+    const doc = await db.collection('users').doc(uid).get();
+    return doc.exists && (doc.data().completed || []).length > 0;
+  } catch(e) { return false; }
+}
+
+// Code persistence
+function saveCode(challengeId, code) {
+  codeCache[challengeId] = code;
+  try {
+    const saved = JSON.parse(localStorage.getItem('ronnyCode') || '{}');
+    saved[challengeId] = code;
+    localStorage.setItem('ronnyCode', JSON.stringify(saved));
+  } catch(e) {}
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).collection('code').doc(String(challengeId)).set({
+      content: code, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(() => {});
+  }
+}
+
+function loadCode(challengeId) {
+  if (codeCache[challengeId] !== undefined) return codeCache[challengeId];
+  try {
+    const saved = JSON.parse(localStorage.getItem('ronnyCode') || '{}');
+    if (saved[challengeId] !== undefined) {
+      codeCache[challengeId] = saved[challengeId];
+      return saved[challengeId];
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function loadCodeFromFirestore(uid, challengeId) {
+  try {
+    const doc = await db.collection('users').doc(uid).collection('code').doc(String(challengeId)).get();
+    if (doc.exists) {
+      const code = doc.data().content;
+      codeCache[challengeId] = code;
+      // Also save to localStorage for offline access
+      try {
+        const saved = JSON.parse(localStorage.getItem('ronnyCode') || '{}');
+        saved[challengeId] = code;
+        localStorage.setItem('ronnyCode', JSON.stringify(saved));
+      } catch(e) {}
+      return code;
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function saveAllCodeToFirestore(uid) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ronnyCode') || '{}');
+    const batch = db.batch();
+    for (const [id, code] of Object.entries(saved)) {
+      const ref = db.collection('users').doc(uid).collection('code').doc(String(id));
+      batch.set(ref, { content: code, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
+    await batch.commit();
+  } catch(e) { console.error('Code migration error:', e); }
+}
+
+function clearSavedCode(challengeId) {
+  delete codeCache[challengeId];
+  try {
+    const saved = JSON.parse(localStorage.getItem('ronnyCode') || '{}');
+    delete saved[challengeId];
+    localStorage.setItem('ronnyCode', JSON.stringify(saved));
+  } catch(e) {}
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).collection('code').doc(String(challengeId)).delete().catch(() => {});
+  }
+}
+
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  updateAuthUI(user);
+  if (user) {
+    const hasCloud = await hasCloudData(user.uid);
+    if (hasCloud) {
+      // Load from Firestore (cloud wins)
+      await loadStateFromFirestore(user.uid);
+    } else if (state.completed.size > 0) {
+      // First sign-in with localStorage data — migrate to Firestore
+      saveStateToFirestore(user.uid);
+      saveAllCodeToFirestore(user.uid);
+    }
+    updateStats();
+    renderSidebar();
+    // Reload current challenge code from Firestore if viewing one
+    if (state.currentChallenge >= 0) {
+      const ch = challenges[state.currentChallenge];
+      const cloudCode = await loadCodeFromFirestore(user.uid, ch.id);
+      if (cloudCode !== null) {
+        document.getElementById('codeEditor').value = cloudCode;
+      }
+    }
+  }
+});
 
 // ===== GAME STATE =====
 let state = {
@@ -1934,6 +2249,8 @@ function init() {
       showChapterChallenges(ch.chapter);
       selectChallenge(first);
     }
+  } else {
+    showHero();
   }
 }
 
@@ -1953,14 +2270,8 @@ function loadState() {
 }
 
 function saveState() {
-  try {
-    localStorage.setItem('ronnyState', JSON.stringify({
-      xp: state.xp, level: state.level, streak: state.streak,
-      completed: [...state.completed],
-      achievements: [...state.achievements],
-      hintUsed: [...state.hintUsed]
-    }));
-  } catch(e) {}
+  saveStateToLocalStorage();
+  if (currentUser) saveStateToFirestore(currentUser.uid);
 }
 
 // ===== SIDEBAR RENDERING =====
@@ -1997,7 +2308,7 @@ function renderChapterList() {
     const allDone = prog.done === prog.total && prog.total > 0;
     return `
       <div class="chapter-item ${allDone ? 'all-done' : ''}" onclick="showChapterChallenges(${ch.id})">
-        <span class="ch-num">${ch.icon}</span>
+        <span class="ch-icon">${ch.icon}</span>
         <div class="ch-info">
           <div class="ch-title">Ch ${ch.id}: ${ch.name}</div>
           <div class="ch-progress-row">
@@ -2027,7 +2338,7 @@ function renderChallengeList(chapterId) {
   let html = `
     <button class="back-btn" onclick="renderChapterList()">&#x2190; Back to Chapters</button>
     <div class="ch-header-info">
-      <div class="ch-header-title">${chapter.icon} Ch ${chapter.id}: ${chapter.name}</div>
+      <div class="ch-header-title"><span class="ch-header-icon">${chapter.icon}</span>Ch ${chapter.id}: ${chapter.name}</div>
       <div class="ch-header-progress">
         <div class="ch-header-bar"><div class="ch-header-fill" style="width:${pct}%"></div></div>
         <span class="ch-header-text">${prog.done}/${prog.total}</span>
@@ -2061,6 +2372,17 @@ function renderChallengeList(chapterId) {
 
 function selectChallenge(index) {
   if (index < 0 || index >= challenges.length) return;
+
+  // Save code from previous challenge before switching
+  if (state.currentChallenge >= 0) {
+    const prevCh = challenges[state.currentChallenge];
+    const prevCode = document.getElementById('codeEditor').value;
+    if (prevCode && prevCode !== prevCh.starter) {
+      saveCode(prevCh.id, prevCode);
+    }
+  }
+
+  hideHero();
   state.currentChallenge = index;
   const ch = challenges[index];
 
@@ -2077,22 +2399,64 @@ function selectChallenge(index) {
   document.getElementById('challengeHint').textContent = '';
   document.getElementById('challengePoints').textContent =
     state.completed.has(ch.id) ? '\u2705 COMPLETED' : '\u2B50 ' + DIFFICULTY_POINTS[ch.difficulty] + ' XP';
-  document.getElementById('codeEditor').value = ch.starter;
+
+  // Load saved code or use starter
+  const savedCode = loadCode(ch.id);
+  document.getElementById('codeEditor').value = savedCode || ch.starter;
   clearConsole();
+
+  // Async: try loading from Firestore if signed in
+  if (currentUser) {
+    loadCodeFromFirestore(currentUser.uid, ch.id).then(cloudCode => {
+      if (cloudCode !== null && state.currentChallenge === index) {
+        document.getElementById('codeEditor').value = cloudCode;
+      }
+    });
+  }
 
   if (isBoss) {
     setSenseiMessage(SENSEI_MESSAGES.boss);
-    document.getElementById('senseiAvatar').textContent = '\u{1F47E}';
+    setSenseiAvatar('\u{1F47E}');
   } else if (state.completed.has(ch.id)) {
     setSenseiMessage("Already completed! Try another!");
-    document.getElementById('senseiAvatar').textContent = '\u{1F60E}';
+    setSenseiAvatar('\u{1F60E}');
   } else {
     setSenseiMessage(`${ch.name} - Give it a go!`);
-    document.getElementById('senseiAvatar').textContent = '\u{1F40D}';
+    setSenseiAvatar('\u{1F40D}');
   }
 }
 
 function setSenseiMessage(msg) { document.getElementById('senseiSpeech').textContent = msg; }
+
+const SENSEI_SVG = '<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="30,18 34,8 38,16 40,6 42,16 46,8 50,18" fill="#ffd700" stroke="#e6a800" stroke-width="1"/><ellipse cx="40" cy="26" rx="12" ry="10" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><circle cx="36" cy="24" r="2.5" fill="#e75e8d"/><circle cx="36" cy="23.5" r="1" fill="white"/><circle cx="44" cy="24" r="2.5" fill="#e75e8d"/><circle cx="44" cy="23.5" r="1" fill="white"/><path d="M40 32 L39 36 M40 32 L41 36" stroke="#e75e8d" stroke-width="1" stroke-linecap="round"/><rect x="30" y="35" width="20" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><rect x="26" y="43" width="22" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><rect x="30" y="51" width="24" height="9" rx="4.5" fill="#2d2d2d" stroke="#e75e8d" stroke-width="2"/><path d="M54 55 Q60 52 62 46" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+
+function setSenseiAvatar(emoji) {
+  const el = document.getElementById('senseiAvatar');
+  if (emoji === '\u{1F40D}') {
+    el.innerHTML = SENSEI_SVG;
+  } else {
+    el.textContent = emoji;
+  }
+}
+
+function showHero() {
+  document.getElementById('heroSplash').style.display = 'flex';
+  document.getElementById('challengeHeader').style.display = 'none';
+  document.getElementById('editorConsoleSplit').style.display = 'none';
+  document.getElementById('heroTotalChallenges').textContent = challenges.length;
+  document.getElementById('heroXP').textContent = state.xp;
+}
+
+function hideHero() {
+  document.getElementById('heroSplash').style.display = 'none';
+  document.getElementById('challengeHeader').style.display = '';
+  document.getElementById('editorConsoleSplit').style.display = '';
+}
+
+function heroChooseChapter() {
+  document.getElementById('sidebarContent').scrollIntoView({ behavior: 'smooth' });
+  renderChapterList();
+}
 
 function updateStats() {
   document.getElementById('totalXP').textContent = state.xp;
@@ -2119,6 +2483,8 @@ function updateStats() {
 function runCode() {
   if (state.currentChallenge < 0) return;
   const code = document.getElementById('codeEditor').value;
+  const ch = challenges[state.currentChallenge];
+  if (code && code !== ch.starter) saveCode(ch.id, code);
   clearConsole();
   let outputLines = [];
 
@@ -2141,7 +2507,7 @@ function runCode() {
     .catch((err) => {
       addConsoleLine('Error: ' + err.toString(), 'error');
       setSenseiMessage(SENSEI_MESSAGES.wrong[Math.floor(Math.random() * SENSEI_MESSAGES.wrong.length)]);
-      document.getElementById('senseiAvatar').textContent = '\u{1F630}';
+      setSenseiAvatar('\u{1F630}');
       state.streak = 0;
       updateStats();
     });
@@ -2173,7 +2539,7 @@ function checkAnswer(output) {
       triggerSpeedLines();
       spawnParticles();
 
-      document.getElementById('senseiAvatar').textContent = '\u{1F929}';
+      setSenseiAvatar('\u{1F929}');
       document.getElementById('senseiAvatar').classList.add('celebrate');
       setTimeout(() => document.getElementById('senseiAvatar').classList.remove('celebrate'), 700);
 
@@ -2188,19 +2554,19 @@ function checkAnswer(output) {
       if (state.completed.size === challenges.length) {
         setTimeout(() => {
           setSenseiMessage(SENSEI_MESSAGES.allDone);
-          document.getElementById('senseiAvatar').textContent = '\u{1F31F}';
+          setSenseiAvatar('\u{1F31F}');
           showAchievement('\u{1F31F}', 'Ronny Legend - All Challenges Complete!');
         }, 2000);
       }
     } else {
       addConsoleLine('\n\u2705 Correct! (already completed)', 'success');
       setSenseiMessage("Still got it!");
-      document.getElementById('senseiAvatar').textContent = '\u{1F60E}';
+      setSenseiAvatar('\u{1F60E}');
     }
   } else {
     addConsoleLine('\n\u274C Output doesn\'t match expected result. Keep trying!', 'error');
     setSenseiMessage(SENSEI_MESSAGES.wrong[Math.floor(Math.random() * SENSEI_MESSAGES.wrong.length)]);
-    document.getElementById('senseiAvatar').textContent = '\u{1F914}';
+    setSenseiAvatar('\u{1F914}');
     state.streak = 0;
     updateStats();
   }
@@ -2220,7 +2586,9 @@ function clearConsole() { document.getElementById('consoleOutput').innerHTML = '
 
 function resetCode() {
   if (state.currentChallenge < 0) return;
-  document.getElementById('codeEditor').value = challenges[state.currentChallenge].starter;
+  const ch = challenges[state.currentChallenge];
+  clearSavedCode(ch.id);
+  document.getElementById('codeEditor').value = ch.starter;
   clearConsole();
 }
 
@@ -2230,7 +2598,7 @@ function showHint() {
   document.getElementById('challengeHint').textContent = '\u{1F4A1} Hint: ' + ch.hint;
   state.hintUsed.add(ch.id);
   setSenseiMessage("A hint costs half your XP for this challenge...");
-  document.getElementById('senseiAvatar').textContent = '\u{1F9D0}';
+  setSenseiAvatar('\u{1F9D0}');
   saveState();
 }
 
@@ -2280,9 +2648,7 @@ function nextChallenge() {
 }
 
 function triggerSpeedLines() {
-  const el = document.getElementById('speedLines');
-  el.classList.add('active');
-  setTimeout(() => el.classList.remove('active'), 600);
+  // Speed lines removed in Cyborg restyling
 }
 
 function triggerLevelUp() {
