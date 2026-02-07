@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Ronny - Python Challenges for Leaving Cert CS</title>
 <script src="https://skulpt.org/js/skulpt.min.js"></script>
 <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
@@ -24,7 +24,7 @@
     --panel-bg: #27292a;
     --panel-border: #3a3a3a;
     --text-light: #ffffff;
-    --text-muted: #999;
+    --text-muted: #b0b0b0;
     --gold: #ffd700;
   }
 
@@ -87,6 +87,7 @@
   }
   .stat-icon { font-size: 18px; }
   .stat-value { color: var(--gold); }
+  .stat-unit { color: var(--text-muted); font-size: 10px; }
 
   .level-badge {
     background: var(--accent-pink);
@@ -300,7 +301,7 @@
   .challenge-item.completed { opacity: 0.7; }
   .challenge-item.completed .ci-status { color: var(--success-green); }
 
-  .ci-num { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: #666; min-width: 24px; }
+  .ci-num { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-muted); min-width: 24px; }
   .ci-status { font-size: 18px; min-width: 22px; text-align: center; }
   .ci-info { flex: 1; min-width: 0; }
   .ci-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -384,7 +385,7 @@
     border-bottom: 1px solid var(--panel-border);
     font-family: 'Fira Code', monospace; font-size: 12px; color: var(--success-green);
   }
-  .console-clear { cursor: pointer; color: #666; font-size: 11px; border: none; background: none; font-family: inherit; }
+  .console-clear { cursor: pointer; color: var(--text-muted); font-size: 11px; border: none; background: none; font-family: inherit; }
   .console-clear:hover { color: #aaa; }
 
   #consoleOutput {
@@ -457,7 +458,7 @@
   @keyframes levelFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
 
   .achievement-toast {
-    position: fixed; bottom: 20px; left: 50%;
+    position: fixed; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: var(--panel-bg);
     border: 2px solid var(--gold); border-radius: 23px;
@@ -639,6 +640,41 @@
     .hero-stats { display: none; }
     .hero-cta { padding: 12px 28px; font-size: 13px; }
   }
+
+  /* FOCUS VISIBLE */
+  :focus-visible {
+    outline: 2px solid var(--neon-blue);
+    outline-offset: 2px;
+  }
+  button:focus-visible, .btn:focus-visible, .hero-cta:focus-visible, .btn-next:focus-visible {
+    outline: 2px solid var(--neon-blue);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(91,192,222,0.25);
+  }
+  #codeEditor:focus-visible { outline: none; box-shadow: inset 0 0 0 2px rgba(91,192,222,0.3); }
+
+  /* REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* MOBILE: touch targets + view switching */
+  @media (max-width: 900px) {
+    .sidebar.mobile-hidden { display: none; }
+  }
+  @media (max-width: 600px) {
+    .btn { min-height: 44px; padding: 10px 14px; display: inline-flex; align-items: center; justify-content: center; }
+    .mobile-back-btn { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+    .btn-signout { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .console-clear { min-height: 44px; padding: 0 12px; }
+    .challenge-item { padding: 14px 12px; min-height: 48px; }
+    .back-btn { min-height: 44px; }
+    .chapter-item { min-height: 48px; }
+  }
 </style>
 </head>
 <body>
@@ -659,7 +695,7 @@
     <div class="stat-item">
       <span class="stat-icon">&#x2B50;</span>
       <span class="stat-value" id="totalXP">0</span>
-      <span style="color:#666;font-size:9px">XP</span>
+      <span class="stat-unit">XP</span>
     </div>
     <div class="xp-bar-container">
       <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
@@ -667,12 +703,12 @@
     <div class="stat-item" title="Daily streak">
       <span class="stat-icon">&#x1F525;</span>
       <span class="stat-value" id="streakCount">0</span>
-      <span style="color:#666;font-size:9px">days</span>
+      <span class="stat-unit">days</span>
     </div>
     <div class="stat-item">
       <span class="stat-icon">&#x1F3C6;</span>
       <span class="stat-value" id="completedCount">0</span>
-      <span style="color:#666;font-size:9px" id="totalChallenges">/296</span>
+      <span class="stat-unit" id="totalChallenges">/296</span>
     </div>
     <div class="auth-section" id="authSection">
       <button class="btn-signin" id="btnSignIn" onclick="signInWithGoogle()">
@@ -755,7 +791,7 @@
           <div class="hero-stat-label">XP Earned</div>
         </div>
       </div>
-      <button class="hero-cta" id="heroCta" onclick="heroChooseChapter()">Sign In to Start &#x2192;</button>
+      <button class="hero-cta" id="heroCta" onclick="heroChooseChapter()">Start Coding &#x2192;</button>
       <a href="https://github.com/darraghdog/ronny" target="_blank" rel="noopener" style="margin-top:4px;font-size:12px;color:var(--text-muted);text-decoration:none;letter-spacing:1px;font-weight:600;">Free &amp; Open Source &#x2197;</a>
     </div>
 
@@ -4432,7 +4468,7 @@ function updateAuthUI(user) {
   } else {
     btnSignIn.style.display = '';
     userProfile.classList.remove('visible');
-    if (heroCta) heroCta.textContent = 'Sign In to Start \u2192';
+    if (heroCta) heroCta.textContent = 'Start Coding \u2192';
   }
 }
 
@@ -4659,6 +4695,8 @@ function init() {
       selectChallenge(first);
     }
   } else {
+    // New user: auto-expand first section so chapters are visible
+    collapsedSections["Preparation Questions"] = false;
     showHero();
   }
 }
@@ -4846,6 +4884,10 @@ function selectChallenge(index) {
   }
 
   hideHero();
+  // Mobile view-switching: hide sidebar, show editor
+  if (window.innerWidth <= 900) {
+    document.querySelector('.sidebar').classList.add('mobile-hidden');
+  }
   state.currentChallenge = index;
   const ch = challenges[index];
 
@@ -4933,6 +4975,7 @@ function goHome() {
   state.currentChallenge = -1;
   state.currentChapter = -1;
   state.viewMode = 'chapters';
+  document.querySelector('.sidebar').classList.remove('mobile-hidden');
   showHero();
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4943,15 +4986,17 @@ function mobileBack() {
   state.currentChallenge = -1;
   state.currentChapter = -1;
   state.viewMode = 'chapters';
+  // Mobile view-switching: show sidebar again
+  document.querySelector('.sidebar').classList.remove('mobile-hidden');
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function heroChooseChapter() {
-  if (authReady && !currentUser) { signInWithGoogle(); return; }
-  // On mobile, expand first section and scroll sidebar into view
+  // Expand first section and scroll sidebar into view (no sign-in required)
   const firstSection = ALL_SECTIONS[0].name;
   if (collapsedSections[firstSection]) { toggleSection(firstSection); }
+  document.querySelector('.sidebar').classList.remove('mobile-hidden');
   document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
   renderChapterList();
 }
@@ -4986,6 +5031,12 @@ function runCode() {
   clearConsole();
   let outputLines = [];
 
+  // Show running state
+  const runBtn = document.querySelector('.btn-run');
+  const origText = runBtn.innerHTML;
+  runBtn.innerHTML = '\u23F3 RUNNING...';
+  runBtn.disabled = true;
+
   Sk.configure({
     output: (text) => { outputLines.push(text); },
     read: (x) => {
@@ -4993,7 +5044,8 @@ function runCode() {
         throw "File not found: '" + x + "'";
       return Sk.builtinFiles["files"][x];
     },
-    __future__: Sk.python3
+    __future__: Sk.python3,
+    execLimit: 5000
   });
 
   Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true))
@@ -5003,11 +5055,20 @@ function runCode() {
       checkAnswer(output);
     })
     .catch((err) => {
-      addConsoleLine('Error: ' + err.toString(), 'error');
+      const msg = err.toString();
+      if (msg.includes('TimeLimitError') || msg.includes('time limit')) {
+        addConsoleLine('Error: Program took too long (possible infinite loop). Limit: 5 seconds.', 'error');
+      } else {
+        addConsoleLine('Error: ' + msg, 'error');
+      }
       setSenseiMessage(SENSEI_MESSAGES.wrong[Math.floor(Math.random() * SENSEI_MESSAGES.wrong.length)]);
       setSenseiAvatar('\u{1F630}');
       state.streak = 0;
       updateStats();
+    })
+    .finally(() => {
+      runBtn.innerHTML = origText;
+      runBtn.disabled = false;
     });
 }
 
@@ -5097,6 +5158,7 @@ function clearConsole() { document.getElementById('consoleOutput').innerHTML = '
 
 function resetCode() {
   if (state.currentChallenge < 0) return;
+  if (!confirm('Reset code to starter? Your changes will be lost.')) return;
   const ch = challenges[state.currentChallenge];
   clearSavedCode(ch.id);
   document.getElementById('codeEditor').value = ch.starter;
