@@ -755,6 +755,7 @@
         </div>
       </div>
       <button class="hero-cta" id="heroCta" onclick="heroChooseChapter()">Sign In to Start &#x2192;</button>
+      <a href="https://github.com/darraghdog/ronny" target="_blank" rel="noopener" style="margin-top:4px;font-size:12px;color:var(--text-muted);text-decoration:none;letter-spacing:1px;font-weight:600;">Free &amp; Open Source &#x2197;</a>
     </div>
 
     <div class="challenge-header" id="challengeHeader">
@@ -2397,7 +2398,7 @@ key = 5
   starter: 'def calculate_score(pw):\n    length = len(pw)\n    SPECIAL_CHARACTERS = "!@#$%^&*"\n    UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\n    DIGITS = "0123456789"\n    score = 0\n    # Length tier: >= 16: +3, >= 12: +2, >= 8: +1\n    if length >= 16:\n        score += 3\n    elif length >= 12:\n        score += 2\n    elif length >= 8:\n        score += 1\n    has_special = False\n    has_upper = False\n    has_digit = False\n    for char in pw:\n        if char in SPECIAL_CHARACTERS:\n            has_special = True\n        if char in UPPER_CASE_LETTERS:\n            has_upper = True\n        if char in DIGITS:\n            has_digit = True\n    if has_special:\n        score += 1\n    if has_upper:\n        score += 1\n    if has_digit:\n        score += 1\n    # Return the score\n\ntest_passwords = ["abc", "Hello123", "MyP@ssw0rd!!"]\n# Loop and print score for each password\n',
   check: (o) => {
     const lines = o.trim().split("\n");
-    return lines.length >= 3 && lines.some(l => l.trim() === "0") && lines.some(l => l.trim() === "2") && lines.some(l => l.trim() === "5");
+    return lines.length >= 3 && lines.some(l => l.trim() === "0") && lines.some(l => l.trim() === "3") && lines.some(l => l.trim() === "5");
   },
   successMsg: "You built a reusable password scoring function! Functions make code testable."
 },
@@ -2572,7 +2573,7 @@ key = 5
   desc: "<p>Stop the game after <code>max_guesses_allowed</code> guesses. Use <code>guesses = [1, 5, 2, 4]</code> with <code>max_guesses_allowed=3</code> and <code>secret_number=3</code>.</p><p>The player should NOT win (only gets 3 guesses: 1, 5, 2).</p>",
   hint: "Add a check: if guess_count >= max_guesses_allowed: break out of the loop.",
   starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [1, 5, 2, 4]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            print("You took " + str(guess_count) + " guesses.")\n            return\n        elif user_guess < secret_number:\n            print("Too low!")\n        else:\n            print("Too high!")\n        # Stop if max guesses reached\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
-  check: (o) => !o.includes("Congratulations") && o.includes("Welcome") && (o.includes("Too low") || o.includes("Too high")),
+  check: (o) => { const hints = o.trim().split("\n").filter(l => l.includes("Too low") || l.includes("Too high")); return !o.includes("Congratulations") && o.includes("Welcome") && hints.length === 3; },
   successMsg: "Limited guesses add real challenge! The player ran out of tries."
 },
 {

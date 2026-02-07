@@ -12,7 +12,7 @@ Everything is in `index.html` (~4,700 lines). No build step, no server, no npm.
 |---------|-------------|
 | CSS | Dark theme, responsive, animations |
 | HTML | Header (stats/auth), sidebar (chapters), editor + console |
-| Challenge data | 311 challenge objects with starter code and JS check functions |
+| Challenge data | 296 challenge objects with starter code and JS check functions |
 | Chapter data | 41 chapters in 3 sections |
 | Game engine | State management, Firebase auth/Firestore, Skulpt execution, UI |
 
@@ -59,7 +59,7 @@ Everything is in `index.html` (~4,700 lines). No build step, no server, no npm.
 - **Incremental starters** - Each challenge's starter code includes the solution from the previous challenge in the same chapter.
 - **Check functions are JS** - Arrow functions `(o) => ...` where `o` is the program's stdout output.
 - **Single quotes for starter** - Starter code strings use `'...\n...'` with `\n` for newlines. Inner Python strings use double quotes.
-- **IDs must be sequential** - Challenge ids 1-311, chapter ids 1-41. No gaps.
+- **IDs must be sequential** - Challenge ids 1-296, chapter ids 1-41. No gaps.
 
 ## Development
 
