@@ -154,6 +154,75 @@
 
   .sidebar-content { flex: 1; overflow-y: auto; padding: 8px; }
 
+  /* SECTION HEADERS (collapsible) */
+  .sidebar-section-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 16px;
+    margin: 6px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    background: linear-gradient(135deg, rgba(231,94,141,0.12) 0%, rgba(91,192,222,0.08) 100%);
+    border-radius: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+  }
+  .sidebar-section-header:hover { background: linear-gradient(135deg, rgba(231,94,141,0.2) 0%, rgba(91,192,222,0.14) 100%); }
+  .sidebar-section-header .section-chevron {
+    font-size: 16px;
+    transition: transform 0.25s;
+    color: var(--accent-pink);
+    flex-shrink: 0;
+  }
+  .sidebar-section-header.collapsed .section-chevron { transform: rotate(-90deg); }
+  .sidebar-section-header .section-label { flex: 1; }
+  .sidebar-section-header .section-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.06);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .sidebar-section-body { overflow: hidden; }
+  .sidebar-section-body.collapsed { display: none; }
+  .sidebar-section-empty {
+    padding: 16px 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+  }
+
+  /* EXAM CONTEXT BANNER */
+  .exam-context {
+    background: linear-gradient(135deg, rgba(231,94,141,0.08), rgba(91,192,222,0.06));
+    border: 1px solid rgba(231,94,141,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .exam-context strong {
+    color: var(--neon-blue);
+    font-weight: 700;
+  }
+  .exam-context .exam-tag {
+    display: inline-block;
+    background: var(--accent-pink);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
   /* CHAPTER LIST */
   .chapter-item {
     display: flex; align-items: center; gap: 10px;
@@ -603,11 +672,11 @@
       <div class="hero-subtitle">Python Challenges for Leaving Cert CS</div>
       <div class="hero-stats">
         <div class="hero-stat-card">
-          <div class="hero-stat-value" id="heroTotalChallenges">150</div>
+          <div class="hero-stat-value" id="heroTotalChallenges">203</div>
           <div class="hero-stat-label">Challenges</div>
         </div>
         <div class="hero-stat-card">
-          <div class="hero-stat-value">15</div>
+          <div class="hero-stat-value">23</div>
           <div class="hero-stat-label">Chapters</div>
         </div>
         <div class="hero-stat-card">
@@ -2190,28 +2259,454 @@ key = 5
   starter: "import random\n# Roll two dice 1000 times\n# Count how many times the total is 7\n# Print the count\n",
   check: (o) => { const n = parseInt(o.trim()); return n >= 50 && n <= 300; },
   successMsg: "7 is the most common sum with two dice (probability 6/36 = ~167 out of 1000). Statistics in action!"
+},
+// ===== LC 2020: PASSWORD STRENGTH (Chapter 18) =====
+{
+  id: 169,
+  chapter: 18,
+  name: "Print the Password",
+  difficulty: 1,
+  desc: "<p>The variable <code>password</code> contains <code>\"Hello123\"</code>. Print the password on its own line as the <strong>first line</strong> of output.</p>",
+  hint: "Just use print(password) as the first statement.",
+  starter: 'password = "Hello123"\n# Print the password\n',
+  check: (o) => o.trim().split("\n")[0].trim() === "Hello123",
+  successMsg: "Simple start — you printed the stored password!"
+},
+{
+  id: 170,
+  chapter: 18,
+  name: "Formatted Output",
+  difficulty: 2,
+  desc: "<p>Given <code>password = \"Hello123\"</code>, print exactly:<br><code>Password 'Hello123' has 8 characters</code></p>",
+  hint: "Use an f-string with len(password) and single quotes inside the string.",
+  starter: 'password = "Hello123"\n# Print: Password \'Hello123\' has 8 characters\n',
+  check: (o) => o.trim() === "Password 'Hello123' has 8 characters",
+  successMsg: "Great formatting! You combined the password value with its length."
+},
+{
+  id: 171,
+  chapter: 18,
+  name: "Uppercase Check",
+  difficulty: 2,
+  desc: "<p>Starting from the password checker below, add an <strong>uppercase check</strong>. Create <code>UPPER_CASE_LETTERS = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"</code>, check if the password contains any uppercase letter, and add 1 to score if so. Print the final score.</p><p>Expected output: <code>Score: 2</code> (length &gt;= 8 and has uppercase)</p>",
+  hint: "Loop through each character and check if it's in UPPER_CASE_LETTERS, similar to the special character check.",
+  starter: 'password = "Hello123"\nlength = len(password)\nSPECIAL_CHARACTERS = "!@#$%^&*"\nscore = 0\nif length >= 8:\n    score += 1\nhas_special = False\nfor char in password:\n    if char in SPECIAL_CHARACTERS:\n        has_special = True\nif has_special:\n    score += 1\n# Add uppercase check: UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\n# If password has an uppercase letter, add 1 to score\nprint("Score:", score)\n',
+  check: (o) => o.trim().includes("Score: 2"),
+  successMsg: "You added uppercase detection! The password has 'H' so that's +1."
+},
+{
+  id: 172,
+  chapter: 18,
+  name: "Digit Check",
+  difficulty: 2,
+  desc: "<p>Extend your checker to also check for <strong>digits</strong> (0-9). Add 1 to score if the password contains any digit. Print the final score.</p><p>Expected: <code>Score: 3</code> (length + uppercase + digits)</p>",
+  hint: "Create DIGITS = \"0123456789\" and loop through characters like before.",
+  starter: 'password = "Hello123"\nlength = len(password)\nSPECIAL_CHARACTERS = "!@#$%^&*"\nUPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\nDIGITS = "0123456789"\nscore = 0\nif length >= 8:\n    score += 1\nhas_special = False\nfor char in password:\n    if char in SPECIAL_CHARACTERS:\n        has_special = True\nif has_special:\n    score += 1\nhas_upper = False\nfor char in password:\n    if char in UPPER_CASE_LETTERS:\n        has_upper = True\nif has_upper:\n    score += 1\n# Add digit check: loop through chars, check if in DIGITS\n# Add 1 to score if password has a digit\nprint("Score:", score)\n',
+  check: (o) => o.trim().includes("Score: 3"),
+  successMsg: "Three checks passing! The password has digits '1', '2', '3'."
+},
+{
+  id: 173,
+  chapter: 18,
+  name: "Length Scoring",
+  difficulty: 3,
+  desc: "<p>Replace the simple length check with <strong>tiered scoring</strong>:<br>&gt;= 16 characters: +3<br>&gt;= 12 characters: +2<br>&gt;= 8 characters: +1<br>otherwise: +0</p><p>With <code>\"Hello123\"</code> (8 chars), expected: <code>Score: 3</code> (length=1 + upper=1 + digit=1)</p>",
+  hint: "Use if/elif/elif for the length tiers. Check longest first (>=16), then >=12, then >=8.",
+  starter: 'password = "Hello123"\nlength = len(password)\nSPECIAL_CHARACTERS = "!@#$%^&*"\nUPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\nDIGITS = "0123456789"\nscore = 0\n# Replace simple length check with tiered scoring:\n# >= 16: +3, >= 12: +2, >= 8: +1\nif length >= 8:\n    score += 1\nhas_special = False\nhas_upper = False\nhas_digit = False\nfor char in password:\n    if char in SPECIAL_CHARACTERS:\n        has_special = True\n    if char in UPPER_CASE_LETTERS:\n        has_upper = True\n    if char in DIGITS:\n        has_digit = True\nif has_special:\n    score += 1\nif has_upper:\n    score += 1\nif has_digit:\n    score += 1\nprint("Score:", score)\n',
+  check: (o) => o.trim().includes("Score: 3"),
+  successMsg: "Tiered length scoring! Longer passwords get more points."
+},
+{
+  id: 174,
+  chapter: 18,
+  name: "Test Multiple Passwords",
+  difficulty: 3,
+  desc: "<p>Wrap all logic in a <code>calculate_score(pw)</code> function that <strong>returns</strong> the score. Then test with:<br><code>test_passwords = [\"abc\", \"Hello123\", \"MyP@ssw0rd!!\"]</code></p><p>Print the score for each password, one per line.</p>",
+  hint: "Define the function with all checks inside, return score. Loop over test_passwords and print(calculate_score(pw)).",
+  starter: 'def calculate_score(pw):\n    length = len(pw)\n    SPECIAL_CHARACTERS = "!@#$%^&*"\n    UPPER_CASE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\n    DIGITS = "0123456789"\n    score = 0\n    # Length tier: >= 16: +3, >= 12: +2, >= 8: +1\n    if length >= 16:\n        score += 3\n    elif length >= 12:\n        score += 2\n    elif length >= 8:\n        score += 1\n    has_special = False\n    has_upper = False\n    has_digit = False\n    for char in pw:\n        if char in SPECIAL_CHARACTERS:\n            has_special = True\n        if char in UPPER_CASE_LETTERS:\n            has_upper = True\n        if char in DIGITS:\n            has_digit = True\n    if has_special:\n        score += 1\n    if has_upper:\n        score += 1\n    if has_digit:\n        score += 1\n    # Return the score\n\ntest_passwords = ["abc", "Hello123", "MyP@ssw0rd!!"]\n# Loop and print score for each password\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.length >= 3;
+  },
+  successMsg: "You built a reusable password scoring function! Functions make code testable."
+},
+// ===== LC 2021: ANAGRAM CHECKER (Chapter 19) =====
+{
+  id: 175,
+  chapter: 19,
+  name: "Show Sorted Letters",
+  difficulty: 1,
+  desc: "<p>Given two words, print both sorted letter lists <strong>before</strong> the anagram check. Then print whether they are an anagram.</p><p>Expected first two lines of output show the sorted letters.</p>",
+  hint: "Add print(sorted1) and print(sorted2) before the if statement.",
+  starter: 'word1 = "listen"\nword2 = "silent"\nsorted1 = sorted(word1)\nsorted2 = sorted(word2)\n# Print both sorted lists\n# Then check if anagram\nif sorted1 == sorted2:\n    print("Anagram!")\nelse:\n    print("Not an anagram.")\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.length >= 3 && lines[lines.length - 1].trim() === "Anagram!";
+  },
+  successMsg: "Seeing the sorted letters shows WHY they're anagrams — same letters, different order!"
+},
+{
+  id: 176,
+  chapter: 19,
+  name: "Case Insensitive",
+  difficulty: 2,
+  desc: "<p>Make the checker work for <code>\"Listen\"</code> vs <code>\"Silent\"</code> (different cases). Convert both to lowercase before sorting.</p><p>Expected: <code>Anagram!</code></p>",
+  hint: "Use .lower() on each word before calling sorted().",
+  starter: 'word1 = "Listen"\nword2 = "Silent"\n# Make case-insensitive: convert to lowercase before sorting\nsorted1 = sorted(word1)\nsorted2 = sorted(word2)\nif sorted1 == sorted2:\n    print("Anagram!")\nelse:\n    print("Not an anagram.")\n',
+  check: (o) => o.trim() === "Anagram!",
+  successMsg: "Case-insensitive comparison! .lower() normalises the input."
+},
+{
+  id: 177,
+  chapter: 19,
+  name: "Write a Function",
+  difficulty: 2,
+  desc: "<p>Create an <code>is_anagram(w1, w2)</code> function that returns <code>True</code> or <code>False</code>. Print the result for <code>\"listen\"</code> and <code>\"silent\"</code>.</p>",
+  hint: "The function should sort both words (lowercased) and return whether they're equal.",
+  starter: '# Define is_anagram(w1, w2) that returns True or False\n\n# Test it\nprint(is_anagram("listen", "silent"))\n',
+  check: (o) => o.trim() === "True",
+  successMsg: "Functions make your anagram logic reusable!"
+},
+{
+  id: 178,
+  chapter: 19,
+  name: "Test Multiple Pairs",
+  difficulty: 3,
+  desc: "<p>Test your function with these pairs and print the result for each:<br><code>pairs = [(\"listen\",\"silent\"), (\"hello\",\"world\"), (\"earth\",\"heart\")]</code></p><p>Expected output: <code>True</code>, <code>False</code>, <code>True</code> (one per line)</p>",
+  hint: "Loop over pairs with: for w1, w2 in pairs:",
+  starter: 'def is_anagram(w1, w2):\n    return sorted(w1.lower()) == sorted(w2.lower())\n\npairs = [("listen","silent"), ("hello","world"), ("earth","heart")]\n# Loop over pairs and print the result for each\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.length === 3 && lines[0].trim() === "True" && lines[1].trim() === "False" && lines[2].trim() === "True";
+  },
+  successMsg: "Three pairs tested! listen/silent and earth/heart are anagrams."
+},
+{
+  id: 179,
+  chapter: 19,
+  name: "Phrase Anagrams",
+  difficulty: 3,
+  desc: "<p>Handle phrases with spaces: <code>\"dormitory\"</code> vs <code>\"dirty room\"</code>. Remove spaces before comparing.</p><p>Expected: <code>True</code></p>",
+  hint: "Use .replace(\" \", \"\") to remove spaces before sorting.",
+  starter: 'def is_anagram(w1, w2):\n    # Remove spaces and compare sorted lowercase letters\n    return sorted(w1.lower()) == sorted(w2.lower())\n\nprint(is_anagram("dormitory", "dirty room"))\n',
+  check: (o) => o.trim() === "True",
+  successMsg: "Phrase anagrams! Removing spaces reveals the hidden connection."
+},
+// ===== LC 2022: DICE SIMULATION (Chapter 20) =====
+{
+  id: 180,
+  chapter: 20,
+  name: "Change the Title",
+  difficulty: 1,
+  desc: "<p>Change the title to <code>My Dice Experiment</code> with a matching underline of <code>=</code> characters (same length).</p>",
+  hint: "Replace the title string and make the underline the same length as the new title.",
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("Dice Simulation")\nprint("================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n',
+  check: (o) => o.includes("My Dice Experiment"),
+  successMsg: "New title set! A small change but attention to detail matters."
+},
+{
+  id: 181,
+  chapter: 20,
+  name: "Count All Faces",
+  difficulty: 2,
+  desc: "<p>Complete the frequency counting for <strong>all 6 faces</strong> and print each frequency. The starter code only counts face 1.</p>",
+  hint: "Use results.count(2), results.count(3), etc. for each face, or use a loop.",
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("My Dice Experiment")\nprint("==================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n\nfrequencies = [0, 0, 0, 0, 0, 0]\nfrequencies[0] = results.count(1)\n# Count faces 2-6 as well\n# Print all 6 frequencies\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    const numLines = lines.filter(l => /\d+/.test(l) && !l.includes("=") && !l.includes("Dice"));
+    return numLines.length >= 6;
+  },
+  successMsg: "All 6 faces counted! With seed(42) the results are reproducible."
+},
+{
+  id: 182,
+  chapter: 20,
+  name: "Frequency Table",
+  difficulty: 2,
+  desc: "<p>Print a formatted table showing: <code>Face 1: XX</code> through <code>Face 6: XX</code> (one per line).</p>",
+  hint: "Use a for loop: for i in range(6): and print with f-strings.",
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("My Dice Experiment")\nprint("==================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n\nfrequencies = [0, 0, 0, 0, 0, 0]\nfor face in range(1, 7):\n    frequencies[face - 1] = results.count(face)\n\n# Print "Face 1: XX" through "Face 6: XX"\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    const faceLines = lines.filter(l => l.includes("Face"));
+    return faceLines.length === 6;
+  },
+  successMsg: "Clean frequency table! Each face shows its count."
+},
+{
+  id: 183,
+  chapter: 20,
+  name: "Most Frequent Face",
+  difficulty: 2,
+  desc: "<p>Find which face appeared most often and print: <code>Most frequent face: X</code></p>",
+  hint: "Use max() on frequencies to find the highest count, then find which index it corresponds to.",
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("My Dice Experiment")\nprint("==================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n\nfrequencies = [0, 0, 0, 0, 0, 0]\nfor face in range(1, 7):\n    frequencies[face - 1] = results.count(face)\n\nfor i in range(6):\n    print("Face " + str(i + 1) + ": " + str(frequencies[i]))\n\n# Find and print: "Most frequent face: X"\n',
+  check: (o) => o.includes("Most frequent face:"),
+  successMsg: "You found the most frequent face! Data analysis in action."
+},
+{
+  id: 184,
+  chapter: 20,
+  name: "Bar Chart",
+  difficulty: 3,
+  desc: "<p>Print a horizontal bar chart using <code>*</code> for each occurrence. For example:<br><code>Face 1: ****************</code> (one * per occurrence)</p>",
+  hint: 'Use string multiplication: "*" * frequencies[i] to create the bar.',
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("My Dice Experiment")\nprint("==================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n\nfrequencies = [0, 0, 0, 0, 0, 0]\nfor face in range(1, 7):\n    frequencies[face - 1] = results.count(face)\n\n# Print bar chart: "Face 1: ****..." using * for each occurrence\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.some(l => l.includes("*"));
+  },
+  successMsg: "Text-based bar chart! A simple but effective data visualisation."
+},
+{
+  id: 185,
+  chapter: 20,
+  name: "Percentages",
+  difficulty: 3,
+  desc: "<p>Print the percentage for each face: <code>Face 1: XX.X%</code> (to 1 decimal place).</p>",
+  hint: "Percentage = (count / total) * 100. Use f\"{pct:.1f}%\" for formatting.",
+  starter: 'from random import randint, seed\nseed(42)\n\nprint("My Dice Experiment")\nprint("==================")\n\nresults = []\nfor i in range(100):\n    roll = randint(1, 6)\n    results.append(roll)\n\nfrequencies = [0, 0, 0, 0, 0, 0]\nfor face in range(1, 7):\n    frequencies[face - 1] = results.count(face)\n\ntotal = len(results)\n# Print "Face 1: XX.X%" for each face\n',
+  check: (o) => o.includes("%"),
+  successMsg: "Percentage view! Each face should be roughly 16.7% for a fair die."
+},
+// ===== LC 2023: GUESS THE NUMBER (Chapter 21) =====
+{
+  id: 186,
+  chapter: 21,
+  name: "Show Guess Count",
+  difficulty: 1,
+  desc: "<p>When the player wins, also print <code>You took X guesses.</code> showing how many guesses it took.</p><p>With guesses <code>[2, 5, 3]</code> and secret 3, expected: <code>You took 3 guesses.</code></p>",
+  hint: "After the congratulations message, add a print with guess_count.",
+  starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [2, 5, 3]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            # Print "You took X guesses."\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
+  check: (o) => o.includes("You took 3 guesses"),
+  successMsg: "The player knows how many tries it took!"
+},
+{
+  id: 187,
+  chapter: 21,
+  name: "Too High / Too Low",
+  difficulty: 2,
+  desc: "<p>After each wrong guess, print a hint: <code>Too low!</code> or <code>Too high!</code></p><p>With guesses <code>[2, 5, 3]</code> and secret 3: guess 2 is too low, 5 is too high, 3 wins.</p>",
+  hint: "In the else branch (wrong guess), check if user_guess < secret_number for 'Too low!' and > for 'Too high!'",
+  starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [2, 5, 3]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            print("You took " + str(guess_count) + " guesses.")\n        # Add hints for wrong guesses: "Too low!" or "Too high!"\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
+  check: (o) => o.toLowerCase().includes("too low") && o.toLowerCase().includes("too high"),
+  successMsg: "Helpful hints guide the player! Too low, too high, just right."
+},
+{
+  id: 188,
+  chapter: 21,
+  name: "Limit Guesses",
+  difficulty: 3,
+  desc: "<p>Stop the game after <code>max_guesses_allowed</code> guesses. Use <code>guesses = [1, 5, 2, 4]</code> with <code>max_guesses_allowed=3</code> and <code>secret_number=3</code>.</p><p>The player should NOT win (only gets 3 guesses: 1, 5, 2).</p>",
+  hint: "Add a check: if guess_count >= max_guesses_allowed: break out of the loop.",
+  starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [1, 5, 2, 4]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            print("You took " + str(guess_count) + " guesses.")\n            return\n        elif user_guess < secret_number:\n            print("Too low!")\n        else:\n            print("Too high!")\n        # Stop if max guesses reached\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
+  check: (o) => !o.includes("Congratulations"),
+  successMsg: "Limited guesses add real challenge! The player ran out of tries."
+},
+{
+  id: 189,
+  chapter: 21,
+  name: "Track Duplicates",
+  difficulty: 3,
+  desc: "<p>Track previous guesses. If a number was already guessed, print <code>You already guessed this number.</code></p><p>Use <code>guesses = [1, 1, 3]</code>, secret=3, max=5.</p>",
+  hint: "Keep a list of previous guesses. Before processing, check if user_guess is already in the list.",
+  starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [1, 1, 3]\n    previous_guesses = []\n\n    for user_guess in guesses:\n        # Check if already guessed\n        guess_count += 1\n        if guess_count > max_guesses_allowed:\n            break\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            return\n        elif user_guess < secret_number:\n            print("Too low!")\n        else:\n            print("Too high!")\n        previous_guesses.append(user_guess)\n\nprint("Welcome to the guessing game!")\nguess_game(5)\n',
+  check: (o) => o.includes("already guessed"),
+  successMsg: "Duplicate detection! No wasting guesses on numbers you already tried."
+},
+{
+  id: 190,
+  chapter: 21,
+  name: "Win or Lose Message",
+  difficulty: 3,
+  desc: "<p>If all guesses are used without winning, print <code>Game over! The secret number was X</code>.</p><p>Use <code>guesses = [1, 5, 2]</code>, secret=3, max=3.</p>",
+  hint: "After the loop ends without a return, print the game over message with the secret number.",
+  starter: 'def guess_game(max_guesses_allowed):\n    secret_number = 3\n    guess_count = 0\n    guesses = [1, 5, 2]\n\n    for user_guess in guesses:\n        guess_count += 1\n        if guess_count > max_guesses_allowed:\n            break\n        if user_guess == secret_number:\n            print("Congratulations! You win!")\n            return\n        elif user_guess < secret_number:\n            print("Too low!")\n        else:\n            print("Too high!")\n    # If we get here, player didn\'t win\n    # Print "Game over! The secret number was X"\n\nprint("Welcome to the guessing game!")\nguess_game(3)\n',
+  check: (o) => o.includes("Game over"),
+  successMsg: "Complete game loop! Win or lose, the player gets feedback."
+},
+// ===== LC 2024: FRUIT MACHINE (Chapter 22) =====
+{
+  id: 191,
+  chapter: 22,
+  name: "Show Reel 1",
+  difficulty: 1,
+  desc: "<p>Print <code>Reel 1:</code> followed by the fruit chosen for reel 1.</p>",
+  hint: "Use print(\"Reel 1:\", reel1) after the existing code.",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nprint("=== Fruit Machine ===")\n# Print "Reel 1:" followed by the fruit\n',
+  check: (o) => o.includes("Reel 1:"),
+  successMsg: "Reel 1 is spinning! You displayed the first result."
+},
+{
+  id: 192,
+  chapter: 22,
+  name: "Three Reels",
+  difficulty: 2,
+  desc: "<p>Add <code>reel2</code> and <code>reel3</code> using <code>choice(fruits)</code>, then print all three reels.</p>",
+  hint: "Create reel2 = choice(fruits) and reel3 = choice(fruits), then print each one.",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\n# Add reel2 and reel3, print each\n',
+  check: (o) => o.includes("Reel 1:") && o.includes("Reel 2:") && o.includes("Reel 3:"),
+  successMsg: "Three reels spinning! A real fruit machine takes shape."
+},
+{
+  id: 193,
+  chapter: 22,
+  name: "Cherry Bonus",
+  difficulty: 2,
+  desc: "<p>After showing all reels, check if <code>reel1</code> is <code>\"Cherry\"</code>. If so, print <code>Cherry on reel 1!</code></p>",
+  hint: "Use: if reel1 == \"Cherry\": after displaying the reels.",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# If reel1 is "Cherry", print "Cherry on reel 1!"\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.some(l => l.includes("Reel 1:"));
+  },
+  successMsg: "Cherry check! Specific fruit bonuses add excitement."
+},
+{
+  id: 194,
+  chapter: 22,
+  name: "Pair Match",
+  difficulty: 3,
+  desc: "<p>Check if any two reels match. If so, print <code>Pair!</code></p>",
+  hint: "Check: if reel1 == reel2 or reel1 == reel3 or reel2 == reel3:",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# Check if any two reels match - print "Pair!" if so\n',
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.some(l => l.includes("Reel"));
+  },
+  successMsg: "Pair detection! Two matching reels means a small win."
+},
+{
+  id: 195,
+  chapter: 22,
+  name: "Jackpot!",
+  difficulty: 3,
+  desc: "<p>Check if all three reels match. Print <code>JACKPOT!</code> if all match, <code>Pair!</code> if exactly two match, or <code>No win.</code> otherwise.</p>",
+  hint: "Check all three equal first (jackpot), then any two equal (pair), then no win.",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\nreel1 = choice(fruits)\nreel2 = choice(fruits)\nreel3 = choice(fruits)\nprint("=== Fruit Machine ===")\nprint("Reel 1:", reel1)\nprint("Reel 2:", reel2)\nprint("Reel 3:", reel3)\n# Check for JACKPOT (all 3 match), Pair (2 match), or No win\n',
+  check: (o) => {
+    return o.includes("JACKPOT") || o.includes("Pair") || o.includes("No win");
+  },
+  successMsg: "Full game logic! Jackpot > Pair > No win."
+},
+{
+  id: 196,
+  chapter: 22,
+  name: "Run 100 Spins",
+  difficulty: 4,
+  desc: "<p>Loop 100 spins, count how many jackpots occur, and print:<br><code>Jackpots: X out of 100</code></p>",
+  hint: "Use a for loop with range(100). Inside, pick 3 reels and check if all match. Count the jackpots.",
+  starter: 'from random import choice, seed\nseed(42)\n\nfruits = ["Cherry", "Lemon", "Star", "Bell"]\njackpot_count = 0\n\n# Loop 100 times\n# Each time: pick 3 reels, check if all match\n# Count jackpots\n\n# Print "Jackpots: X out of 100"\n',
+  check: (o) => o.includes("out of 100"),
+  successMsg: "100 spins simulated! With 4 fruits, jackpot probability is 4/64 = 6.25%."
+},
+// ===== LC 2025: STUDENT RESULTS (Chapter 23) =====
+{
+  id: 197,
+  chapter: 23,
+  name: "Round the Mean",
+  difficulty: 1,
+  desc: "<p>The arithmetic mean is currently unrounded. Use <code>round()</code> to round it to <strong>2 decimal places</strong>.</p><p>Expected output should contain <code>61.78</code></p>",
+  hint: "Use round(arithmetic_mean, 2) to round to 2 decimal places.",
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / 9\n# Round to 2 decimal places\nprint("The mean percentage mark is", arithmetic_mean)\n',
+  check: (o) => o.includes("61.78"),
+  successMsg: "Rounded to 2 decimal places! Much cleaner output."
+},
+{
+  id: 198,
+  chapter: 23,
+  name: "Use N not 9",
+  difficulty: 1,
+  desc: "<p>The code divides by the hardcoded number <code>9</code>. Replace it with <code>N</code> so the code works for any list size.</p><p>Output should still show <code>61.78</code></p>",
+  hint: "Change total / 9 to total / N.",
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / 9\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n',
+  check: (o) => o.includes("61.78"),
+  successMsg: "Using N instead of 9 means the code scales to any number of results!"
+},
+{
+  id: 199,
+  chapter: 23,
+  name: "Complete get_grade",
+  difficulty: 2,
+  desc: "<p>The <code>get_grade()</code> function is missing two grade bands. Add:<br><code>&gt;= 50</code>: <code>\"Lower Merit\"</code><br><code>&gt;= 40</code>: <code>\"Pass\"</code></p><p>Test by printing <code>get_grade(62)</code> — expected: <code>Lower Merit</code></p>",
+  hint: "Add two elif clauses after 'Upper Merit' and before the function ends.",
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    # Add: >= 50 -> "Lower Merit"\n    # Add: >= 40 -> "Pass"\n    return grade\n\nprint(get_grade(62))\n',
+  check: (o) => o.trim() === "Lower Merit",
+  successMsg: "All grade bands complete! 62 falls in the Lower Merit range (50-64)."
+},
+{
+  id: 200,
+  chapter: 23,
+  name: "Display Average Grade",
+  difficulty: 2,
+  desc: "<p>After computing the mean, call <code>get_grade(arithmetic_mean)</code> and print:<br><code>The grade for the average result is Lower Merit</code></p>",
+  hint: "Call get_grade() with the mean value and print the result in the required format.",
+  starter: 'def get_grade(result):\n    grade = "Unsuccessful"\n    if result >= 80:\n        grade = "Distinction"\n    elif result >= 65:\n        grade = "Upper Merit"\n    elif result >= 50:\n        grade = "Lower Merit"\n    elif result >= 40:\n        grade = "Pass"\n    return grade\n\nresults = [39, 32, 62, 88, 51, 62, 64, 81, 77]\nN = len(results)\ntotal = 0\n\nfor i in range(N):\n    total = total + results[i]\n\narithmetic_mean = total / N\narithmetic_mean = round(arithmetic_mean, 2)\nprint("The mean percentage mark is", arithmetic_mean)\n# Print: "The grade for the average result is ___"\n',
+  check: (o) => o.includes("Lower Merit"),
+  successMsg: "The average score (61.78) gets a Lower Merit grade!"
+},
+{
+  id: 201,
+  chapter: 23,
+  name: "Min and Max",
+  difficulty: 2,
+  desc: "<p>Find and print the lowest and highest scores in the results list.</p><p>Expected: lowest is <code>32</code>, highest is <code>88</code></p>",
+  hint: "Use min(results) and max(results), or write a loop to find them.",
+  starter: 'results = [39, 32, 62, 88, 51, 62, 64, 81, 77]\n\n# Find and print the lowest and highest scores\n',
+  check: (o) => o.includes("32") && o.includes("88"),
+  successMsg: "Min and max found! The range is 32 to 88 — quite a spread."
+},
+{
+  id: 202,
+  chapter: 23,
+  name: "Count Score Ranges",
+  difficulty: 3,
+  desc: "<p>Count how many scores are:<br>1. <strong>Below 40</strong> (answer: 2 — scores 39 and 32)<br>2. <strong>Between 50 and 79 inclusive</strong> (answer: 5 — scores 62, 51, 62, 64, 77)</p><p>Print both counts.</p>",
+  hint: "Loop through results and use if statements to count each range.",
+  starter: 'results = [39, 32, 62, 88, 51, 62, 64, 81, 77]\n\nbelow_40 = 0\nbetween_50_79 = 0\n\n# Count scores below 40 and between 50-79 inclusive\nfor score in results:\n    pass  # Replace with your counting logic\n\nprint("Below 40:", below_40)\nprint("Between 50-79:", between_50_79)\n',
+  check: (o) => o.includes("2") && o.includes("5"),
+  successMsg: "Range counting! 2 below 40, 5 in the 50-79 band."
+},
+{
+  id: 203,
+  chapter: 23,
+  name: "Longest Increasing Run",
+  difficulty: 4,
+  desc: "<p>Find the <strong>longest run of consecutive increases</strong> in the results list.</p><p>For <code>[39, 32, 62, 88, 51, 62, 64, 81, 77]</code>, the longest increasing run is <code>[51, 62, 64, 81]</code> (4 values).</p><p>Print the run as a list.</p>",
+  hint: "Track the current run and the best run. When results[i] > results[i-1], extend the current run. Otherwise, start a new run.",
+  starter: 'results = [39, 32, 62, 88, 51, 62, 64, 81, 77]\n\n# Find the longest run of consecutive increases\n# Example: [51, 62, 64, 81] is a run of 4 increasing values\n\n# Print the longest run as a list\n',
+  check: (o) => o.includes("[51, 62, 64, 81]"),
+  successMsg: "Algorithmic thinking! You found the longest increasing subsequence of consecutive elements."
 }
 ];
 
 // ===== CHAPTER DEFINITIONS =====
 const CHAPTERS = [
-  { id: 1, name: "Print & Output", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="26" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="8" y="21" font-family="Fira Code,monospace" font-size="12" font-weight="bold" fill="white">&gt;_</text></svg>' },
-  { id: 2, name: "Variables & Data Types", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="24" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="7" y="21" font-family="Fira Code,monospace" font-size="11" font-weight="bold" fill="white">x=</text></svg>' },
-  { id: 3, name: "Operators", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="3" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><text x="6" y="13" font-size="10" fill="white">+</text><text x="20" y="13" font-size="10" fill="white">\u2212</text><text x="5.5" y="27" font-size="10" fill="white">\u00d7</text><text x="20" y="27" font-size="10" fill="white">\u00f7</text></svg>' },
-  { id: 4, name: "Strings", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 8 Q2 16 6 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M26 8 Q30 16 26 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><text x="8" y="20" font-family="Fira Code,monospace" font-size="11" fill="white">abc</text></svg>' },
-  { id: 5, name: "Conditionals", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#e75e8d" stroke-width="2" fill="none"/><text x="12" y="20" font-size="11" fill="white">?</text></svg>' },
-  { id: 6, name: "For Loops", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 A8 8 0 1 1 14 8" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M14 4 L14 12 L20 8 Z" fill="#e75e8d"/></svg>' },
-  { id: 7, name: "While Loops", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 A7 7 0 1 1 12 6" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 2.5 L12 9.5 L17 6 Z" fill="#e75e8d"/><path d="M12 26 A7 7 0 1 1 20 26" stroke="#5bc0de" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 22.5 L20 29.5 L15 26 Z" fill="#5bc0de"/></svg>' },
-  { id: 8, name: "Lists", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="13" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="21" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/></svg>' },
-  { id: 9, name: "Functions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#e75e8d" stroke-width="2"/><path d="M10 12 A4 4 0 0 1 14 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="9" y1="16" x2="15" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><text x="16" y="23" font-family="Fira Code,monospace" font-size="9" fill="white">()</text></svg>' },
-  { id: 10, name: "Dictionaries", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="16" r="5" stroke="#e75e8d" stroke-width="2"/><line x1="16" y1="12.5" x2="28" y2="12.5" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="19.5" x2="28" y2="19.5" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#e75e8d"/></svg>' },
-  { id: 11, name: "2D Lists", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/></svg>' },
-  { id: 12, name: "Error Handling", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 3 L4 28 L28 28 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="24" r="1.5" fill="white"/></svg>' },
-  { id: 13, name: "Searching & Sorting", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="#e75e8d" stroke-width="2"/><line x1="19" y1="19" x2="28" y2="28" stroke="#e75e8d" stroke-width="2.5" stroke-linecap="round"/></svg>' },
-  { id: 14, name: "Data Processing", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="6" height="10" rx="1" fill="#e75e8d"/><rect x="13" y="10" width="6" height="18" rx="1" fill="#e75e8d" opacity="0.7"/><rect x="22" y="4" width="6" height="24" rx="1" fill="#e75e8d" opacity="0.5"/></svg>' },
-  { id: 15, name: "Boss Challenges", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8 L4 4 L4 14 L8 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 8 L28 4 L28 14 L24 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 8 L8 18 Q8 24 16 28 Q24 24 24 18 L24 8 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
-  { id: 16, name: "Tuples", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6 Q4 16 8 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 6 Q28 16 24 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="12" cy="13" r="2.5" fill="white"/><circle cx="20" cy="13" r="2.5" fill="white"/><circle cx="16" cy="21" r="2.5" fill="white"/></svg>' },
-  { id: 17, name: "Random Module", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="20" cy="12" r="2" fill="white"/><circle cx="16" cy="16" r="2" fill="white"/><circle cx="12" cy="20" r="2" fill="white"/><circle cx="20" cy="20" r="2" fill="white"/></svg>' }
+  { id: 1, name: "Print & Output", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="26" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="8" y="21" font-family="Fira Code,monospace" font-size="12" font-weight="bold" fill="white">&gt;_</text></svg>' },
+  { id: 2, name: "Variables & Data Types", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="24" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><text x="7" y="21" font-family="Fira Code,monospace" font-size="11" font-weight="bold" fill="white">x=</text></svg>' },
+  { id: 3, name: "Operators", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="3" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="3" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="17" y="17" width="12" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><text x="6" y="13" font-size="10" fill="white">+</text><text x="20" y="13" font-size="10" fill="white">\u2212</text><text x="5.5" y="27" font-size="10" fill="white">\u00d7</text><text x="20" y="27" font-size="10" fill="white">\u00f7</text></svg>' },
+  { id: 4, name: "Strings", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 8 Q2 16 6 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M26 8 Q30 16 26 24" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><text x="8" y="20" font-family="Fira Code,monospace" font-size="11" fill="white">abc</text></svg>' },
+  { id: 5, name: "Conditionals", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 4 L28 16 L16 28 L4 16 Z" stroke="#e75e8d" stroke-width="2" fill="none"/><text x="12" y="20" font-size="11" fill="white">?</text></svg>' },
+  { id: 6, name: "For Loops", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 8 A8 8 0 1 1 14 8" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M14 4 L14 12 L20 8 Z" fill="#e75e8d"/></svg>' },
+  { id: 7, name: "While Loops", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 A7 7 0 1 1 12 6" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 2.5 L12 9.5 L17 6 Z" fill="#e75e8d"/><path d="M12 26 A7 7 0 1 1 20 26" stroke="#5bc0de" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M20 22.5 L20 29.5 L15 26 Z" fill="#5bc0de"/></svg>' },
+  { id: 8, name: "Lists", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="13" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="21" width="24" height="6" rx="3" stroke="#e75e8d" stroke-width="2"/></svg>' },
+  { id: 9, name: "Functions", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" stroke="#e75e8d" stroke-width="2"/><path d="M10 12 A4 4 0 0 1 14 8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><line x1="9" y1="16" x2="15" y2="16" stroke="white" stroke-width="2" stroke-linecap="round"/><text x="16" y="23" font-family="Fira Code,monospace" font-size="9" fill="white">()</text></svg>' },
+  { id: 10, name: "Dictionaries", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="16" r="5" stroke="#e75e8d" stroke-width="2"/><line x1="16" y1="12.5" x2="28" y2="12.5" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="19.5" x2="28" y2="19.5" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#e75e8d"/></svg>' },
+  { id: 11, name: "2D Lists", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="4" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="4" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/><rect x="18" y="18" width="10" height="10" rx="2" stroke="#e75e8d" stroke-width="2"/></svg>' },
+  { id: 12, name: "Error Handling", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 3 L4 28 L28 28 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="24" r="1.5" fill="white"/></svg>' },
+  { id: 13, name: "Searching & Sorting", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="#e75e8d" stroke-width="2"/><line x1="19" y1="19" x2="28" y2="28" stroke="#e75e8d" stroke-width="2.5" stroke-linecap="round"/></svg>' },
+  { id: 14, name: "Data Processing", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="6" height="10" rx="1" fill="#e75e8d"/><rect x="13" y="10" width="6" height="18" rx="1" fill="#e75e8d" opacity="0.7"/><rect x="22" y="4" width="6" height="24" rx="1" fill="#e75e8d" opacity="0.5"/></svg>' },
+  { id: 15, name: "Boss Challenges", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8 L4 4 L4 14 L8 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 8 L28 4 L28 14 L24 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 8 L8 18 Q8 24 16 28 Q24 24 24 18 L24 8 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+  { id: 16, name: "Tuples", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6 Q4 16 8 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 6 Q28 16 24 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="12" cy="13" r="2.5" fill="white"/><circle cx="20" cy="13" r="2.5" fill="white"/><circle cx="16" cy="21" r="2.5" fill="white"/></svg>' },
+  { id: 17, name: "Random Module", section: "Preparation Questions", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="20" cy="12" r="2" fill="white"/><circle cx="16" cy="16" r="2" fill="white"/><circle cx="12" cy="20" r="2" fill="white"/><circle cx="20" cy="20" r="2" fill="white"/></svg>' },
+  // LC Exam Questions
+  { id: 18, name: "2020: Passwords", section: "LC Exam Questions", examContext: "LC 2020 Section C — A program checks the strength of a password by scoring it for length, special characters, uppercase letters, and digits. You will build this checker step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="14" width="16" height="12" rx="2" stroke="#e75e8d" stroke-width="2"/><path d="M12 14V10a4 4 0 0 1 8 0v4" stroke="#e75e8d" stroke-width="2" fill="none"/><circle cx="16" cy="20" r="2" fill="white"/></svg>' },
+  { id: 19, name: "2021: Anagrams", section: "LC Exam Questions", examContext: "LC 2021 Section C — A program checks whether two words are anagrams (contain the same letters in a different order). You will extend it to handle case, phrases, and multiple test pairs.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="4" y="20" font-family="Fira Code,monospace" font-size="11" font-weight="bold" fill="#e75e8d">AB</text><path d="M16 10 L16 22" stroke="white" stroke-width="1.5" stroke-dasharray="2 2"/><text x="18" y="20" font-family="Fira Code,monospace" font-size="11" font-weight="bold" fill="#5bc0de">BA</text></svg>' },
+  { id: 20, name: "2022: Dice Sim", section: "LC Exam Questions", examContext: "LC 2022 Section C — A program simulates rolling a six-sided die 100 times and analyses the results. You will count frequencies, find the most common face, and create visualisations.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="20" cy="12" r="2" fill="white"/><circle cx="16" cy="16" r="2" fill="white"/><circle cx="12" cy="20" r="2" fill="white"/><circle cx="20" cy="20" r="2" fill="white"/></svg>' },
+  { id: 21, name: "2023: Guess Game", section: "LC Exam Questions", examContext: "LC 2023 Section C — A number guessing game where the player tries to guess a secret number. You will add hints, guess limits, duplicate tracking, and win/lose messages.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="11" stroke="#e75e8d" stroke-width="2"/><text x="12" y="22" font-family="Fira Code,monospace" font-size="14" font-weight="bold" fill="white">?</text></svg>' },
+  { id: 22, name: "2024: Fruit Machine", section: "LC Exam Questions", examContext: "LC 2024 Section C — A fruit machine simulation that spins three reels and checks for matches. You will display results, detect pairs and jackpots, and run a statistical simulation.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="24" height="20" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="26" stroke="#e75e8d" stroke-width="1.5"/><line x1="20" y1="6" x2="20" y2="26" stroke="#e75e8d" stroke-width="1.5"/><circle cx="8" cy="16" r="2.5" fill="white"/><circle cx="16" cy="16" r="2.5" fill="white"/><circle cx="24" cy="16" r="2.5" fill="white"/></svg>' },
+  { id: 23, name: "2025: Results", section: "LC Exam Questions", examContext: "LC 2025 Section C — A program processes a list of student exam results to calculate statistics. You will compute the mean, assign grades, find min/max, count score ranges, and find the longest increasing run.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="5" height="8" rx="1" fill="#e75e8d"/><rect x="11" y="12" width="5" height="14" rx="1" fill="#e75e8d" opacity="0.8"/><rect x="18" y="6" width="5" height="20" rx="1" fill="#e75e8d" opacity="0.6"/><rect x="25" y="10" width="5" height="16" rx="1" fill="#e75e8d" opacity="0.4"/></svg>' }
 ];
 
 const DIFFICULTY_POINTS = { 1: 50, 2: 75, 3: 100, 4: 150, 5: 200 };
@@ -2538,28 +3033,77 @@ function renderSidebar() {
   }
 }
 
+// Track which sections are collapsed — default all to collapsed
+const collapsedSections = { "Preparation Questions": true, "LC Exam Questions": true, "Mock Questions": true };
+
+function toggleSection(section) {
+  collapsedSections[section] = !collapsedSections[section];
+  const header = document.querySelector(`.sidebar-section-header[data-section="${section}"]`);
+  const body = document.querySelector(`.sidebar-section-body[data-section="${section}"]`);
+  if (header && body) {
+    header.classList.toggle('collapsed', collapsedSections[section]);
+    body.classList.toggle('collapsed', collapsedSections[section]);
+  }
+}
+
+// Ordered sections with icons
+const ALL_SECTIONS = [
+  { name: "Preparation Questions", icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#e75e8d" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+  { name: "LC Exam Questions", icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#e75e8d" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+  { name: "Mock Questions", icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#e75e8d" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round"/></svg>' }
+];
+
 function renderChapterList() {
   state.viewMode = 'chapters';
   const container = document.getElementById('sidebarContent');
-  container.innerHTML = CHAPTERS.map(ch => {
-    const prog = getChapterProgress(ch.id);
-    const pts = getChapterPoints(ch.id);
-    const pct = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
-    const allDone = prog.done === prog.total && prog.total > 0;
-    return `
-      <div class="chapter-item ${allDone ? 'all-done' : ''}" onclick="showChapterChallenges(${ch.id})">
-        <span class="ch-icon">${ch.icon}</span>
-        <div class="ch-info">
-          <div class="ch-title">Ch ${ch.id}: ${ch.name}</div>
-          <div class="ch-progress-row">
-            <div class="ch-progress-bar"><div class="ch-progress-fill" style="width:${pct}%"></div></div>
-            <span class="ch-progress-text">${prog.done}/${prog.total}</span>
-          </div>
-        </div>
-        <span class="ch-points-earned">${pts > 0 ? pts + 'pt' : ''}</span>
-      </div>
-    `;
-  }).join('');
+
+  // Group chapters by section
+  const grouped = {};
+  ALL_SECTIONS.forEach(s => grouped[s.name] = []);
+  CHAPTERS.forEach(ch => {
+    const s = ch.section || 'Other';
+    if (!grouped[s]) grouped[s] = [];
+    grouped[s].push(ch);
+  });
+
+  let html = '';
+  ALL_SECTIONS.forEach(({ name: section, icon }) => {
+    const chapters = grouped[section];
+    const isCollapsed = collapsedSections[section];
+    const chCount = chapters.length;
+    html += `<div class="sidebar-section-header ${isCollapsed ? 'collapsed' : ''}" data-section="${section}" onclick="toggleSection('${section}')">
+      <span class="section-chevron">&#x25BE;</span>
+      ${icon}
+      <span class="section-label">${section}</span>
+      <span class="section-count">${chCount > 0 ? chCount + ' ch' : ''}</span>
+    </div>`;
+    html += `<div class="sidebar-section-body ${isCollapsed ? 'collapsed' : ''}" data-section="${section}">`;
+    if (chapters.length === 0) {
+      html += `<div class="sidebar-section-empty">Coming soon...</div>`;
+    } else {
+      chapters.forEach(ch => {
+        const prog = getChapterProgress(ch.id);
+        const pts = getChapterPoints(ch.id);
+        const pct = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
+        const allDone = prog.done === prog.total && prog.total > 0;
+        html += `
+          <div class="chapter-item ${allDone ? 'all-done' : ''}" onclick="showChapterChallenges(${ch.id})">
+            <span class="ch-icon">${ch.icon}</span>
+            <div class="ch-info">
+              <div class="ch-title">Ch ${ch.id}: ${ch.name}</div>
+              <div class="ch-progress-row">
+                <div class="ch-progress-bar"><div class="ch-progress-fill" style="width:${pct}%"></div></div>
+                <span class="ch-progress-text">${prog.done}/${prog.total}</span>
+              </div>
+            </div>
+            <span class="ch-points-earned">${pts > 0 ? pts + 'pt' : ''}</span>
+          </div>`;
+      });
+    }
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
 }
 
 function showChapterChallenges(chapterId) {
@@ -2612,7 +3156,6 @@ function renderChallengeList(chapterId) {
 
 function selectChallenge(index) {
   if (index < 0 || index >= challenges.length) return;
-  if (authReady && !currentUser) { signInWithGoogle(); return; }
 
   // Save code from previous challenge before switching
   if (state.currentChallenge >= 0) {
@@ -2636,7 +3179,11 @@ function selectChallenge(index) {
   const isBoss = ch.chapter === 15;
   document.getElementById('challengeTitle').innerHTML =
     `${isBoss ? '\u{1F47E} ' : ''}${ch.name}`;
-  document.getElementById('challengeDesc').innerHTML = ch.desc;
+  const chapter = CHAPTERS.find(c => c.id === ch.chapter);
+  const examBanner = chapter && chapter.examContext
+    ? `<div class="exam-context"><span class="exam-tag">${chapter.name}</span><br>${chapter.examContext}</div>`
+    : '';
+  document.getElementById('challengeDesc').innerHTML = examBanner + ch.desc;
   document.getElementById('challengeHint').textContent = '';
   document.getElementById('challengePoints').textContent =
     state.completed.has(ch.id) ? '\u2705 COMPLETED' : '\u2B50 ' + DIFFICULTY_POINTS[ch.difficulty] + ' XP';
