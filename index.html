@@ -1976,6 +1976,220 @@ key = 5
     return lines[0].trim() === "91.7" && lines[1].trim() === "['Alice', 'Carol']";
   },
   successMsg: "Final boss defeated! You built a complete database system with classes, lists, dictionaries, and sorting!"
+},
+// ===== CHAPTER 16: TUPLES =====
+{
+  id: 151,
+  chapter: 16,
+  name: "Create a Tuple",
+  difficulty: 1,
+  desc: "<p>Create a tuple called <code>colors</code> containing <code>\"red\"</code>, <code>\"green\"</code>, and <code>\"blue\"</code>. Print it.</p>",
+  hint: "Use parentheses: colors = (\"red\", \"green\", \"blue\")",
+  starter: "# Create a tuple of three colors and print it\n",
+  check: (o) => o.trim() === "('red', 'green', 'blue')",
+  successMsg: "Tuples use parentheses and are immutable — they can't be changed after creation!"
+},
+{
+  id: 152,
+  chapter: 16,
+  name: "Access Tuple Element",
+  difficulty: 1,
+  desc: "<p>Given a tuple of fruits, print the <strong>second</strong> element.</p>",
+  hint: "Indexing starts at 0, so the second element is index 1.",
+  starter: "fruits = (\"apple\", \"banana\", \"cherry\")\n# Print the second element\n",
+  check: (o) => o.trim() === "banana",
+  successMsg: "Tuple indexing works exactly like lists — starting at 0!"
+},
+{
+  id: 153,
+  chapter: 16,
+  name: "Tuple Length",
+  difficulty: 1,
+  desc: "<p>Print the number of items in the tuple.</p>",
+  hint: "Use len() just like with lists and strings.",
+  starter: "nums = (10, 20, 30, 40, 50)\n# Print how many items are in the tuple\n",
+  check: (o) => o.trim() === "5",
+  successMsg: "len() works on tuples, lists, strings — any sequence!"
+},
+{
+  id: 154,
+  chapter: 16,
+  name: "Tuple Unpacking",
+  difficulty: 2,
+  desc: "<p>Unpack the tuple into three variables <code>x</code>, <code>y</code>, <code>z</code> and print each on its own line.</p>",
+  hint: "x, y, z = point assigns each tuple element to a variable.",
+  starter: "point = (3, 7, 11)\n# Unpack into x, y, z and print each on its own line\n",
+  check: (o) => o.trim() === "3\n7\n11",
+  successMsg: "Tuple unpacking lets you assign multiple variables at once!"
+},
+{
+  id: 155,
+  chapter: 16,
+  name: "Tuple Slicing",
+  difficulty: 2,
+  desc: "<p>Print the first three elements of the tuple as a new tuple.</p>",
+  hint: "Use slicing: t[0:3] or t[:3]",
+  starter: "letters = (\"a\", \"b\", \"c\", \"d\", \"e\")\n# Print the first 3 elements as a tuple\n",
+  check: (o) => o.trim() === "('a', 'b', 'c')",
+  successMsg: "Slicing tuples returns a new tuple — same syntax as lists!"
+},
+{
+  id: 156,
+  chapter: 16,
+  name: "Membership Check",
+  difficulty: 1,
+  desc: "<p>Check if <code>\"banana\"</code> is in the tuple and print the result.</p>",
+  hint: "Use the 'in' operator: \"banana\" in fruits",
+  starter: "fruits = (\"apple\", \"banana\", \"cherry\")\n# Check if \"banana\" is in the tuple and print True or False\n",
+  check: (o) => o.trim() === "True",
+  successMsg: "The 'in' operator works on tuples, lists, strings, and more!"
+},
+{
+  id: 157,
+  chapter: 16,
+  name: "Count & Index",
+  difficulty: 2,
+  desc: "<p>Given the tuple, print how many times <code>3</code> appears, then print the index of the first <code>3</code>. Output two lines.</p>",
+  hint: "Use .count(3) and .index(3) — the only two tuple methods!",
+  starter: "nums = (1, 3, 5, 3, 7, 3)\n# Print how many times 3 appears\n# Print the index of the first 3\n",
+  check: (o) => o.trim() === "3\n1",
+  successMsg: "count() and index() are the only two methods tuples have — because tuples are immutable!"
+},
+{
+  id: 158,
+  chapter: 16,
+  name: "Concatenate Tuples",
+  difficulty: 2,
+  desc: "<p>Combine the two tuples into one and print the result.</p>",
+  hint: "Use the + operator to concatenate tuples, just like strings.",
+  starter: "a = (1, 2, 3)\nb = (4, 5, 6)\n# Combine a and b into one tuple and print it\n",
+  check: (o) => o.trim() === "(1, 2, 3, 4, 5, 6)",
+  successMsg: "The + operator creates a new tuple — it doesn't modify the originals!"
+},
+{
+  id: 159,
+  chapter: 16,
+  name: "Tuple to List and Back",
+  difficulty: 2,
+  desc: "<p>Convert the tuple to a list, append <code>4</code>, convert back to a tuple, and print it.</p>",
+  hint: "Use list() to convert, .append() to add, then tuple() to convert back.",
+  starter: "t = (1, 2, 3)\n# Convert to list, append 4, convert back to tuple, print\n",
+  check: (o) => o.trim() === "(1, 2, 3, 4)",
+  successMsg: "Since tuples are immutable, convert to a list when you need to modify!"
+},
+{
+  id: 160,
+  chapter: 16,
+  name: "Return Multiple Values",
+  difficulty: 3,
+  desc: "<p>Write a function <code>min_max(nums)</code> that takes a list and returns both the minimum and maximum as a tuple. Call it and print the result.</p>",
+  hint: "Return a tuple: return (min_val, max_val). Or just return min_val, max_val — Python auto-packs it.",
+  starter: "# Define min_max(nums) that returns (minimum, maximum)\n\n# Call it with [4, 1, 7, 3, 9] and print the result\n",
+  check: (o) => o.trim() === "(1, 9)",
+  successMsg: "Functions returning tuples is a classic Python pattern — it's how you return multiple values!"
+},
+// ===== CHAPTER 17: RANDOM MODULE =====
+{
+  id: 161,
+  chapter: 17,
+  name: "Random Integer",
+  difficulty: 1,
+  desc: "<p>Use <code>random.randint(1, 6)</code> to simulate a dice roll. Print the result.</p>",
+  hint: "Import random first, then use random.randint(1, 6).",
+  starter: "import random\n# Generate a random integer from 1 to 6 and print it\n",
+  check: (o) => { const n = parseInt(o.trim()); return n >= 1 && n <= 6; },
+  successMsg: "randint(a, b) returns a random integer from a to b inclusive!"
+},
+{
+  id: 162,
+  chapter: 17,
+  name: "Random Choice",
+  difficulty: 1,
+  desc: "<p>Use <code>random.choice()</code> to pick a random fruit from the list and print it.</p>",
+  hint: "random.choice(fruits) picks one random element from the list.",
+  starter: "import random\nfruits = [\"apple\", \"banana\", \"cherry\", \"mango\"]\n# Pick a random fruit and print it\n",
+  check: (o) => ["apple", "banana", "cherry", "mango"].includes(o.trim()),
+  successMsg: "choice() picks one random element — great for random selections!"
+},
+{
+  id: 163,
+  chapter: 17,
+  name: "Random Float",
+  difficulty: 1,
+  desc: "<p>Use <code>random.random()</code> to generate a random float and print it. The output should be a number between 0 and 1.</p>",
+  hint: "random.random() returns a float between 0.0 and 1.0.",
+  starter: "import random\n# Generate a random float between 0 and 1 and print it\n",
+  check: (o) => { const n = parseFloat(o.trim()); return !isNaN(n) && n >= 0 && n < 1; },
+  successMsg: "random() gives a float in [0, 1) — multiply it to scale to any range!"
+},
+{
+  id: 164,
+  chapter: 17,
+  name: "Random Range",
+  difficulty: 2,
+  desc: "<p>Use <code>random.randrange(0, 100, 10)</code> to generate a random multiple of 10 from 0 to 90. Print it.</p>",
+  hint: "randrange(start, stop, step) works like range() but returns one random value.",
+  starter: "import random\n# Generate a random multiple of 10 from 0 to 90 and print it\n",
+  check: (o) => { const n = parseInt(o.trim()); return n >= 0 && n <= 90 && n % 10 === 0; },
+  successMsg: "randrange() is like range() but picks a random value — useful for stepped ranges!"
+},
+{
+  id: 165,
+  chapter: 17,
+  name: "Shuffle a List",
+  difficulty: 2,
+  desc: "<p>Use <code>random.shuffle()</code> to shuffle the list in place, then print it. The output should contain all 5 numbers in some order.</p>",
+  hint: "random.shuffle(nums) modifies the list in place — then print(nums).",
+  starter: "import random\nnums = [1, 2, 3, 4, 5]\n# Shuffle the list and print it\n",
+  check: (o) => {
+    try {
+      const arr = JSON.parse(o.trim().replace(/'/g, '"'));
+      return arr.length === 5 && [1,2,3,4,5].every(n => arr.includes(n));
+    } catch(e) { return false; }
+  },
+  successMsg: "shuffle() randomizes the list in place — every permutation is equally likely!"
+},
+{
+  id: 166,
+  chapter: 17,
+  name: "Sample Without Replacement",
+  difficulty: 2,
+  desc: "<p>Use <code>random.sample()</code> to pick 3 unique items from the list and print the result. The output should be a list of 3 different colors.</p>",
+  hint: "random.sample(colors, 3) returns a list of 3 unique elements.",
+  starter: "import random\ncolors = [\"red\", \"blue\", \"green\", \"yellow\", \"purple\"]\n# Pick 3 unique colors and print the result\n",
+  check: (o) => {
+    try {
+      const arr = JSON.parse(o.trim().replace(/'/g, '"'));
+      const valid = ["red", "blue", "green", "yellow", "purple"];
+      return arr.length === 3 && arr.every(c => valid.includes(c)) && new Set(arr).size === 3;
+    } catch(e) { return false; }
+  },
+  successMsg: "sample() picks unique items — no duplicates, unlike repeated choice() calls!"
+},
+{
+  id: 167,
+  chapter: 17,
+  name: "Random with Seed",
+  difficulty: 2,
+  desc: "<p>Set the seed to <code>42</code>, then generate and print 3 random integers between 1 and 100, each on its own line.</p>",
+  hint: "random.seed(42) makes the sequence repeatable. Use a loop to generate 3 numbers.",
+  starter: "import random\n# Set seed to 42\n# Print 3 random integers between 1 and 100, one per line\n",
+  check: (o) => {
+    const lines = o.trim().split("\n");
+    return lines.length === 3 && lines.every(l => { const n = parseInt(l.trim()); return n >= 1 && n <= 100; });
+  },
+  successMsg: "Seeds make random numbers reproducible — essential for testing and debugging!"
+},
+{
+  id: 168,
+  chapter: 17,
+  name: "Dice Simulator",
+  difficulty: 3,
+  desc: "<p>Simulate rolling two dice 1000 times. Count how many times the total equals 7 and print the count. The result should be roughly between 100 and 230.</p>",
+  hint: "Use a loop with randint(1,6) twice per roll. Count when the sum equals 7.",
+  starter: "import random\n# Roll two dice 1000 times\n# Count how many times the total is 7\n# Print the count\n",
+  check: (o) => { const n = parseInt(o.trim()); return n >= 50 && n <= 300; },
+  successMsg: "7 is the most common sum with two dice (probability 6/36 = ~167 out of 1000). Statistics in action!"
 }
 ];
 
@@ -1995,7 +2209,9 @@ const CHAPTERS = [
   { id: 12, name: "Error Handling", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 3 L4 28 L28 28 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><line x1="16" y1="12" x2="16" y2="20" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="24" r="1.5" fill="white"/></svg>' },
   { id: 13, name: "Searching & Sorting", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="8" stroke="#e75e8d" stroke-width="2"/><line x1="19" y1="19" x2="28" y2="28" stroke="#e75e8d" stroke-width="2.5" stroke-linecap="round"/></svg>' },
   { id: 14, name: "Data Processing", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="6" height="10" rx="1" fill="#e75e8d"/><rect x="13" y="10" width="6" height="18" rx="1" fill="#e75e8d" opacity="0.7"/><rect x="22" y="4" width="6" height="24" rx="1" fill="#e75e8d" opacity="0.5"/></svg>' },
-  { id: 15, name: "Boss Challenges", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8 L4 4 L4 14 L8 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 8 L28 4 L28 14 L24 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 8 L8 18 Q8 24 16 28 Q24 24 24 18 L24 8 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' }
+  { id: 15, name: "Boss Challenges", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 8 L4 4 L4 14 L8 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M24 8 L28 4 L28 14 L24 12" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M8 8 L8 18 Q8 24 16 28 Q24 24 24 18 L24 8 Z" stroke="#e75e8d" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>' },
+  { id: 16, name: "Tuples", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6 Q4 16 8 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 6 Q28 16 24 26" stroke="#e75e8d" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="12" cy="13" r="2.5" fill="white"/><circle cx="20" cy="13" r="2.5" fill="white"/><circle cx="16" cy="21" r="2.5" fill="white"/></svg>' },
+  { id: 17, name: "Random Module", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="20" cy="12" r="2" fill="white"/><circle cx="16" cy="16" r="2" fill="white"/><circle cx="12" cy="20" r="2" fill="white"/><circle cx="20" cy="20" r="2" fill="white"/></svg>' }
 ];
 
 const DIFFICULTY_POINTS = { 1: 50, 2: 75, 3: 100, 4: 150, 5: 200 };
