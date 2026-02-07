@@ -2,7 +2,7 @@
 
 Python coding challenges for Leaving Cert Computer Science.
 
-**https://goronny.codes**
+**https://darraghdog.github.io/ronny**
 
 ## What is Ronny?
 
