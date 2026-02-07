@@ -2240,6 +2240,28 @@ function init() {
     }
   });
 
+  // Auto-save code on typing (debounced)
+  let saveTimer = null;
+  document.getElementById('codeEditor').addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if (state.currentChallenge >= 0) {
+        const ch = challenges[state.currentChallenge];
+        const code = document.getElementById('codeEditor').value;
+        if (code && code !== ch.starter) saveCode(ch.id, code);
+      }
+    }, 1000);
+  });
+
+  // Save code on page unload
+  window.addEventListener('beforeunload', () => {
+    if (state.currentChallenge >= 0) {
+      const ch = challenges[state.currentChallenge];
+      const code = document.getElementById('codeEditor').value;
+      if (code && code !== ch.starter) saveCode(ch.id, code);
+    }
+  });
+
   document.getElementById('totalChallenges').textContent = '/' + challenges.length;
 
   if (state.completed.size > 0) {
