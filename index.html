@@ -672,11 +672,11 @@
       <div class="hero-subtitle">Python Challenges for Leaving Cert CS</div>
       <div class="hero-stats">
         <div class="hero-stat-card">
-          <div class="hero-stat-value" id="heroTotalChallenges">203</div>
+          <div class="hero-stat-value" id="heroTotalChallenges">311</div>
           <div class="hero-stat-label">Challenges</div>
         </div>
         <div class="hero-stat-card">
-          <div class="hero-stat-value">23</div>
+          <div class="hero-stat-value">41</div>
           <div class="hero-stat-label">Chapters</div>
         </div>
         <div class="hero-stat-card">
@@ -2679,6 +2679,1214 @@ key = 5
   check: (o) => o.includes("[51, 62, 64, 81]"),
   successMsg: "Algorithmic thinking! You found the longest increasing subsequence of consecutive elements."
 }
+,
+// ===== MOCK EXAM CHALLENGES =====
+// ===== Mock 01: Email Validator (Chapter 24, ids 204-209) =====
+{
+  id: 204,
+  chapter: 24,
+  name: "Count the @",
+  difficulty: 1,
+  desc: "<p>Run the starter code to count how many <code>@</code> symbols are in the email address. It should print <code>@ symbols found: 1</code>.</p>",
+  hint: "The starter code already works. Run it and check the output.",
+  starter: 'email = "student@school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n',
+  check: (o) => o.includes("@ symbols found: 1"),
+  successMsg: "The @ counter works! Every valid email needs exactly one @."
+},
+{
+  id: 205,
+  chapter: 24,
+  name: "Check for @",
+  difficulty: 2,
+  desc: "<p>After counting the <code>@</code> symbols, add a check: if there is exactly one <code>@</code>, print <code>Valid: has @</code>. Otherwise print <code>Invalid: missing @</code>.</p>",
+  hint: "Add an if/else after the loop: if at_count == 1: print valid, else print invalid.",
+  starter: 'email = "student@school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n\n# Check if exactly one @ was found\n# Print "Valid: has @" or "Invalid: missing @"\n',
+  check: (o) => o.includes("Valid: has @"),
+  successMsg: "Good validation! Exactly one @ is required for a valid email."
+},
+{
+  id: 206,
+  chapter: 24,
+  name: "Check Domain Dot",
+  difficulty: 2,
+  desc: "<p>Split the email on <code>@</code> and check that the part after <code>@</code> contains a dot. Print <code>Valid domain</code> or <code>Invalid domain</code>.</p>",
+  hint: "Use email.split(\"@\") to get a list. The domain is the second element [1]. Check if \".\" is in it.",
+  starter: 'email = "student@school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n\nif at_count == 1:\n    print("Valid: has @")\nelse:\n    print("Invalid: missing @")\n\n# Split on @ and check the domain part contains a dot\n# Print "Valid domain" or "Invalid domain"\n',
+  check: (o) => o.includes("Valid domain"),
+  successMsg: "Domain check passed! The part after @ must contain a dot."
+},
+{
+  id: 207,
+  chapter: 24,
+  name: "No Spaces Allowed",
+  difficulty: 2,
+  desc: "<p>Change the email to <code>\"student @school.ie\"</code> (note the space). Check if the email contains any spaces. Print <code>Invalid: contains spaces</code> if it does, otherwise <code>Valid: no spaces</code>.</p>",
+  hint: "Use the 'in' operator: if \" \" in email: to check for spaces.",
+  starter: 'email = "student @school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n\nif at_count == 1:\n    print("Valid: has @")\nelse:\n    print("Invalid: missing @")\n\nparts = email.split("@")\nif len(parts) == 2 and "." in parts[1]:\n    print("Valid domain")\nelse:\n    print("Invalid domain")\n\n# Check for spaces in the email\n# Print "Invalid: contains spaces" or "Valid: no spaces"\n',
+  check: (o) => o.includes("contains spaces"),
+  successMsg: "Spaces caught! Email addresses must not contain spaces."
+},
+{
+  id: 208,
+  chapter: 24,
+  name: "Length Check",
+  difficulty: 2,
+  desc: "<p>Change the email back to <code>\"student@school.ie\"</code>. Check that its length is between 5 and 254 characters (inclusive). Print <code>Length: X</code> and then <code>Valid length</code> or <code>Invalid length</code>.</p>",
+  hint: "Use len(email) to get the length. Check if 5 <= length <= 254.",
+  starter: 'email = "student@school.ie"\nat_count = 0\nfor char in email:\n    if char == "@":\n        at_count += 1\nprint("@ symbols found:", at_count)\n\nif at_count == 1:\n    print("Valid: has @")\nelse:\n    print("Invalid: missing @")\n\nparts = email.split("@")\nif len(parts) == 2 and "." in parts[1]:\n    print("Valid domain")\nelse:\n    print("Invalid domain")\n\nif " " in email:\n    print("Invalid: contains spaces")\nelse:\n    print("Valid: no spaces")\n\n# Print the length and check if it is between 5 and 254\n# Print "Length: X" then "Valid length" or "Invalid length"\n',
+  check: (o) => o.includes("Length:") && o.includes("Valid"),
+  successMsg: "Length validated! Real email addresses have strict length limits."
+},
+{
+  id: 209,
+  chapter: 24,
+  name: "Full Validator",
+  difficulty: 3,
+  desc: "<p>Create a function <code>validate_email(e)</code> that returns <code>True</code> if the email passes all checks (exactly one @, domain has a dot, no spaces, length 5-254) and <code>False</code> otherwise. Test with <code>[\"student@school.ie\", \"bad email\", \"no@dot\", \"ok@test.com\"]</code> and print the result for each.</p>",
+  hint: "Put all checks inside the function. Return False as soon as any check fails, True if all pass.",
+  starter: 'def validate_email(e):\n    # Check exactly one @\n    if e.count("@") != 1:\n        return False\n    # Check no spaces\n    if " " in e:\n        return False\n    # Check length\n    if len(e) < 5 or len(e) > 254:\n        return False\n    # Check domain has a dot\n    parts = e.split("@")\n    # Add domain dot check and return True/False\n    pass\n\ntest_emails = ["student@school.ie", "bad email", "no@dot", "ok@test.com"]\nfor email in test_emails:\n    print(validate_email(email))\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 4 && o.includes("True") && o.includes("False"); },
+  successMsg: "Full validator complete! You built a real email checker from scratch."
+},
+// ===== Mock 02: Caesar Cipher (Chapter 25, ids 210-215) =====
+{
+  id: 210,
+  chapter: 25,
+  name: "Basic Shift",
+  difficulty: 1,
+  desc: "<p>Encrypt the message <code>\"hello\"</code> by shifting each letter forward by 3 positions in the alphabet. The output should be <code>khoor</code>.</p>",
+  hint: "The starter code already does this. Run it to see the result.",
+  starter: 'message = "hello"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    encrypted += alphabet[pos + shift]\nprint(encrypted)\n',
+  check: (o) => o.trim() === "khoor",
+  successMsg: "Encrypted! Each letter shifted forward by 3 positions."
+},
+{
+  id: 211,
+  chapter: 25,
+  name: "Handle Wrapping",
+  difficulty: 2,
+  desc: "<p>Fix the code so the shift wraps around the alphabet using <code>% 26</code>. Change the message to <code>\"xyz\"</code> with shift 3. The output should be <code>abc</code>.</p>",
+  hint: "Use (pos + shift) % 26 to wrap around. Letters x, y, z shifted by 3 become a, b, c.",
+  starter: 'message = "xyz"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    encrypted += alphabet[(pos + shift) % 26]  # Fix: add wrapping\nprint(encrypted)\n',
+  check: (o) => o.includes("abc"),
+  successMsg: "Wrapping works! The alphabet loops around seamlessly."
+},
+{
+  id: 212,
+  chapter: 25,
+  name: "Keep Non-Letters",
+  difficulty: 2,
+  desc: "<p>Keep spaces and punctuation unchanged. Test with message <code>\"hello world!\"</code> and shift 3. The output should include <code>khoor zruog!</code>.</p>",
+  hint: "Check if the character is in the alphabet. If not, add it to encrypted unchanged.",
+  starter: 'message = "hello world!"\nshift = 3\nalphabet = "abcdefghijklmnopqrstuvwxyz"\nencrypted = ""\nfor char in message:\n    pos = alphabet.find(char)\n    if pos != -1:\n        encrypted += alphabet[(pos + shift) % 26]\n    # Add: keep non-letter characters unchanged\nprint(encrypted)\n',
+  check: (o) => o.includes("khoor zruog!"),
+  successMsg: "Non-letters preserved! Spaces and punctuation stay as they are."
+},
+{
+  id: 213,
+  chapter: 25,
+  name: "Decrypt",
+  difficulty: 3,
+  desc: "<p>Write a <code>decrypt(msg, shift)</code> function that reverses the Caesar cipher. Decrypt <code>\"khoor\"</code> with shift 3 and print the result.</p>",
+  hint: "Decryption is the same as encryption but shifting backwards: use (pos - shift) % 26.",
+  starter: 'alphabet = "abcdefghijklmnopqrstuvwxyz"\n\ndef encrypt(msg, shift):\n    result = ""\n    for char in msg:\n        pos = alphabet.find(char)\n        if pos != -1:\n            result += alphabet[(pos + shift) % 26]\n        else:\n            result += char\n    return result\n\ndef decrypt(msg, shift):\n    # Shift backwards to decrypt\n    result = ""\n    for char in msg:\n        pos = alphabet.find(char)\n        if pos != -1:\n            pass  # Fix: shift backwards\n        else:\n            result += char\n    return result\n\nprint(decrypt("khoor", 3))\n',
+  check: (o) => o.includes("hello"),
+  successMsg: "Decrypted! Shifting backwards reverses the cipher perfectly."
+},
+{
+  id: 214,
+  chapter: 25,
+  name: "Handle Uppercase",
+  difficulty: 3,
+  desc: "<p>Handle both upper and lowercase letters. Encrypt <code>\"Hello World\"</code> with shift 3. The output should include <code>Khoor</code> and <code>Zruog</code>.</p>",
+  hint: "Check if a character is uppercase with char.isupper(). Convert to lowercase for lookup, then convert back.",
+  starter: 'alphabet = "abcdefghijklmnopqrstuvwxyz"\n\ndef encrypt(msg, shift):\n    result = ""\n    for char in msg:\n        lower_char = char.lower()\n        pos = alphabet.find(lower_char)\n        if pos != -1:\n            shifted = alphabet[(pos + shift) % 26]\n            # Add: if original was uppercase, make shifted uppercase\n            result += shifted\n        else:\n            result += char\n    return result\n\nprint(encrypt("Hello World", 3))\n',
+  check: (o) => o.includes("Khoor") && o.includes("Zruog"),
+  successMsg: "Case-sensitive encryption! Uppercase stays uppercase."
+},
+{
+  id: 215,
+  chapter: 25,
+  name: "Crack the Code",
+  difficulty: 3,
+  desc: "<p>Try all 26 possible shifts on <code>\"lipps\"</code> and print each result. One of the lines should show the word <code>hello</code>.</p>",
+  hint: "Use a for loop: for shift in range(26). Decrypt with each shift and print.",
+  starter: 'alphabet = "abcdefghijklmnopqrstuvwxyz"\n\ndef decrypt(msg, shift):\n    result = ""\n    for char in msg:\n        pos = alphabet.find(char)\n        if pos != -1:\n            result += alphabet[(pos - shift) % 26]\n        else:\n            result += char\n    return result\n\nencrypted = "lipps"\n# Try all 26 shifts and print each result\n',
+  check: (o) => o.includes("hello"),
+  successMsg: "Code cracked! Brute force works when there are only 26 possibilities."
+},
+// ===== Mock 03: Word Counter (Chapter 26, ids 216-221) =====
+{
+  id: 216,
+  chapter: 26,
+  name: "Count Words",
+  difficulty: 1,
+  desc: "<p>Count the number of words in the sentence and print <code>Words: 9</code>.</p>",
+  hint: "The starter code already does this. Run it to see the word count.",
+  starter: 'text = "The quick brown fox jumps over the lazy dog"\nwords = text.split()\nword_count = len(words)\nprint("Words:", word_count)\n',
+  check: (o) => o.includes("Words: 9"),
+  successMsg: "Nine words counted! split() breaks text into a list of words."
+},
+{
+  id: 217,
+  chapter: 26,
+  name: "Count Characters",
+  difficulty: 2,
+  desc: "<p>Print the character count with and without spaces. Use the format <code>With spaces: X</code> and <code>Without spaces: X</code>.</p>",
+  hint: "Use len(text) for with spaces. Use len(text.replace(\" \", \"\")) for without.",
+  starter: 'text = "The quick brown fox jumps over the lazy dog"\nwords = text.split()\nword_count = len(words)\nprint("Words:", word_count)\n\n# Print character count with spaces and without spaces\n# Use "With spaces: X" and "Without spaces: X"\n',
+  check: (o) => o.includes("With spaces:") && o.includes("Without spaces:"),
+  successMsg: "Character counting done! Spaces make a big difference in the total."
+},
+{
+  id: 218,
+  chapter: 26,
+  name: "Longest Word",
+  difficulty: 2,
+  desc: "<p>Find and print the longest word in the text. Print <code>Longest: X</code>. The longest word is <code>jumps</code> (5 letters).</p>",
+  hint: "Loop through words, track the longest one. Use len(word) to compare lengths.",
+  starter: 'text = "The quick brown fox jumps over the lazy dog"\nwords = text.split()\nword_count = len(words)\nprint("Words:", word_count)\n\nwith_spaces = len(text)\nwithout_spaces = len(text.replace(" ", ""))\nprint("With spaces:", with_spaces)\nprint("Without spaces:", without_spaces)\n\n# Find and print the longest word\n# Print "Longest: X"\n',
+  check: (o) => o.includes("Longest:") && o.includes("jumps"),
+  successMsg: "Longest word found! Comparing lengths is a common text analysis task."
+},
+{
+  id: 219,
+  chapter: 26,
+  name: "Average Length",
+  difficulty: 2,
+  desc: "<p>Calculate and print the average word length rounded to 1 decimal place. Print <code>Average length: X</code>. The answer should be <code>3.9</code>.</p>",
+  hint: "Sum all word lengths, divide by word count. Use round(result, 1) for 1 decimal place.",
+  starter: 'text = "The quick brown fox jumps over the lazy dog"\nwords = text.split()\nword_count = len(words)\nprint("Words:", word_count)\n\nwith_spaces = len(text)\nwithout_spaces = len(text.replace(" ", ""))\nprint("With spaces:", with_spaces)\nprint("Without spaces:", without_spaces)\n\nlongest = ""\nfor w in words:\n    if len(w) > len(longest):\n        longest = w\nprint("Longest:", longest)\n\n# Calculate and print average word length rounded to 1 decimal\n# Print "Average length: X"\n',
+  check: (o) => o.includes("Average length:") && o.includes("3.9"),
+  successMsg: "Average calculated! The mean word length tells you about text complexity."
+},
+{
+  id: 220,
+  chapter: 26,
+  name: "Word Frequency",
+  difficulty: 3,
+  desc: "<p>Count occurrences of each word. Use the text <code>\"the cat sat on the mat\"</code>. Print each word and its count. The word <code>the</code> should appear <code>2</code> times.</p>",
+  hint: "Use a dictionary to count words. Loop through the word list, incrementing counts.",
+  starter: 'text = "the cat sat on the mat"\nwords = text.split()\n\n# Count occurrences of each word using a dictionary\n# Print each word and its count\n',
+  check: (o) => o.includes("the") && o.includes("2"),
+  successMsg: "Word frequencies mapped! Dictionaries are perfect for counting."
+},
+{
+  id: 221,
+  chapter: 26,
+  name: "Text Analyser",
+  difficulty: 3,
+  desc: "<p>Create a function <code>analyse_text(t)</code> that prints word count, character count (no spaces), and the longest word. Test with <code>\"Hello world\"</code> and <code>\"The quick brown fox\"</code>.</p>",
+  hint: "Put the word count, character count, and longest word logic inside a function. Call it twice.",
+  starter: 'def analyse_text(t):\n    words = t.split()\n    # Print "Words: X"\n    # Print "Characters: X" (without spaces)\n    # Print "Longest: X"\n    pass\n\nanalyse_text("Hello world")\nanalyse_text("The quick brown fox")\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 4; },
+  successMsg: "Text analyser complete! Functions let you reuse analysis logic."
+},
+// ===== Mock 04: Palindrome Checker (Chapter 27, ids 222-226) =====
+{
+  id: 222,
+  chapter: 27,
+  name: "Check Racecar",
+  difficulty: 1,
+  desc: "<p>Check if <code>\"racecar\"</code> is a palindrome (reads the same forwards and backwards). Print <code>Palindrome!</code> or <code>Not a palindrome.</code></p>",
+  hint: "The starter code already does this. Run it to check the result.",
+  starter: 'word = "racecar"\nreversed_word = word[::-1]\nif word == reversed_word:\n    print("Palindrome!")\nelse:\n    print("Not a palindrome.")\n',
+  check: (o) => o.includes("Palindrome!"),
+  successMsg: "Racecar is a palindrome! It reads the same both ways."
+},
+{
+  id: 223,
+  chapter: 27,
+  name: "Case Insensitive",
+  difficulty: 2,
+  desc: "<p>Change the word to <code>\"Racecar\"</code> (capital R). Make the palindrome check case-insensitive so it still detects it as a palindrome.</p>",
+  hint: "Convert the word to lowercase before comparing: word.lower().",
+  starter: 'word = "Racecar"\n# Make the check case-insensitive\ncheck = word.lower()\nreversed_word = check[::-1]\nif check == reversed_word:\n    print("Palindrome!")\nelse:\n    print("Not a palindrome.")\n',
+  check: (o) => o.includes("Palindrome!"),
+  successMsg: "Case-insensitive check works! Capital letters no longer cause false negatives."
+},
+{
+  id: 224,
+  chapter: 27,
+  name: "Write Function",
+  difficulty: 2,
+  desc: "<p>Create a function <code>is_palindrome(w)</code> that returns <code>True</code> if the word is a palindrome and <code>False</code> otherwise. Test with <code>\"madam\"</code> and print the result.</p>",
+  hint: "Convert to lowercase, reverse, compare. Return the boolean result.",
+  starter: 'def is_palindrome(w):\n    check = w.lower()\n    # Return True if check equals its reverse, False otherwise\n    pass\n\nprint(is_palindrome("madam"))\n',
+  check: (o) => o.trim() === "True",
+  successMsg: "Function created! Now you can reuse the palindrome check easily."
+},
+{
+  id: 225,
+  chapter: 27,
+  name: "Test Multiple",
+  difficulty: 3,
+  desc: "<p>Test the function with <code>[\"madam\", \"hello\", \"level\", \"python\", \"civic\"]</code>. Print <code>True</code> or <code>False</code> for each word, one per line.</p>",
+  hint: "Loop through the list and print is_palindrome(word) for each.",
+  starter: 'def is_palindrome(w):\n    check = w.lower()\n    return check == check[::-1]\n\ntest_words = ["madam", "hello", "level", "python", "civic"]\nfor word in test_words:\n    print(is_palindrome(word))\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length === 5 && lines[0].trim() === "True" && lines[1].trim() === "False" && lines[2].trim() === "True" && lines[3].trim() === "False" && lines[4].trim() === "True"; },
+  successMsg: "All five tested! Three palindromes found in the list."
+},
+{
+  id: 226,
+  chapter: 27,
+  name: "Phrase Palindromes",
+  difficulty: 3,
+  desc: "<p>Handle phrases by removing spaces and ignoring case. Test with <code>\"A man a plan a canal Panama\"</code>. Print <code>True</code> or <code>False</code>.</p>",
+  hint: "Remove spaces with .replace(\" \", \"\") and convert to lowercase before checking.",
+  starter: 'def is_palindrome(w):\n    check = w.lower().replace(" ", "")\n    return check == check[::-1]\n\nphrase = "A man a plan a canal Panama"\nprint(is_palindrome(phrase))\n',
+  check: (o) => o.trim() === "True",
+  successMsg: "Phrase palindrome detected! Ignoring spaces reveals the hidden pattern."
+},
+// ===== Mock 05: Duplicate Finder (Chapter 28, ids 227-232) =====
+{
+  id: 227,
+  chapter: 28,
+  name: "Print the List",
+  difficulty: 1,
+  desc: "<p>Print the list of numbers and its length. The output should include <code>Length: 9</code>.</p>",
+  hint: "The starter code already does this. Run it to see the output.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n',
+  check: (o) => o.includes("Length: 9"),
+  successMsg: "List printed! Nine numbers, some of which are duplicated."
+},
+{
+  id: 228,
+  chapter: 28,
+  name: "Find Unique",
+  difficulty: 2,
+  desc: "<p>Print the unique values in sorted order. Print <code>Unique: [1, 2, 4, 7, 9]</code>.</p>",
+  hint: "Use sorted(set(numbers)) to get unique values in order.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\n# Print unique values sorted\n# Print "Unique: [1, 2, 4, 7, 9]"\n',
+  check: (o) => o.includes("Unique:") && o.includes("1") && o.includes("9"),
+  successMsg: "Unique values found! Sets automatically remove duplicates."
+},
+{
+  id: 229,
+  chapter: 28,
+  name: "Count Each",
+  difficulty: 2,
+  desc: "<p>For each unique number (sorted), print the number and how many times it appears. For example, <code>4 appears 3 times</code>.</p>",
+  hint: "Loop through sorted unique values. Use numbers.count(n) for each.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\nunique = sorted(set(numbers))\nprint("Unique:", unique)\n\n# For each unique number, print "X appears Y times"\n',
+  check: (o) => o.includes("4") && o.includes("3"),
+  successMsg: "Occurrence counts complete! The number 4 appears most often."
+},
+{
+  id: 230,
+  chapter: 28,
+  name: "Find Duplicates",
+  difficulty: 2,
+  desc: "<p>Print only the values that appear more than once. Print <code>Duplicates: [2, 4, 7]</code>.</p>",
+  hint: "Loop through unique values. If count > 1, it is a duplicate. Collect them in a list.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\nunique = sorted(set(numbers))\nfor n in unique:\n    print(n, "appears", numbers.count(n), "times")\n\n# Find values that appear more than once\n# Print "Duplicates: [2, 4, 7]"\n',
+  check: (o) => o.includes("Duplicates:") && o.includes("2") && o.includes("4") && o.includes("7"),
+  successMsg: "Duplicates identified! Three numbers appear more than once."
+},
+{
+  id: 231,
+  chapter: 28,
+  name: "Most Common",
+  difficulty: 3,
+  desc: "<p>Find the most frequently occurring number. Print <code>Most common: 4 (3 times)</code>.</p>",
+  hint: "Track the number with the highest count as you loop through unique values.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\nunique = sorted(set(numbers))\nduplicates = [n for n in unique if numbers.count(n) > 1]\nprint("Duplicates:", duplicates)\n\n# Find the most common number and its count\n# Print "Most common: X (Y times)"\n',
+  check: (o) => o.includes("Most common:") && o.includes("4"),
+  successMsg: "Most common found! The number 4 appears 3 times."
+},
+{
+  id: 232,
+  chapter: 28,
+  name: "Remove Duplicates",
+  difficulty: 3,
+  desc: "<p>Create a new list with duplicates removed, keeping only the first occurrence of each number and preserving the original order. Print <code>Cleaned: [4, 2, 7, 9, 1]</code>.</p>",
+  hint: "Loop through numbers. If a number is not already in the new list, append it.",
+  starter: 'numbers = [4, 2, 7, 2, 9, 4, 1, 7, 4]\nprint("List:", numbers)\nprint("Length:", len(numbers))\n\nmost_common = max(set(numbers), key=numbers.count)\nprint("Most common:", most_common, "(" + str(numbers.count(most_common)) + " times)")\n\n# Remove duplicates keeping first occurrence and preserving order\n# Print "Cleaned: [4, 2, 7, 9, 1]"\n',
+  check: (o) => o.includes("Cleaned:") && o.includes("[4, 2, 7, 9, 1]"),
+  successMsg: "Duplicates removed! Order preserved with first-occurrence kept."
+},
+// ===== Mock 06: Sorting Visualiser (Chapter 29, ids 233-238) =====
+{
+  id: 233,
+  chapter: 29,
+  name: "Show Before",
+  difficulty: 1,
+  desc: "<p>Print the unsorted list with the label <code>Before:</code>.</p>",
+  hint: "The starter code already does this. Run it to see the output.",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n',
+  check: (o) => o.includes("Before:"),
+  successMsg: "List displayed! Now you can see what needs sorting."
+},
+{
+  id: 234,
+  chapter: 29,
+  name: "Find Minimum",
+  difficulty: 2,
+  desc: "<p>Find the minimum value in the list and its index. Print <code>Min: 11 at index 5</code>.</p>",
+  hint: "Use min(data) for the value and data.index(min(data)) for the position.",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\n# Find and print the minimum value and its index\n# Print "Min: 11 at index 5"\n',
+  check: (o) => o.includes("11") && o.includes("5"),
+  successMsg: "Minimum found! This is the first step of selection sort."
+},
+{
+  id: 235,
+  chapter: 29,
+  name: "One Swap",
+  difficulty: 2,
+  desc: "<p>Swap the first element with the minimum element. Print <code>After swap:</code> followed by the list. The first element should now be <code>11</code>.</p>",
+  hint: "Use Python tuple swap: data[0], data[min_idx] = data[min_idx], data[0].",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\nmin_val = min(data)\nmin_idx = data.index(min_val)\nprint("Min:", min_val, "at index", min_idx)\n\n# Swap first element with the minimum\n# Print "After swap:" followed by the list\n',
+  check: (o) => o.includes("After swap:") && o.includes("11"),
+  successMsg: "First swap done! The smallest element is now in position."
+},
+{
+  id: 236,
+  chapter: 29,
+  name: "Selection Sort",
+  difficulty: 3,
+  desc: "<p>Implement the full selection sort algorithm. Print <code>Sorted:</code> followed by the sorted list: <code>[11, 12, 22, 25, 34, 64, 90]</code>.</p>",
+  hint: "Use nested loops: outer loop picks position, inner loop finds the minimum in the remaining unsorted portion.",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\n# Implement selection sort\nfor i in range(len(data)):\n    min_idx = i\n    for j in range(i + 1, len(data)):\n        if data[j] < data[min_idx]:\n            min_idx = j\n    # Swap data[i] and data[min_idx]\n    pass\n\nprint("Sorted:", data)\n',
+  check: (o) => o.includes("Sorted:") && o.includes("[11, 12, 22, 25, 34, 64, 90]"),
+  successMsg: "Selection sort complete! The list is fully sorted."
+},
+{
+  id: 237,
+  chapter: 29,
+  name: "Count Swaps",
+  difficulty: 3,
+  desc: "<p>Count the total number of swaps performed during selection sort. Print <code>Total swaps: X</code>.</p>",
+  hint: "Add a swap counter. Only increment it when a swap actually happens (when min_idx != i).",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\nswap_count = 0\nfor i in range(len(data)):\n    min_idx = i\n    for j in range(i + 1, len(data)):\n        if data[j] < data[min_idx]:\n            min_idx = j\n    if min_idx != i:\n        data[i], data[min_idx] = data[min_idx], data[i]\n        swap_count += 1\n\nprint("Sorted:", data)\n# Print "Total swaps: X"\n',
+  check: (o) => o.includes("Total swaps:"),
+  successMsg: "Swaps counted! Selection sort minimises the number of swaps."
+},
+{
+  id: 238,
+  chapter: 29,
+  name: "Show Each Step",
+  difficulty: 3,
+  desc: "<p>Print the list after each swap to visualise the sorting process. The output should have multiple lines showing the list changing.</p>",
+  hint: "Add a print(data) or print(list(data)) inside the loop, right after each swap.",
+  starter: 'data = [64, 34, 25, 12, 22, 11, 90]\nprint("Before:", data)\n\nswap_count = 0\nfor i in range(len(data)):\n    min_idx = i\n    for j in range(i + 1, len(data)):\n        if data[j] < data[min_idx]:\n            min_idx = j\n    if min_idx != i:\n        data[i], data[min_idx] = data[min_idx], data[i]\n        swap_count += 1\n        # Print the list after each swap\n\nprint("Sorted:", data)\nprint("Total swaps:", swap_count)\n',
+  check: (o) => { const lines = o.trim().split("\n").filter(l => l.includes("[")); return lines.length >= 5; },
+  successMsg: "Sorting visualised! You can see the list taking shape step by step."
+},
+// ===== MOCK 07: COIN FLIP SIMULATOR (Chapter 30) =====
+{
+  id: 239,
+  chapter: 30,
+  name: "Count Flips",
+  difficulty: 1,
+  desc: "<p>The program simulates 50 coin flips. Run the code and confirm it prints <code>Flips: 50</code>.</p>",
+  hint: "The starter code already prints the count. Just run it.",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n',
+  check: (o) => o.includes("Flips: 50"),
+  successMsg: "50 flips recorded! Time to analyse the results."
+},
+{
+  id: 240,
+  chapter: 30,
+  name: "Count Each",
+  difficulty: 2,
+  desc: "<p>Count how many times <code>Heads</code> and <code>Tails</code> each appeared in the results list. Print <code>Heads: X</code> and <code>Tails: Y</code>.</p>",
+  hint: "Use results.count(\"Heads\") and results.count(\"Tails\").",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n\n# Count Heads and Tails\n# Print "Heads: X" and "Tails: Y"\n',
+  check: (o) => o.includes("Heads:") && o.includes("Tails:"),
+  successMsg: "Counts tallied! Now let\'s look at percentages."
+},
+{
+  id: 241,
+  chapter: 30,
+  name: "Percentage",
+  difficulty: 2,
+  desc: "<p>Calculate the percentage of Heads and print it to 1 decimal place. Format: <code>Heads: X.X%</code></p>",
+  hint: "Divide the Heads count by the total and multiply by 100. Use round(value, 1).",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n\nheads = results.count("Heads")\ntails = results.count("Tails")\nprint("Heads:", heads)\nprint("Tails:", tails)\n\n# Print percentage of Heads to 1 decimal: "Heads: X.X%"\n',
+  check: (o) => o.includes("%"),
+  successMsg: "Percentage calculated! Is it close to 50%?"
+},
+{
+  id: 242,
+  chapter: 30,
+  name: "Longest Streak",
+  difficulty: 3,
+  desc: "<p>Find the longest consecutive run of the same result (either Heads or Tails). Print <code>Longest streak: X</code>.</p>",
+  hint: "Loop through results. Track the current streak and update the longest when the value changes.",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n\nheads = results.count("Heads")\ntails = results.count("Tails")\npct = round(heads / len(results) * 100, 1)\nprint("Heads:", str(pct) + "%")\n\n# Find the longest consecutive run of the same result\n# Print "Longest streak: X"\n',
+  check: (o) => o.includes("Longest streak:"),
+  successMsg: "Streak found! Consecutive runs are important in probability."
+},
+{
+  id: 243,
+  chapter: 30,
+  name: "First Ten",
+  difficulty: 2,
+  desc: "<p>Print the first 10 flips as a list. Use slicing to extract them.</p>",
+  hint: "Use results[:10] to get the first 10 items.",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(50):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\nprint("Flips:", len(results))\n\nheads = results.count("Heads")\ntails = results.count("Tails")\npct = round(heads / len(results) * 100, 1)\nprint("Heads:", str(pct) + "%")\n\nlongest = 1\ncurrent = 1\nfor i in range(1, len(results)):\n    if results[i] == results[i - 1]:\n        current += 1\n        if current > longest:\n            longest = current\n    else:\n        current = 1\nprint("Longest streak:", longest)\n\n# Print the first 10 flips as a list\n',
+  check: (o) => o.includes("[") && o.includes("Heads"),
+  successMsg: "First ten displayed! A quick snapshot of the sequence."
+},
+{
+  id: 244,
+  chapter: 30,
+  name: "Fair Coin Test",
+  difficulty: 3,
+  desc: "<p>Run <strong>1000</strong> flips (reseed with 42). Check if Heads percentage is between 45% and 55% inclusive. Print <code>Fair</code> or <code>Biased</code>.</p>",
+  hint: "Count Heads out of 1000. If the percentage is between 45 and 55, print Fair, otherwise Biased.",
+  starter: 'from random import choice, seed\nseed(42)\n\nresults = []\nfor i in range(1000):\n    flip = choice(["Heads", "Tails"])\n    results.append(flip)\n\nheads = results.count("Heads")\npct = heads / len(results) * 100\nprint("Heads:", round(pct, 1), "%")\n\n# If percentage is between 45 and 55 inclusive, print "Fair"\n# Otherwise print "Biased"\n',
+  check: (o) => o.includes("Fair") || o.includes("Biased"),
+  successMsg: "Fairness tested! With 1000 flips the law of large numbers kicks in."
+},
+// ===== MOCK 08: CARD DEALER (Chapter 31) =====
+{
+  id: 245,
+  chapter: 31,
+  name: "Build Deck",
+  difficulty: 1,
+  desc: "<p>The program builds a standard 52-card deck. Run the code and confirm it prints <code>Deck size: 52</code>.</p>",
+  hint: "The starter code already builds and counts the deck. Just run it.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\nprint("Deck size:", len(deck))\n',
+  check: (o) => o.includes("Deck size: 52"),
+  successMsg: "52 cards ready! Time to shuffle and deal."
+},
+{
+  id: 246,
+  chapter: 31,
+  name: "Shuffle & Deal",
+  difficulty: 2,
+  desc: "<p>Shuffle the deck, then deal 5 cards by popping from the deck. Print each card on its own line.</p>",
+  hint: "Use shuffle(deck) then loop 5 times calling deck.pop() and printing each card.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\nprint("Deck size:", len(deck))\n\n# Shuffle the deck\n# Deal 5 cards (pop from deck) and print each one\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.filter(l => l.includes("of")).length >= 5; },
+  successMsg: "Hand dealt! Five cards from a shuffled deck."
+},
+{
+  id: 247,
+  chapter: 31,
+  name: "Count Suits",
+  difficulty: 2,
+  desc: "<p>Count how many of each suit are in the 5-card hand. Print <code>Hearts: X</code>, <code>Diamonds: X</code>, <code>Clubs: X</code>, <code>Spades: X</code>.</p>",
+  hint: "Loop through the hand and check if each card contains the suit name using \'in\'.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\n\nshuffle(deck)\nhand = []\nfor i in range(5):\n    hand.append(deck.pop())\n    print(hand[i])\n\n# Count how many of each suit in the hand\n# Print "Hearts: X", "Diamonds: X", etc.\n',
+  check: (o) => o.includes("Hearts:") || o.includes("Diamonds:") || o.includes("Clubs:") || o.includes("Spades:"),
+  successMsg: "Suit distribution counted! Useful for poker hands."
+},
+{
+  id: 248,
+  chapter: 31,
+  name: "Check for Pair",
+  difficulty: 3,
+  desc: "<p>Check if any two cards in the hand share the same value (e.g. two Kings). Print <code>Pair found!</code> or <code>No pair</code>.</p>",
+  hint: "Extract the value from each card (split on \" of \"), then check for duplicates.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\n\nshuffle(deck)\nhand = []\nfor i in range(5):\n    hand.append(deck.pop())\n    print(hand[i])\n\nfor suit in suits:\n    count = 0\n    for card in hand:\n        if suit in card:\n            count += 1\n    print(suit + ": " + str(count))\n\n# Check if any two cards share the same value\n# Print "Pair found!" or "No pair"\n',
+  check: (o) => o.includes("Pair") || o.includes("No pair"),
+  successMsg: "Pair detection complete! A key part of card game logic."
+},
+{
+  id: 249,
+  chapter: 31,
+  name: "Highest Card",
+  difficulty: 3,
+  desc: "<p>Map face cards to numbers: Jack=11, Queen=12, King=13, Ace=14. Number cards keep their value. Find the highest card in the hand and print <code>Highest: [card name]</code>.</p>",
+  hint: "Create a dictionary for face card values. Split each card to get its value string, convert to number, track the max.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\n\nshuffle(deck)\nhand = []\nfor i in range(5):\n    hand.append(deck.pop())\n    print(hand[i])\n\nface_values = {"Jack": 11, "Queen": 12, "King": 13, "Ace": 14}\n\n# Find the highest card in the hand\n# For number cards, use int(value). For face cards, use face_values dict.\n# Print "Highest: [card name]"\n',
+  check: (o) => o.includes("Highest:"),
+  successMsg: "Highest card identified! Ace high rules."
+},
+{
+  id: 250,
+  chapter: 31,
+  name: "Deal Multiple",
+  difficulty: 3,
+  desc: "<p>Deal <strong>4 hands</strong> of 5 cards each. Print each hand labelled <code>Hand 1:</code>, <code>Hand 2:</code>, etc. Then print which hand has the highest card overall.</p>",
+  hint: "Use a nested loop: outer loop for 4 hands, inner loop pops 5 cards. Track the highest card across all hands.",
+  starter: 'from random import shuffle, seed\nseed(42)\n\nsuits = ["Hearts", "Diamonds", "Clubs", "Spades"]\nvalues = ["2","3","4","5","6","7","8","9","10","Jack","Queen","King","Ace"]\ndeck = []\nfor suit in suits:\n    for value in values:\n        deck.append(value + " of " + suit)\n\nshuffle(deck)\nface_values = {"Jack": 11, "Queen": 12, "King": 13, "Ace": 14}\n\n# Deal 4 hands of 5 cards\n# Print "Hand 1:", "Hand 2:", etc. with cards listed\n# Print which hand has the highest card\n',
+  check: (o) => o.includes("Hand 1:") && o.includes("Hand 2:"),
+  successMsg: "Four hands dealt! A full table of cards."
+},
+// ===== MOCK 09: WEATHER STATS (Chapter 32) =====
+{
+  id: 251,
+  chapter: 32,
+  name: "Count Days",
+  difficulty: 1,
+  desc: "<p>The program has 14 days of temperature data. Run the code and confirm it prints <code>Days recorded: 14</code>.</p>",
+  hint: "The starter code already prints the count. Just run it.",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n',
+  check: (o) => o.includes("Days recorded: 14"),
+  successMsg: "14 days of data ready for analysis!"
+},
+{
+  id: 252,
+  chapter: 32,
+  name: "Average Temp",
+  difficulty: 2,
+  desc: "<p>Calculate the average temperature across all 14 days and print it to 1 decimal place. Format: <code>Average: X.X</code></p><p>Expected: <code>Average: 10.6</code></p>",
+  hint: "Sum all temperatures and divide by len(temps). Use round(value, 1).",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n\n# Calculate and print average to 1 decimal\n# Format: "Average: X.X"\n',
+  check: (o) => o.includes("Average:") && o.includes("10.6"),
+  successMsg: "Average is 10.6 degrees. A cool fortnight!"
+},
+{
+  id: 253,
+  chapter: 32,
+  name: "Hottest Day",
+  difficulty: 2,
+  desc: "<p>Find and print the hottest day. Format: <code>Hottest: [day] [temp]</code>.</p><p>The max is 16 on index 11 (Fri). Expected: <code>Hottest: Fri 16</code></p>",
+  hint: "Find the max temperature first, then find its index to look up the day name.",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n\navg = round(sum(temps) / len(temps), 1)\nprint("Average:", avg)\n\n# Find the hottest day and print "Hottest: [day] [temp]"\n',
+  check: (o) => o.includes("Hottest:") && o.includes("16"),
+  successMsg: "Friday was the hottest at 16 degrees!"
+},
+{
+  id: 254,
+  chapter: 32,
+  name: "Cold Days",
+  difficulty: 2,
+  desc: "<p>Count the number of days where the temperature was <strong>below 10</strong>. Print <code>Cold days: 6</code>.</p><p>Cold temps: 8, 7, 9, 6, 8, 9</p>",
+  hint: "Loop through temps and count how many are less than 10.",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n\navg = round(sum(temps) / len(temps), 1)\nprint("Average:", avg)\n\nmax_temp = max(temps)\nmax_idx = temps.index(max_temp)\nprint("Hottest:", days[max_idx], max_temp)\n\n# Count days below 10 and print "Cold days: X"\n',
+  check: (o) => o.includes("Cold days:") && o.includes("6"),
+  successMsg: "6 cold days out of 14. Nearly half!"
+},
+{
+  id: 255,
+  chapter: 32,
+  name: "Week Comparison",
+  difficulty: 3,
+  desc: "<p>Calculate the average of week 1 (first 7 days) and week 2 (last 7 days). Print which week was warmer.</p><p>Week 1 avg = 9.57, Week 2 avg = 11.71. Expected output should mention <code>Week 2</code>.</p>",
+  hint: "Slice temps[:7] for week 1 and temps[7:] for week 2. Compare their averages.",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\nprint("Days recorded:", len(temps))\n\navg = round(sum(temps) / len(temps), 1)\nprint("Average:", avg)\n\nmax_temp = max(temps)\nmax_idx = temps.index(max_temp)\nprint("Hottest:", days[max_idx], max_temp)\n\ncold = 0\nfor t in temps:\n    if t < 10:\n        cold += 1\nprint("Cold days:", cold)\n\n# Compare week 1 (first 7) vs week 2 (last 7)\n# Print which week was warmer\n',
+  check: (o) => o.includes("Week 2"),
+  successMsg: "Week 2 was warmer! The second week had better weather."
+},
+{
+  id: 256,
+  chapter: 32,
+  name: "Daily Report",
+  difficulty: 3,
+  desc: "<p>Print a table with each day, its temperature, and a category: <code>Cold</code> (below 10), <code>Mild</code> (10-14), or <code>Warm</code> (15 or above). Print one line per day (14 lines total).</p>",
+  hint: "Loop through both lists with an index. Use if/elif/else for the categories.",
+  starter: 'temps = [8, 11, 7, 14, 12, 9, 6, 13, 15, 10, 8, 16, 11, 9]\ndays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"]\n\nweek1_avg = round(sum(temps[:7]) / 7, 2)\nweek2_avg = round(sum(temps[7:]) / 7, 2)\nprint("Week 1 avg:", week1_avg)\nprint("Week 2 avg:", week2_avg)\nif week2_avg > week1_avg:\n    print("Week 2 was warmer")\nelse:\n    print("Week 1 was warmer")\n\n# Print daily report: day, temp, and Cold/Mild/Warm\n# Cold: below 10, Mild: 10-14, Warm: 15+\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 14 && (o.includes("Cold") || o.includes("Mild") || o.includes("Warm")); },
+  successMsg: "Full daily report generated! A complete weather summary."
+},
+// ===== MOCK 10: QUIZ GAME (Chapter 33) =====
+{
+  id: 257,
+  chapter: 33,
+  name: "Check Answers",
+  difficulty: 2,
+  desc: "<p>Loop through the questions. Compare each student answer to the correct answer. Print <code>Score: 2</code> (Q1 correct, Q2 wrong, Q3 correct).</p>",
+  hint: "Loop with an index. Compare answers[i] to the correct answer in questions[i][1]. Increment score for matches.",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\n# Loop through and compare each answer to the correct answer\n# Print "Score: X"\n',
+  check: (o) => o.includes("Score: 2"),
+  successMsg: "2 out of 3! The sky is blue, not red."
+},
+{
+  id: 258,
+  chapter: 33,
+  name: "Show Feedback",
+  difficulty: 2,
+  desc: "<p>For each question, print feedback: <code>Q1: Correct!</code> or <code>Q2: Wrong! Answer was: blue</code>.</p>",
+  hint: "Inside the loop, print Correct or Wrong with the question number and (if wrong) the correct answer.",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\nfor i in range(len(questions)):\n    if answers[i] == questions[i][1]:\n        score += 1\n    # Print "QX: Correct!" or "QX: Wrong! Answer was: Y"\n\nprint("Score:", score)\n',
+  check: (o) => o.includes("Correct") && o.includes("Wrong"),
+  successMsg: "Detailed feedback for each question!"
+},
+{
+  id: 259,
+  chapter: 33,
+  name: "Percentage Score",
+  difficulty: 2,
+  desc: "<p>Print the score as a percentage (rounded to the nearest integer). Format: <code>Percentage: 67%</code> (2 out of 3).</p>",
+  hint: "Divide score by len(questions), multiply by 100, and use round() or int().",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\nfor i in range(len(questions)):\n    if answers[i] == questions[i][1]:\n        score += 1\n        print("Q" + str(i + 1) + ": Correct!")\n    else:\n        print("Q" + str(i + 1) + ": Wrong! Answer was: " + questions[i][1])\n\nprint("Score:", score)\n\n# Print percentage: "Percentage: X%"\n',
+  check: (o) => o.includes("67") || o.includes("66"),
+  successMsg: "67% -- two thirds correct!"
+},
+{
+  id: 260,
+  chapter: 33,
+  name: "Case Insensitive",
+  difficulty: 2,
+  desc: "<p>Make the comparison case-insensitive. The correct answer for Q3 is now <code>\"Dublin\"</code> (capital D), but the student wrote <code>\"dublin\"</code>. It should still match. Print <code>Score: 2</code>.</p>",
+  hint: "Use .lower() on both sides of the comparison.",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "Dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\nfor i in range(len(questions)):\n    # Make the comparison case-insensitive\n    if answers[i] == questions[i][1]:\n        score += 1\n        print("Q" + str(i + 1) + ": Correct!")\n    else:\n        print("Q" + str(i + 1) + ": Wrong! Answer was: " + questions[i][1])\n\nprint("Score:", score)\npct = round(score / len(questions) * 100)\nprint("Percentage:", str(pct) + "%")\n',
+  check: (o) => o.includes("Score: 2"),
+  successMsg: "Case-insensitive matching! Dublin matches dublin."
+},
+{
+  id: 261,
+  chapter: 33,
+  name: "Grade It",
+  difficulty: 3,
+  desc: "<p>Print a grade based on the percentage: <code>&gt;=80%</code> Distinction, <code>&gt;=60%</code> Merit, <code>&gt;=40%</code> Pass, else Fail.</p><p>67% should print <code>Merit</code>.</p>",
+  hint: "Use if/elif/else on the percentage value.",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "Dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\nfor i in range(len(questions)):\n    if answers[i].lower() == questions[i][1].lower():\n        score += 1\n        print("Q" + str(i + 1) + ": Correct!")\n    else:\n        print("Q" + str(i + 1) + ": Wrong! Answer was: " + questions[i][1])\n\nprint("Score:", score)\npct = round(score / len(questions) * 100)\nprint("Percentage:", str(pct) + "%")\n\n# Print grade: >=80 Distinction, >=60 Merit, >=40 Pass, else Fail\n',
+  check: (o) => o.includes("Merit"),
+  successMsg: "Merit grade achieved! 67% falls in the 60-79 band."
+},
+{
+  id: 262,
+  chapter: 33,
+  name: "Track Streaks",
+  difficulty: 3,
+  desc: "<p>Track consecutive correct answers. Print <code>Longest streak: X</code>. For answers [correct, wrong, correct] the longest streak is 1.</p>",
+  hint: "Track current streak and best streak. Reset current to 0 on a wrong answer.",
+  starter: 'questions = [\n    ("What is 5 + 3?", "8"),\n    ("What colour is the sky?", "blue"),\n    ("What is the capital of Ireland?", "Dublin"),\n]\nanswers = ["8", "red", "dublin"]\nscore = 0\n\nfor i in range(len(questions)):\n    if answers[i].lower() == questions[i][1].lower():\n        score += 1\n        print("Q" + str(i + 1) + ": Correct!")\n    else:\n        print("Q" + str(i + 1) + ": Wrong! Answer was: " + questions[i][1])\n\nprint("Score:", score)\npct = round(score / len(questions) * 100)\nprint("Percentage:", str(pct) + "%")\n\nif pct >= 80:\n    print("Distinction")\nelif pct >= 60:\n    print("Merit")\nelif pct >= 40:\n    print("Pass")\nelse:\n    print("Fail")\n\n# Track consecutive correct answers\n# Print "Longest streak: X"\n',
+  check: (o) => o.includes("Longest streak:"),
+  successMsg: "Streak tracking complete! Consecutive runs measure consistency."
+},
+// ===== MOCK 11: HANGMAN (Chapter 34) =====
+{
+  id: 263,
+  chapter: 34,
+  name: "Show Blanks",
+  difficulty: 2,
+  desc: "<p>Create a display string with <code>_</code> for each letter in the secret word. Print <code>_ _ _ _ _ _</code> (6 blanks for \"python\").</p>",
+  hint: "Loop through each letter of the secret word and build a string of underscores separated by spaces.",
+  starter: 'secret_word = "python"\nguesses = ["p", "a", "t", "h", "o", "n", "y"]\nlives = 6\n\n# Create display with "_" for each letter\n# Print "_ _ _ _ _ _"\n',
+  check: (o) => o.includes("_ _ _ _ _ _"),
+  successMsg: "Six blanks for six letters! The game board is set."
+},
+{
+  id: 264,
+  chapter: 34,
+  name: "Process Guesses",
+  difficulty: 2,
+  desc: "<p>Loop through the guesses. After each guess, show the current state with revealed letters and blanks. For example after guessing \"p\": <code>p _ _ _ _ _</code>.</p>",
+  hint: "After each guess, loop through the secret word. If the letter has been guessed, show it; otherwise show _.",
+  starter: 'secret_word = "python"\nguesses = ["p", "a", "t", "h", "o", "n", "y"]\nlives = 6\n\n# Process each guess one at a time\n# After each guess, show current state (revealed letters + blanks)\n# E.g. after "p": "p _ _ _ _ _"\n# E.g. after "p","a": "p _ _ _ _ _" (a is not in word)\n# E.g. after "p","a","t": "p _ t _ _ _"\n',
+  check: (o) => o.includes("p") && o.includes("_"),
+  successMsg: "Letters reveal one by one! The word takes shape."
+},
+{
+  id: 265,
+  chapter: 34,
+  name: "Track Lives",
+  difficulty: 2,
+  desc: "<p>Lose a life for each wrong guess. Print <code>Lives: X</code> after each guess. The guess \"a\" is wrong, so lives should drop to 5.</p>",
+  hint: "If the guessed letter is not in the secret word, subtract 1 from lives.",
+  starter: 'secret_word = "python"\nguesses = ["p", "a", "t", "h", "o", "n", "y"]\nlives = 6\nguessed_so_far = []\n\nfor guess in guesses:\n    guessed_so_far.append(guess)\n    display = ""\n    for letter in secret_word:\n        if letter in guessed_so_far:\n            display += letter + " "\n        else:\n            display += "_ "\n    print(display.strip())\n    # Lose a life if guess is wrong\n    # Print "Lives: X"\n',
+  check: (o) => o.includes("Lives: 5"),
+  successMsg: "Lives tracked! One wrong guess costs one life."
+},
+{
+  id: 266,
+  chapter: 34,
+  name: "Win Detection",
+  difficulty: 3,
+  desc: "<p>After processing all guesses <code>[\"p\",\"a\",\"t\",\"h\",\"o\",\"n\",\"y\"]</code>, check if all letters have been found. If so, print <code>You win!</code>.</p>",
+  hint: "After the loop, check if every letter in the secret word has been guessed.",
+  starter: 'secret_word = "python"\nguesses = ["p", "a", "t", "h", "o", "n", "y"]\nlives = 6\nguessed_so_far = []\n\nfor guess in guesses:\n    guessed_so_far.append(guess)\n    display = ""\n    for letter in secret_word:\n        if letter in guessed_so_far:\n            display += letter + " "\n        else:\n            display += "_ "\n    print(display.strip())\n    if guess not in secret_word:\n        lives -= 1\n    print("Lives:", lives)\n\n# Check if all letters are found\n# If yes, print "You win!"\n',
+  check: (o) => o.includes("You win!"),
+  successMsg: "You win! All letters of python were guessed."
+},
+{
+  id: 267,
+  chapter: 34,
+  name: "Game Over",
+  difficulty: 3,
+  desc: "<p>Change the guesses to <code>[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\"]</code> (all wrong). With 6 lives, the game should end when lives reach 0. Print <code>Game over!</code>.</p>",
+  hint: "Inside the loop, after losing a life, check if lives == 0 and break.",
+  starter: 'secret_word = "python"\nguesses = ["a", "b", "c", "d", "e", "f", "g"]\nlives = 6\nguessed_so_far = []\n\nfor guess in guesses:\n    guessed_so_far.append(guess)\n    display = ""\n    for letter in secret_word:\n        if letter in guessed_so_far:\n            display += letter + " "\n        else:\n            display += "_ "\n    print(display.strip())\n    if guess not in secret_word:\n        lives -= 1\n    print("Lives:", lives)\n    # If lives reach 0, print "Game over!" and stop\n',
+  check: (o) => o.includes("Game over!"),
+  successMsg: "Game over! Six wrong guesses and you are out."
+},
+{
+  id: 268,
+  chapter: 34,
+  name: "Show the Word",
+  difficulty: 3,
+  desc: "<p>When the game ends (lives reach 0), also print <code>The word was: python</code> so the player knows the answer.</p>",
+  hint: "After printing Game over!, also print the secret word.",
+  starter: 'secret_word = "python"\nguesses = ["a", "b", "c", "d", "e", "f", "g"]\nlives = 6\nguessed_so_far = []\n\nfor guess in guesses:\n    guessed_so_far.append(guess)\n    display = ""\n    for letter in secret_word:\n        if letter in guessed_so_far:\n            display += letter + " "\n        else:\n            display += "_ "\n    print(display.strip())\n    if guess not in secret_word:\n        lives -= 1\n    print("Lives:", lives)\n    if lives == 0:\n        print("Game over!")\n        # Also print "The word was: python"\n        break\n',
+  check: (o) => o.includes("The word was: python"),
+  successMsg: "The secret is revealed! A complete Hangman game."
+},
+// ===== MOCK 12: NOUGHTS & CROSSES (Chapter 35) =====
+{
+  id: 269,
+  chapter: 35,
+  name: "Print Board",
+  difficulty: 2,
+  desc: "<p>Print the board with <code>|</code> separators. Each row should look like <code>X | O | X</code>. Print all 3 rows.</p>",
+  hint: "Loop through each row and join the elements with \" | \".",
+  starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\n# Print each row with | separators\n# E.g. "X | O | X"\n',
+  check: (o) => o.includes("|") && o.split("\n").filter(l => l.includes("|")).length >= 3,
+  successMsg: "Board displayed! Three rows with pipe separators."
+},
+{
+  id: 270,
+  chapter: 35,
+  name: "Check Rows",
+  difficulty: 2,
+  desc: "<p>Check all rows for three matching non-space values. This board has no row winner. Print <code>No row winner</code>.</p>",
+  hint: "Loop through each row. If all three values are the same and not a space, that player wins.",
+  starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\nfor row in board:\n    print(" | ".join(row))\n\n# Check each row for three matching non-space values\n# Print the winner or "No row winner"\n',
+  check: (o) => o.includes("No row winner"),
+  successMsg: "No row winner on this board. Let\'s check columns next."
+},
+{
+  id: 271,
+  chapter: 35,
+  name: "Check Columns",
+  difficulty: 2,
+  desc: "<p>Check all columns for three matching non-space values. No column winner either. Print <code>No column winner</code>.</p>",
+  hint: "Loop with index 0, 1, 2. Check board[0][i], board[1][i], board[2][i].",
+  starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\nfor row in board:\n    print(" | ".join(row))\n\nrow_winner = None\nfor row in board:\n    if row[0] == row[1] == row[2] and row[0] != " ":\n        row_winner = row[0]\nif row_winner:\n    print(row_winner, "wins on a row!")\nelse:\n    print("No row winner")\n\n# Check columns for three matching non-space values\n# Print the winner or "No column winner"\n',
+  check: (o) => o.includes("No column winner"),
+  successMsg: "No column winner either. But what about diagonals?"
+},
+{
+  id: 272,
+  chapter: 35,
+  name: "Check Diagonals",
+  difficulty: 3,
+  desc: "<p>Check both diagonals. The main diagonal is X, X, X (positions [0][0], [1][1], [2][2]) -- a winner! Print <code>X wins on diagonal!</code>.</p>",
+  hint: "Check board[0][0], board[1][1], board[2][2] for the main diagonal. Check board[0][2], board[1][1], board[2][0] for the anti-diagonal.",
+  starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\nfor row in board:\n    print(" | ".join(row))\n\nrow_winner = None\nfor row in board:\n    if row[0] == row[1] == row[2] and row[0] != " ":\n        row_winner = row[0]\nif row_winner:\n    print(row_winner, "wins on a row!")\nelse:\n    print("No row winner")\n\ncol_winner = None\nfor i in range(3):\n    if board[0][i] == board[1][i] == board[2][i] and board[0][i] != " ":\n        col_winner = board[0][i]\nif col_winner:\n    print(col_winner, "wins on a column!")\nelse:\n    print("No column winner")\n\n# Check both diagonals\n# Main diagonal: [0][0], [1][1], [2][2]\n# Anti-diagonal: [0][2], [1][1], [2][0]\n# Print "X wins on diagonal!" if found\n',
+  check: (o) => o.includes("X wins"),
+  successMsg: "X wins on the main diagonal! Three in a row from corner to corner."
+},
+{
+  id: 273,
+  chapter: 35,
+  name: "Full Check",
+  difficulty: 3,
+  desc: "<p>Create a function <code>check_winner(b)</code> that returns <code>\"X\"</code>, <code>\"O\"</code>, <code>\"Draw\"</code>, or <code>\"In progress\"</code>. Test it with the current board and print the result.</p>",
+  hint: "Combine row, column, and diagonal checks in one function. Check for empty spaces to distinguish Draw from In progress.",
+  starter: 'board = [\n    ["X", "O", "X"],\n    ["O", "X", "O"],\n    [" ", " ", "X"]\n]\n\nfor row in board:\n    print(" | ".join(row))\n\n# Create check_winner(b) that returns "X", "O", "Draw", or "In progress"\n# Check rows, columns, and diagonals for a winner\n# If no winner and no spaces: "Draw"\n# If no winner and spaces remain: "In progress"\n\n# Print the result of check_winner(board)\n',
+  check: (o) => o.includes("X"),
+  successMsg: "Full winner detection! X wins on the diagonal."
+},
+{
+  id: 274,
+  chapter: 35,
+  name: "Play a Game",
+  difficulty: 3,
+  desc: "<p>Start with an empty 3x3 board. Apply moves: <code>(0,0,\"X\"),(1,1,\"O\"),(0,1,\"X\"),(1,0,\"O\"),(0,2,\"X\")</code>. Print the board after each move and check for a winner. X should win (top row).</p>",
+  hint: "Apply each move to the board, print it, and run your check_winner function each time.",
+  starter: 'def check_winner(b):\n    for row in b:\n        if row[0] == row[1] == row[2] and row[0] != " ":\n            return row[0]\n    for i in range(3):\n        if b[0][i] == b[1][i] == b[2][i] and b[0][i] != " ":\n            return b[0][i]\n    if b[0][0] == b[1][1] == b[2][2] and b[0][0] != " ":\n        return b[0][0]\n    if b[0][2] == b[1][1] == b[2][0] and b[0][2] != " ":\n        return b[0][2]\n    for row in b:\n        if " " in row:\n            return "In progress"\n    return "Draw"\n\nboard = [[" "," "," "],[" "," "," "],[" "," "," "]]\nmoves = [(0,0,"X"),(1,1,"O"),(0,1,"X"),(1,0,"O"),(0,2,"X")]\n\n# Apply each move, print board after each, check for winner\n# X should win on the top row after the 5th move\n',
+  check: (o) => o.includes("X wins") || o.includes("X"),
+  successMsg: "X wins with the top row! A complete game of Noughts and Crosses."
+},
+// ===== Mock 13: Lottery Draw (Chapter 36, ids 275-280) =====
+{
+  id: 275,
+  chapter: 36,
+  name: "Draw Numbers",
+  difficulty: 1,
+  desc: "<p>Run the starter code to generate and print the 6 winning lottery numbers sorted in ascending order.</p>",
+  hint: "The starter code already works. Run it to see the winning numbers.",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n',
+  check: (o) => o.includes("Winning numbers:"),
+  successMsg: "Winning numbers drawn! The seed ensures reproducible results."
+},
+{
+  id: 276,
+  chapter: 36,
+  name: "My Ticket",
+  difficulty: 2,
+  desc: "<p>Create a list <code>my_ticket = [3, 17, 22, 25, 38, 41]</code> and print it with the label <code>My ticket:</code>.</p>",
+  hint: "Create the list and use print(\"My ticket:\", my_ticket).",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n\n# Create my_ticket and print it\n# Print "My ticket: [3, 17, 22, 25, 38, 41]"\n',
+  check: (o) => o.includes("My ticket:"),
+  successMsg: "Ticket created! Now let\'s see how it compares to the winning numbers."
+},
+{
+  id: 277,
+  chapter: 36,
+  name: "Count Matches",
+  difficulty: 2,
+  desc: "<p>Count how many numbers in your ticket match the winning numbers. Print <code>Matches: X</code>.</p>",
+  hint: "Loop through my_ticket and check if each number is in winning_numbers. Count the matches.",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n\nmy_ticket = [3, 17, 22, 25, 38, 41]\nprint("My ticket:", my_ticket)\n\n# Count matching numbers between ticket and winning\n# Print "Matches: X"\n',
+  check: (o) => o.includes("Matches:"),
+  successMsg: "Matches counted! Every match brings you closer to a prize."
+},
+{
+  id: 278,
+  chapter: 36,
+  name: "Show Matches",
+  difficulty: 2,
+  desc: "<p>Print which specific numbers matched between your ticket and the winning numbers. Print <code>Matched: [X, Y]</code> showing the list of matched numbers.</p>",
+  hint: "Create a list of numbers that appear in both my_ticket and winning_numbers using a loop or list comprehension.",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n\nmy_ticket = [3, 17, 22, 25, 38, 41]\nprint("My ticket:", my_ticket)\n\nmatches = 0\nfor n in my_ticket:\n    if n in winning_numbers:\n        matches += 1\nprint("Matches:", matches)\n\n# Find which numbers matched and print them\n# Print "Matched: [X, Y]"\n',
+  check: (o) => o.includes("Matched:"),
+  successMsg: "Matched numbers revealed! Now you can see exactly which ones hit."
+},
+{
+  id: 279,
+  chapter: 36,
+  name: "Prize Tiers",
+  difficulty: 3,
+  desc: "<p>Award a prize based on matches:<br>6 = <code>Jackpot!</code><br>5 = <code>Second Prize</code><br>4 = <code>Third Prize</code><br>3 = <code>Lucky Dip</code><br>else = <code>No win</code><br>Print the prize.</p>",
+  hint: "Use if/elif/else on the match count to determine and print the prize.",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n\nmy_ticket = [3, 17, 22, 25, 38, 41]\nprint("My ticket:", my_ticket)\n\nmatched = [n for n in my_ticket if n in winning_numbers]\nprint("Matches:", len(matched))\nprint("Matched:", matched)\n\n# Award prize based on number of matches\n# 6=Jackpot!, 5=Second Prize, 4=Third Prize, 3=Lucky Dip, else=No win\n',
+  check: (o) => o.includes("Jackpot") || o.includes("Prize") || o.includes("Lucky Dip") || o.includes("No win"),
+  successMsg: "Prize system working! The more matches, the bigger the prize."
+},
+{
+  id: 280,
+  chapter: 36,
+  name: "Multiple Tickets",
+  difficulty: 3,
+  desc: "<p>Check 3 tickets against the winning numbers: <code>[3, 17, 22, 25, 38, 41]</code>, <code>[1, 2, 3, 4, 5, 6]</code>, and <code>[10, 20, 30, 40, 41, 42]</code>. For each ticket, print the number of matches and the prize.</p>",
+  hint: "Use a list of lists for the tickets. Loop through each ticket, count matches, and determine the prize.",
+  starter: 'from random import sample, seed\nseed(42)\n\nwinning_numbers = sample(range(1, 43), 6)\nwinning_numbers.sort()\nprint("Winning numbers:", winning_numbers)\n\ndef check_prize(matches):\n    if matches == 6:\n        return "Jackpot!"\n    elif matches == 5:\n        return "Second Prize"\n    elif matches == 4:\n        return "Third Prize"\n    elif matches == 3:\n        return "Lucky Dip"\n    else:\n        return "No win"\n\ntickets = [\n    [3, 17, 22, 25, 38, 41],\n    [1, 2, 3, 4, 5, 6],\n    [10, 20, 30, 40, 41, 42],\n]\n\n# For each ticket, count matches and print matches + prize\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 3; },
+  successMsg: "Multiple tickets checked! A full lottery system in Python."
+},
+// ===== Mock 14: Rock Paper Scissors (Chapter 37, ids 281-286) =====
+{
+  id: 281,
+  chapter: 37,
+  name: "One Round",
+  difficulty: 1,
+  desc: "<p>Play one round where the player chooses <code>Rock</code> and the computer picks randomly (seeded). Print <code>Player: Rock</code> and <code>Computer: [choice]</code>.</p>",
+  hint: "The starter code already picks for the computer. Add a print for the player\'s choice.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\ncomputer = choice(options)\nprint("Player: Rock")\nprint("Computer:", computer)\n',
+  check: (o) => o.includes("Player: Rock") && o.includes("Computer:"),
+  successMsg: "First round played! Player chose Rock, computer made its pick."
+},
+{
+  id: 282,
+  chapter: 37,
+  name: "Determine Winner",
+  difficulty: 2,
+  desc: "<p>Compare the player and computer choices and print the result: <code>Player wins!</code>, <code>Computer wins!</code>, or <code>Draw!</code>.</p>",
+  hint: "Check all winning conditions for player: Rock beats Scissors, Scissors beats Paper, Paper beats Rock. If same, it is a draw.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer = "Rock"\ncomputer = choice(options)\nprint("Player:", player)\nprint("Computer:", computer)\n\n# Determine the winner\n# Print "Player wins!", "Computer wins!", or "Draw!"\n',
+  check: (o) => o.includes("wins!") || o.includes("Draw!"),
+  successMsg: "Winner determined! The classic rules decide each round."
+},
+{
+  id: 283,
+  chapter: 37,
+  name: "Play 5 Rounds",
+  difficulty: 2,
+  desc: "<p>Loop through <code>player_moves</code> for 5 rounds. For each round the computer picks randomly. Print the round number and result for each (e.g. <code>Round 1: ...</code> through <code>Round 5: ...</code>).</p>",
+  hint: "Use enumerate or a counter to track the round number. Call choice(options) each round for the computer.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\n\ndef winner(p, c):\n    if p == c:\n        return "Draw!"\n    elif (p == "Rock" and c == "Scissors") or (p == "Scissors" and c == "Paper") or (p == "Paper" and c == "Rock"):\n        return "Player wins!"\n    else:\n        return "Computer wins!"\n\n# Loop through player_moves, computer picks each round\n# Print "Round X: Player=... Computer=... Result"\n',
+  check: (o) => o.includes("Round 1") && o.includes("Round 5"),
+  successMsg: "Five rounds played! A proper tournament is taking shape."
+},
+{
+  id: 284,
+  chapter: 37,
+  name: "Track Score",
+  difficulty: 2,
+  desc: "<p>Count player wins, computer wins, and draws after 5 rounds. Print <code>Player: X Computer: Y Draws: Z</code>.</p>",
+  hint: "Add counters for player wins, computer wins, and draws. Increment based on the result of each round.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\n\ndef winner(p, c):\n    if p == c:\n        return "Draw!"\n    elif (p == "Rock" and c == "Scissors") or (p == "Scissors" and c == "Paper") or (p == "Paper" and c == "Rock"):\n        return "Player wins!"\n    else:\n        return "Computer wins!"\n\nplayer_wins = 0\ncomputer_wins = 0\ndraws = 0\n\nfor i, move in enumerate(player_moves, 1):\n    comp = choice(options)\n    result = winner(move, comp)\n    print("Round " + str(i) + ": " + move + " vs " + comp + " - " + result)\n    # Count wins and draws\n\n# Print "Player: X Computer: Y Draws: Z"\n',
+  check: (o) => o.includes("Player:") && o.includes("Computer:") && o.includes("Draws:"),
+  successMsg: "Scores tracked! Now we know who is winning overall."
+},
+{
+  id: 285,
+  chapter: 37,
+  name: "Tournament Winner",
+  difficulty: 3,
+  desc: "<p>After all rounds, declare the overall winner. Print <code>Player wins tournament!</code>, <code>Computer wins tournament!</code>, or <code>Tournament drawn!</code> based on who has the most wins.</p>",
+  hint: "Compare player_wins and computer_wins. The one with more wins the tournament. If equal, it is drawn.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\n\ndef winner(p, c):\n    if p == c:\n        return "Draw!"\n    elif (p == "Rock" and c == "Scissors") or (p == "Scissors" and c == "Paper") or (p == "Paper" and c == "Rock"):\n        return "Player wins!"\n    else:\n        return "Computer wins!"\n\nplayer_wins = 0\ncomputer_wins = 0\ndraws = 0\n\nfor i, move in enumerate(player_moves, 1):\n    comp = choice(options)\n    result = winner(move, comp)\n    print("Round " + str(i) + ": " + move + " vs " + comp + " - " + result)\n    if result == "Player wins!":\n        player_wins += 1\n    elif result == "Computer wins!":\n        computer_wins += 1\n    else:\n        draws += 1\n\nprint("Player:", player_wins, "Computer:", computer_wins, "Draws:", draws)\n\n# Declare tournament winner\n# Print "Player wins tournament!", "Computer wins tournament!", or "Tournament drawn!"\n',
+  check: (o) => o.includes("tournament"),
+  successMsg: "Tournament decided! The overall champion has been crowned."
+},
+{
+  id: 286,
+  chapter: 37,
+  name: "Win Percentage",
+  difficulty: 3,
+  desc: "<p>Print each player\'s win percentage to 1 decimal place. Print <code>Player win rate: X.X%</code> and <code>Computer win rate: X.X%</code>.</p>",
+  hint: "Win percentage = (wins / total_rounds) * 100. Use round(pct, 1) or f-string formatting.",
+  starter: 'from random import choice, seed\nseed(42)\n\noptions = ["Rock", "Paper", "Scissors"]\nplayer_moves = ["Rock", "Scissors", "Paper", "Rock", "Paper"]\n\ndef winner(p, c):\n    if p == c:\n        return "Draw!"\n    elif (p == "Rock" and c == "Scissors") or (p == "Scissors" and c == "Paper") or (p == "Paper" and c == "Rock"):\n        return "Player wins!"\n    else:\n        return "Computer wins!"\n\nplayer_wins = 0\ncomputer_wins = 0\ndraws = 0\n\nfor i, move in enumerate(player_moves, 1):\n    comp = choice(options)\n    result = winner(move, comp)\n    if result == "Player wins!":\n        player_wins += 1\n    elif result == "Computer wins!":\n        computer_wins += 1\n    else:\n        draws += 1\n\nprint("Player:", player_wins, "Computer:", computer_wins, "Draws:", draws)\n\nif player_wins > computer_wins:\n    print("Player wins tournament!")\nelif computer_wins > player_wins:\n    print("Computer wins tournament!")\nelse:\n    print("Tournament drawn!")\n\ntotal = len(player_moves)\n# Print "Player win rate: X.X%" and "Computer win rate: X.X%"\n',
+  check: (o) => o.includes("%"),
+  successMsg: "Win rates calculated! Percentages give a clear picture of performance."
+},
+// ===== Mock 15: Colour Mixer (Chapter 38, ids 287-292) =====
+{
+  id: 287,
+  chapter: 38,
+  name: "Show RGB",
+  difficulty: 1,
+  desc: "<p>Run the starter code to print the RGB colour values. The output should be <code>RGB: 255 128 0</code>.</p>",
+  hint: "The starter code already works. Run it to see the output.",
+  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\n',
+  check: (o) => o.includes("RGB: 255 128 0"),
+  successMsg: "RGB values displayed! This is a warm orange colour."
+},
+{
+  id: 288,
+  chapter: 38,
+  name: "Hex Conversion",
+  difficulty: 2,
+  desc: "<p>Convert the RGB values to a hex colour string. Print in the format <code>#FF8000</code>.</p>",
+  hint: "Use format(red, \'02X\') for each channel, or use f\"{red:02X}{green:02X}{blue:02X}\".",
+  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\n\n# Convert to hex and print in format "#FF8000"\n',
+  check: (o) => o.toUpperCase().includes("#FF8000") || o.toLowerCase().includes("#ff8000"),
+  successMsg: "Hex conversion done! Web developers use hex codes like this every day."
+},
+{
+  id: 289,
+  chapter: 38,
+  name: "Brightness",
+  difficulty: 2,
+  desc: "<p>Calculate the brightness as the average of the three channels: <code>(red + green + blue) / 3</code>. Print <code>Brightness: 128</code> (rounded to an integer).</p>",
+  hint: "Use round() or int() to convert to a whole number after dividing.",
+  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\nprint("#" + format(red, "02X") + format(green, "02X") + format(blue, "02X"))\n\n# Calculate brightness = (red + green + blue) / 3\n# Print "Brightness: 128" (rounded to int)\n',
+  check: (o) => o.includes("Brightness:") && o.includes("128"),
+  successMsg: "Brightness calculated! The average channel value measures perceived lightness."
+},
+{
+  id: 290,
+  chapter: 38,
+  name: "Classify Colour",
+  difficulty: 2,
+  desc: "<p>Classify the colour based on brightness:<br>brightness >= 170 = <code>Light</code><br>brightness >= 85 = <code>Medium</code><br>else = <code>Dark</code><br>Print the classification.</p>",
+  hint: "Use if/elif/else on the brightness value. 128 >= 85 so it should be Medium.",
+  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\n\nbrightness = round((red + green + blue) / 3)\nprint("Brightness:", brightness)\n\n# Classify: >= 170 "Light", >= 85 "Medium", else "Dark"\n# Print the classification\n',
+  check: (o) => o.includes("Medium"),
+  successMsg: "Colour classified as Medium! Brightness 128 falls in the middle range."
+},
+{
+  id: 291,
+  chapter: 38,
+  name: "Mix Colours",
+  difficulty: 3,
+  desc: "<p>Mix red <code>(255, 0, 0)</code> and blue <code>(0, 0, 255)</code> by averaging each channel. Print <code>Mixed: (R, G, B)</code> where R and B should be 127 or 128 and G should be 0.</p>",
+  hint: "Average each channel: new_r = (r1 + r2) // 2, etc. Use integer division.",
+  starter: 'red = 255\ngreen = 128\nblue = 0\nprint("RGB:", red, green, blue)\n\nbrightness = round((red + green + blue) / 3)\nprint("Brightness:", brightness)\n\nif brightness >= 170:\n    print("Light")\nelif brightness >= 85:\n    print("Medium")\nelse:\n    print("Dark")\n\n# Mix (255, 0, 0) and (0, 0, 255) by averaging each channel\n# Print "Mixed: (R, G, B)"\ncolour1 = (255, 0, 0)\ncolour2 = (0, 0, 255)\n',
+  check: (o) => o.includes("Mixed:") && (o.includes("127") || o.includes("128")),
+  successMsg: "Colours mixed! Red and blue make a purple shade."
+},
+{
+  id: 292,
+  chapter: 38,
+  name: "Colour Palette",
+  difficulty: 3,
+  desc: "<p>Given a list of colours <code>[(255,0,0), (0,255,0), (0,0,255), (255,255,0), (128,128,128)]</code>, find the brightest and darkest by average channel value. Print <code>Brightest:</code> and <code>Darkest:</code> with their RGB values.</p>",
+  hint: "Loop through the colours, calculate brightness for each. Track the brightest and darkest.",
+  starter: 'colours = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (128, 128, 128)]\n\nmixed_r = (255 + 0) // 2\nmixed_g = (0 + 0) // 2\nmixed_b = (0 + 255) // 2\nprint("Mixed:", (mixed_r, mixed_g, mixed_b))\n\n# Find brightest and darkest colours by average channel value\n# Print "Brightest: (R, G, B)" and "Darkest: (R, G, B)"\n',
+  check: (o) => o.includes("Brightest:") && o.includes("Darkest:"),
+  successMsg: "Palette analysed! Yellow is brightest and blue is darkest by average."
+},
+// ===== Mock 16: Shop Till (Chapter 39, ids 293-298) =====
+{
+  id: 293,
+  chapter: 39,
+  name: "Count Items",
+  difficulty: 1,
+  desc: "<p>Run the starter code to print the number of items in the shopping list. The output should include <code>Items: 5</code>.</p>",
+  hint: "The starter code already works. Run it to see the count.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\nprint("Items:", len(items))\n',
+  check: (o) => o.includes("Items: 5"),
+  successMsg: "Five items in the basket! Time to calculate the bill."
+},
+{
+  id: 294,
+  chapter: 39,
+  name: "Calculate Total",
+  difficulty: 2,
+  desc: "<p>Sum all the prices and print the total formatted to 2 decimal places. Print <code>Total: 13.40</code>.</p>",
+  hint: "Loop through items, add each price to a running total. Use f\"{total:.2f}\" for formatting.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\nprint("Items:", len(items))\n\n# Calculate and print the total\n# Print "Total: 13.40"\n',
+  check: (o) => o.includes("Total:") && o.includes("13.40"),
+  successMsg: "Total calculated! Five items come to 13.40."
+},
+{
+  id: 295,
+  chapter: 39,
+  name: "Print Receipt",
+  difficulty: 2,
+  desc: "<p>Print each item name and price formatted neatly, then a separator line, then the total. Each item should show its name and price.</p>",
+  hint: "Loop through items and print each name and price. Use string formatting for alignment.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\n\ntotal = 0\nfor name, price in items:\n    total += price\n\n# Print each item and price\n# Print a separator line\n# Print the total: 13.40\n',
+  check: (o) => o.includes("Bread") && o.includes("Cheese") && o.includes("13.40"),
+  successMsg: "Receipt printed! A clear breakdown of every item and the total."
+},
+{
+  id: 296,
+  chapter: 39,
+  name: "Apply Discount",
+  difficulty: 3,
+  desc: "<p>If the total is over 10, apply a 10% discount. Print <code>Discount: 1.34</code> and <code>Final total: 12.06</code>.</p>",
+  hint: "Calculate discount = total * 0.10. Use round(discount, 2) and format to 2 decimal places.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\n\ntotal = 0\nfor name, price in items:\n    print(name, format(price, ".2f"))\n    total += price\n\nprint("-" * 20)\nprint("Total:", format(total, ".2f"))\n\n# If total > 10, apply 10% discount\n# Print "Discount: X.XX" and "Final total: X.XX"\n',
+  check: (o) => o.includes("Discount:") && o.includes("Final total:"),
+  successMsg: "Discount applied! Spending over 10 earns a 10% saving."
+},
+{
+  id: 297,
+  chapter: 39,
+  name: "Most Expensive",
+  difficulty: 2,
+  desc: "<p>Find the most expensive item. Print <code>Most expensive: Cheese (4.50)</code>.</p>",
+  hint: "Loop through items, track the one with the highest price.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\n\ntotal = 0\nfor name, price in items:\n    total += price\n\nprint("Total:", format(total, ".2f"))\n\n# Find and print the most expensive item\n# Print "Most expensive: Cheese (4.50)"\n',
+  check: (o) => o.includes("Most expensive:") && o.includes("Cheese"),
+  successMsg: "Most expensive found! Cheese tops the list at 4.50."
+},
+{
+  id: 298,
+  chapter: 39,
+  name: "Price Range",
+  difficulty: 3,
+  desc: "<p>Find the cheapest and most expensive items and the price difference. Print <code>Cheapest: Milk (1.20)</code>, <code>Most expensive: Cheese (4.50)</code>, and <code>Range: 3.30</code>.</p>",
+  hint: "Track both the cheapest and most expensive as you loop. Subtract to find the range.",
+  starter: 'items = [\n    ("Bread", 1.50),\n    ("Milk", 1.20),\n    ("Eggs", 3.40),\n    ("Butter", 2.80),\n    ("Cheese", 4.50),\n]\n\ntotal = 0\nfor name, price in items:\n    total += price\nprint("Total:", format(total, ".2f"))\n\nexpensive_name, expensive_price = max(items, key=lambda x: x[1])\nprint("Most expensive:", expensive_name, "(" + format(expensive_price, ".2f") + ")")\n\n# Find cheapest item, print it, and print the range\n# Print "Cheapest: Milk (1.20)"\n# Print "Range: 3.30"\n',
+  check: (o) => o.includes("Cheapest:") && o.includes("Most expensive:") && o.includes("Range:"),
+  successMsg: "Price range found! From 1.20 to 4.50, a spread of 3.30."
+},
+// ===== Mock 17: Fitness Tracker (Chapter 40, ids 299-304) =====
+{
+  id: 299,
+  chapter: 40,
+  name: "Week Total",
+  difficulty: 1,
+  desc: "<p>Run the starter code to print the total steps for the week. The output should include <code>Week total: 64300</code>.</p>",
+  hint: "The starter code already works. Run it to see the total.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n',
+  check: (o) => o.includes("Week total: 64300"),
+  successMsg: "64,300 steps this week! A solid effort across seven days."
+},
+{
+  id: 300,
+  chapter: 40,
+  name: "Daily Average",
+  difficulty: 2,
+  desc: "<p>Calculate the daily average steps rounded to the nearest whole number. Print <code>Daily average: 9186</code>.</p>",
+  hint: "Divide total by 7 and use round() to get a whole number.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n\n# Calculate daily average rounded to whole number\n# Print "Daily average: 9186"\n',
+  check: (o) => o.includes("Daily average:") && o.includes("9186"),
+  successMsg: "Average of 9,186 steps per day! Just short of the 10,000 goal."
+},
+{
+  id: 301,
+  chapter: 40,
+  name: "Best Day",
+  difficulty: 2,
+  desc: "<p>Find the day with the most steps. Print <code>Best day: Sat (15000 steps)</code>.</p>",
+  hint: "Find the index of the maximum value in steps. Use that index to look up the day name.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n\navg = round(sum(steps) / len(steps))\nprint("Daily average:", avg)\n\n# Find the day with the most steps\n# Print "Best day: Sat (15000 steps)"\n',
+  check: (o) => o.includes("Best day:") && o.includes("Sat") && o.includes("15000"),
+  successMsg: "Saturday wins with 15,000 steps! Weekend walks pay off."
+},
+{
+  id: 302,
+  chapter: 40,
+  name: "Goal Days",
+  difficulty: 2,
+  desc: "<p>Count how many days met the 10,000 step goal. Wed (12,100) and Sat (15,000) meet it. Print <code>Goal met: 2 days</code>.</p>",
+  hint: "Loop through steps and count how many are >= goal.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n\navg = round(sum(steps) / len(steps))\nprint("Daily average:", avg)\n\nbest_idx = steps.index(max(steps))\nprint("Best day:", days[best_idx], "(" + str(steps[best_idx]) + " steps)")\n\n# Count days that met the goal\n# Print "Goal met: 2 days"\n',
+  check: (o) => o.includes("Goal met:") && o.includes("2"),
+  successMsg: "Two days hit the target! Wednesday and Saturday both cleared 10,000."
+},
+{
+  id: 303,
+  chapter: 40,
+  name: "Daily Status",
+  difficulty: 3,
+  desc: "<p>For each day, print the day name, steps, and whether the goal was met. Use the format:<br><code>Mon: 8200 - 1800 steps short</code><br><code>Wed: 12100 - Goal met!</code></p>",
+  hint: "Loop through days and steps together. If steps >= goal, print Goal met! Otherwise calculate the shortfall.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\nprint("Week total:", sum(steps))\n\ngoal_days = sum(1 for s in steps if s >= goal)\nprint("Goal met:", goal_days, "days")\n\n# For each day, print status\n# If goal met: "Day: XXXX - Goal met!"\n# If not: "Day: XXXX - YYYY steps short"\n',
+  check: (o) => o.includes("Goal met!") && o.includes("short"),
+  successMsg: "Daily status report complete! You can see exactly which days fell short."
+},
+{
+  id: 304,
+  chapter: 40,
+  name: "Streak Counter",
+  difficulty: 3,
+  desc: "<p>Find the longest consecutive streak of days meeting the goal. Only Wed (12,100) and Sat (15,000) meet the goal and they are not consecutive. Print <code>Longest goal streak: 1 day(s)</code>.</p>",
+  hint: "Loop through steps, track current streak and longest streak. Reset current streak when a day misses the goal.",
+  starter: 'steps = [8200, 5400, 12100, 7800, 9500, 15000, 6300]\ndays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]\ngoal = 10000\n\nfor i in range(len(days)):\n    if steps[i] >= goal:\n        status = "Goal met!"\n    else:\n        status = str(goal - steps[i]) + " steps short"\n    print(days[i] + ": " + str(steps[i]) + " - " + status)\n\n# Find longest consecutive streak of meeting the goal\n# Print "Longest goal streak: X day(s)"\n',
+  check: (o) => o.includes("Longest goal streak:"),
+  successMsg: "Streak tracked! With non-consecutive goal days, the longest streak is 1."
+},
+// ===== Mock 18: Movie Ratings (Chapter 41, ids 305-311) =====
+{
+  id: 305,
+  chapter: 41,
+  name: "Count Movies",
+  difficulty: 1,
+  desc: "<p>Run the starter code to print the number of movies. The output should include <code>Movies: 7</code>.</p>",
+  hint: "The starter code already works. Run it to see the count.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\nprint("Movies:", len(movies))\n',
+  check: (o) => o.includes("Movies: 7"),
+  successMsg: "Seven movies in the collection! All highly rated classics."
+},
+{
+  id: 306,
+  chapter: 41,
+  name: "Average Rating",
+  difficulty: 2,
+  desc: "<p>Calculate the average rating to 2 decimal places. Print <code>Average: 8.74</code>.</p>",
+  hint: "Sum all ratings and divide by the number of movies. Use format or round to 2 decimal places.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\nprint("Movies:", len(movies))\n\n# Calculate average rating to 2 decimal places\n# Print "Average: 8.74"\n',
+  check: (o) => o.includes("Average:") && o.includes("8.74"),
+  successMsg: "Average rating is 8.74! A very strong collection."
+},
+{
+  id: 307,
+  chapter: 41,
+  name: "Top Rated",
+  difficulty: 2,
+  desc: "<p>Find the movie with the highest rating. Print <code>Top rated: The Dark Knight (9.0)</code>.</p>",
+  hint: "Use max() with a key function on the rating, or loop through to find the highest.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\nprint("Movies:", len(movies))\n\ntotal = sum(r for _, r in movies)\navg = total / len(movies)\nprint("Average:", format(avg, ".2f"))\n\n# Find and print the top rated movie\n# Print "Top rated: The Dark Knight (9.0)"\n',
+  check: (o) => o.includes("Top rated:") && o.includes("The Dark Knight"),
+  successMsg: "The Dark Knight tops the list at 9.0! A masterpiece."
+},
+{
+  id: 308,
+  chapter: 41,
+  name: "Above Average",
+  difficulty: 2,
+  desc: "<p>Print all movies rated above the average (8.74). These are: The Dark Knight (9.0), Pulp Fiction (8.9), Forrest Gump (8.8), and Fight Club (8.8).</p>",
+  hint: "Loop through movies and check if the rating > avg. Print each qualifying movie.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\ntotal = sum(r for _, r in movies)\navg = total / len(movies)\nprint("Average:", format(avg, ".2f"))\n\ntop_name, top_rating = max(movies, key=lambda x: x[1])\nprint("Top rated:", top_name, "(" + str(top_rating) + ")")\n\n# Print movies rated above the average\nprint("Above average:")\n',
+  check: (o) => o.includes("The Dark Knight") && o.includes("Pulp Fiction") && o.includes("Forrest Gump"),
+  successMsg: "Four films beat the average! All rated 8.8 or higher."
+},
+{
+  id: 309,
+  chapter: 41,
+  name: "Rating Tiers",
+  difficulty: 3,
+  desc: "<p>Count movies in tiers:<br>Rating >= 9.0: <strong>1</strong> (The Dark Knight)<br>Rating >= 8.5 and < 9.0: <strong>5</strong> (Matrix, Interstellar, Pulp Fiction, Forrest Gump, Fight Club)<br>Rating < 8.5: <strong>1</strong> (Inception)<br>Print all three counts.</p>",
+  hint: "Use if/elif/else to categorise each movie by rating. Keep three counters.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\ntotal = sum(r for _, r in movies)\navg = total / len(movies)\nprint("Average:", format(avg, ".2f"))\n\nprint("Above average:")\nfor name, rating in movies:\n    if rating > avg:\n        print(" ", name, "(" + str(rating) + ")")\n\n# Count rating tiers\n# >= 9.0, >= 8.5 and < 9.0, < 8.5\n# Print counts for each tier\n',
+  check: (o) => o.includes("1") && o.includes("5"),
+  successMsg: "Tiers counted! Most films cluster in the 8.5-8.9 sweet spot."
+},
+{
+  id: 310,
+  chapter: 41,
+  name: "Sort by Rating",
+  difficulty: 3,
+  desc: "<p>Print all movies sorted by rating from highest to lowest. The Dark Knight (9.0) should appear first.</p>",
+  hint: "Use sorted() with key=lambda x: x[1] and reverse=True.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\ntier_high = sum(1 for _, r in movies if r >= 9.0)\ntier_mid = sum(1 for _, r in movies if 8.5 <= r < 9.0)\ntier_low = sum(1 for _, r in movies if r < 8.5)\nprint("9.0+:", tier_high)\nprint("8.5-8.9:", tier_mid)\nprint("Below 8.5:", tier_low)\n\n# Sort movies by rating highest to lowest and print each\n',
+  check: (o) => { const lines = o.trim().split("\n"); return lines.length >= 7 && lines[0].includes("Dark Knight"); },
+  successMsg: "Ranked by rating! The Dark Knight leads the pack."
+},
+{
+  id: 311,
+  chapter: 41,
+  name: "Recommend",
+  difficulty: 3,
+  desc: "<p>Print movies rated 8.8 or higher as a <code>Recommended:</code> list. That includes The Dark Knight (9.0), Pulp Fiction (8.9), Forrest Gump (8.8), and Fight Club (8.8).</p>",
+  hint: "Filter movies where rating >= 8.8. Print them under the Recommended header.",
+  starter: 'movies = [\n    ("The Matrix", 8.7),\n    ("Inception", 8.4),\n    ("Interstellar", 8.6),\n    ("The Dark Knight", 9.0),\n    ("Pulp Fiction", 8.9),\n    ("Forrest Gump", 8.8),\n    ("Fight Club", 8.8),\n]\n\nsorted_movies = sorted(movies, key=lambda x: x[1], reverse=True)\nfor name, rating in sorted_movies:\n    print(name, "(" + str(rating) + ")")\n\n# Print "Recommended:" header then list movies rated >= 8.8\n',
+  check: (o) => o.includes("Recommended:") && o.includes("The Dark Knight") && o.includes("Pulp Fiction"),
+  successMsg: "Recommendation engine built! Four films make the cut at 8.8 and above."
+},
 ];
 
 // ===== CHAPTER DEFINITIONS =====
@@ -2706,7 +3914,26 @@ const CHAPTERS = [
   { id: 20, name: "2022: Dice Sim", section: "LC Exam Questions", examContext: "LC 2022 Section C — A program simulates rolling a six-sided die 100 times and analyses the results. You will count frequencies, find the most common face, and create visualisations.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="20" height="20" rx="4" stroke="#e75e8d" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="20" cy="12" r="2" fill="white"/><circle cx="16" cy="16" r="2" fill="white"/><circle cx="12" cy="20" r="2" fill="white"/><circle cx="20" cy="20" r="2" fill="white"/></svg>' },
   { id: 21, name: "2023: Guess Game", section: "LC Exam Questions", examContext: "LC 2023 Section C — A number guessing game where the player tries to guess a secret number. You will add hints, guess limits, duplicate tracking, and win/lose messages.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="11" stroke="#e75e8d" stroke-width="2"/><text x="12" y="22" font-family="Fira Code,monospace" font-size="14" font-weight="bold" fill="white">?</text></svg>' },
   { id: 22, name: "2024: Fruit Machine", section: "LC Exam Questions", examContext: "LC 2024 Section C — A fruit machine simulation that spins three reels and checks for matches. You will display results, detect pairs and jackpots, and run a statistical simulation.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="24" height="20" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="26" stroke="#e75e8d" stroke-width="1.5"/><line x1="20" y1="6" x2="20" y2="26" stroke="#e75e8d" stroke-width="1.5"/><circle cx="8" cy="16" r="2.5" fill="white"/><circle cx="16" cy="16" r="2.5" fill="white"/><circle cx="24" cy="16" r="2.5" fill="white"/></svg>' },
-  { id: 23, name: "2025: Results", section: "LC Exam Questions", examContext: "LC 2025 Section C — A program processes a list of student exam results to calculate statistics. You will compute the mean, assign grades, find min/max, count score ranges, and find the longest increasing run.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="5" height="8" rx="1" fill="#e75e8d"/><rect x="11" y="12" width="5" height="14" rx="1" fill="#e75e8d" opacity="0.8"/><rect x="18" y="6" width="5" height="20" rx="1" fill="#e75e8d" opacity="0.6"/><rect x="25" y="10" width="5" height="16" rx="1" fill="#e75e8d" opacity="0.4"/></svg>' }
+  { id: 23, name: "2025: Results", section: "LC Exam Questions", examContext: "LC 2025 Section C — A program processes a list of student exam results to calculate statistics. You will compute the mean, assign grades, find min/max, count score ranges, and find the longest increasing run.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="18" width="5" height="8" rx="1" fill="#e75e8d"/><rect x="11" y="12" width="5" height="14" rx="1" fill="#e75e8d" opacity="0.8"/><rect x="18" y="6" width="5" height="20" rx="1" fill="#e75e8d" opacity="0.6"/><rect x="25" y="10" width="5" height="16" rx="1" fill="#e75e8d" opacity="0.4"/></svg>' },
+  // Mock Questions
+  { id: 24, name: "Mock 01: Email Validator", section: "Mock Questions", examContext: "Mock Exam — A program validates email addresses by checking for common formatting rules. You will build a complete email validator step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 25, name: "Mock 02: Caesar Cipher", section: "Mock Questions", examContext: "Mock Exam — A program encrypts and decrypts messages using the Caesar cipher, which shifts each letter by a fixed number of positions in the alphabet.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 26, name: "Mock 03: Word Counter", section: "Mock Questions", examContext: "Mock Exam — A program analyses text by counting words, characters, and calculating statistics. You will build a complete text analysis tool.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 27, name: "Mock 04: Palindrome Checker", section: "Mock Questions", examContext: "Mock Exam — A program checks whether words and phrases are palindromes (read the same forwards and backwards). You will handle various edge cases.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 28, name: "Mock 05: Duplicate Finder", section: "Mock Questions", examContext: "Mock Exam — A program analyses a list of numbers to find duplicates, count occurrences, and remove repeated values. You will build these features step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 29, name: "Mock 06: Sorting Visualiser", section: "Mock Questions", examContext: "Mock Exam — A program implements the selection sort algorithm and visualises each step of the sorting process. You will build and analyse the algorithm.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 30, name: "Mock 07: Coin Flip", section: "Mock Questions", examContext: "Mock Exam \u2014 A program simulates flipping a coin many times and analyses the results for patterns and fairness. You will build the simulation step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 31, name: "Mock 08: Card Dealer", section: "Mock Questions", examContext: "Mock Exam \u2014 A program simulates a card deck, shuffles and deals hands, then analyses the cards dealt. You will build the dealer step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 32, name: "Mock 09: Weather Stats", section: "Mock Questions", examContext: "Mock Exam \u2014 A program analyses two weeks of daily temperature recordings. You will calculate averages, find extremes, and compare weekly patterns.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 33, name: "Mock 10: Quiz Game", section: "Mock Questions", examContext: "Mock Exam \u2014 A program runs a multiple-choice quiz, checks answers, and calculates scores with grades. You will build the quiz engine step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 34, name: "Mock 11: Hangman", section: "Mock Questions", examContext: "Mock Exam \u2014 A program simulates a game of Hangman where a player guesses letters to reveal a hidden word. You will build the game logic step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 35, name: "Mock 12: Noughts & Crosses", section: "Mock Questions", examContext: "Mock Exam \u2014 A program checks the state of a Noughts and Crosses (Tic-Tac-Toe) board to detect winners and play sequences of moves.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 36, name: "Mock 13: Lottery Draw", section: "Mock Questions", examContext: "Mock Exam — A program simulates a lottery draw and checks tickets against winning numbers. You will build the lottery checker step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 37, name: "Mock 14: Rock Paper Scissors", section: "Mock Questions", examContext: "Mock Exam — A program simulates rounds of Rock Paper Scissors between a player and computer. You will track scores and determine a tournament winner.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 38, name: "Mock 15: Colour Mixer", section: "Mock Questions", examContext: "Mock Exam — A program works with RGB colour values to convert formats, calculate brightness, and mix colours. You will explore colour theory through code.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 39, name: "Mock 16: Shop Till", section: "Mock Questions", examContext: "Mock Exam — A program processes a shopping list to calculate totals, apply discounts, and generate a receipt. You will build the till system step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 40, name: "Mock 17: Fitness Tracker", section: "Mock Questions", examContext: "Mock Exam — A program analyses a week of daily step counts to calculate statistics, track goals, and find patterns. You will build the fitness tracker step by step.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
+  { id: 41, name: "Mock 18: Movie Ratings", section: "Mock Questions", examContext: "Mock Exam — A program processes a list of movies and their ratings to calculate statistics, rank films, and make recommendations.", icon: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="#e75e8d" stroke-width="2"/><line x1="10" y1="9" x2="22" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="14" x2="22" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="19" x2="18" y2="19" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="22" r="5" stroke="#5bc0de" stroke-width="2"/><path d="M22 19.5v3l1.5 1" stroke="#5bc0de" stroke-width="1.5" stroke-linecap="round"/></svg>' },
 ];
 
 const DIFFICULTY_POINTS = { 1: 50, 2: 75, 3: 100, 4: 150, 5: 200 };
