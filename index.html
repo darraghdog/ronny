@@ -65,7 +65,7 @@
     position: relative; z-index: 10;
   }
 
-  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
   .logo-icon { font-size: 36px; }
   .logo-text {
     font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700;
@@ -570,18 +570,21 @@
     .header { position: sticky; top: 0; z-index: 20; }
     .main-container { display: flex; flex-direction: column; height: auto; }
     .sidebar { max-height: 250px; border-right: none; border-bottom: 1px solid var(--panel-border); overflow-y: auto; }
+
     .editor-area { overflow: visible; }
     .editor-console-split { display: flex; flex-direction: column; overflow: visible; }
     .editor-panel { height: 250px; }
     #codeEditor { height: calc(100% - 36px); }
     .console-panel { height: 150px; }
     #consoleOutput { overflow-y: auto; }
+
     .hero-splash { padding: 24px 16px; gap: 16px; }
     .hero-title { font-size: 36px; letter-spacing: 4px; }
     .hero-mascot { width: 120px; height: 120px; }
     .hero-stats { flex-wrap: wrap; justify-content: center; gap: 10px; }
     .hero-stat-card { min-width: 90px; padding: 12px 16px; }
     .hero-stat-value { font-size: 22px; }
+
     .user-name { display: none; }
     .btn-signin span { display: none; }
     .btn-signin { padding: 6px 10px; }
@@ -639,7 +642,7 @@
 <div class="combo-display" id="comboDisplay"></div>
 
 <div class="header">
-  <div class="logo" onclick="goHome()" style="cursor:pointer">
+  <div class="logo" onclick="goHome()">
     <span class="logo-icon">&#x1F40D;</span>
     <div>
       <div class="logo-text">Go RONNY</div>
@@ -4416,7 +4419,7 @@ function renderChallengeList(chapterId) {
   let html = `
     <button class="back-btn" onclick="renderChapterList()">&#x2190; Back to Chapters</button>
     <div class="ch-header-info">
-      <div class="ch-header-title"><span class="ch-header-icon">${chapter.icon}</span>Ch ${chapter.id}: ${chapter.name}</div>
+      <div class="ch-header-title"><span class="ch-header-icon">${chapter.icon}</span>${chapter.section === 'Preparation Questions' ? 'Ch ' + chapter.id + ': ' : ''}${chapter.name}</div>
       <div class="ch-header-progress">
         <div class="ch-header-bar"><div class="ch-header-fill" style="width:${pct}%"></div></div>
         <span class="ch-header-text">${prog.done}/${prog.total}</span>
@@ -4545,6 +4548,8 @@ function goHome() {
 }
 
 function mobileBack() {
+  state.currentChallenge = -1;
+  state.currentChapter = -1;
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
