@@ -6,7 +6,7 @@ Single-file browser app (`index.html`) for Irish Leaving Cert Computer Science P
 
 ## Architecture
 
-Everything is in `index.html` (~4,700 lines). No build step, no server, no npm.
+Everything is in `index.html` (~5,300 lines). No build step, no server, no npm.
 
 | Section | Description |
 |---------|-------------|

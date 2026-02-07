@@ -2,7 +2,7 @@
 
 Python coding challenges for Leaving Cert Computer Science.
 
-**https://darraghdog.github.io/ronny**
+**https://goronny.codes**
 
 ## What is Ronny?
 
@@ -10,7 +10,7 @@ Ronny is a browser-based Python learning platform designed for Irish Leaving Cer
 
 ## Features
 
-- **311 challenges** across 41 chapters in three sections: Preparation Questions (Ch 1-17), LC Exam Questions (Ch 18-23), and Mock Questions (Ch 24-41)
+- **296 challenges** across 41 chapters in three sections: Preparation Questions (Ch 1-17), LC Exam Questions (Ch 18-23), and Mock Questions (Ch 24-41)
 - **Gamification** - XP, levels, ranks, streaks, combo multipliers, achievements, and a sensei mascot that reacts to your progress
 - **Google Sign-In** - authenticate with Google to sync progress across devices
 - **Cloud persistence** - progress and code saved to Firestore; works offline with localStorage fallback
@@ -21,13 +21,13 @@ Ronny is a browser-based Python learning platform designed for Irish Leaving Cer
 
 ### Single-file design
 
-Everything lives in `index.html` (~4,700 lines):
+Everything lives in `index.html` (~5,300 lines):
 
 | Section | Description |
 |---------|-------------|
 | **CSS** (~480 lines) | Dark theme with pink/blue accents, responsive layout, animations |
 | **HTML** (~140 lines) | Header with stats/auth, sidebar with chapter navigation, editor + console, overlays |
-| **Challenge data** (~3,200 lines) | 311 challenge objects with descriptions, starter code, and validation functions |
+| **Challenge data** (~3,200 lines) | 296 challenge objects with descriptions, starter code, and validation functions |
 | **Game engine** (~680 lines) | State management, Firebase auth/Firestore, code execution, UI rendering |
 
 ### External dependencies
