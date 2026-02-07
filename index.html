@@ -2255,10 +2255,7 @@ const codeCache = {};
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(err => {
-    console.error('Sign-in error:', err);
-    alert('Sign-in error: ' + err.message);
-  });
+  auth.signInWithRedirect(provider);
 }
 
 function signOutUser() {
