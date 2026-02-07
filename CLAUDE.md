@@ -1,20 +1,18 @@
 # Ronny - Python Challenges for Leaving Cert CS
 
-Single-file browser app (`index.html`) for Irish Leaving Cert Computer Science Python practice.
+Browser app for Irish Leaving Cert Computer Science Python practice.
 
 **Live site**: https://goronny.codes (GitHub Pages from `main` branch)
 
 ## Architecture
 
-Everything is in `index.html` (~5,300 lines). No build step, no server, no npm.
+Three files, no build step, no server, no npm. GitHub Pages serves directly.
 
-| Section | Description |
-|---------|-------------|
-| CSS | Dark theme, responsive, animations |
-| HTML | Header (stats/auth), sidebar (chapters), editor + console |
-| Challenge data | 296 challenge objects with starter code and JS check functions |
-| Chapter data | 41 chapters in 3 sections |
-| Game engine | State management, Firebase auth/Firestore, Skulpt execution, UI |
+| File | Lines | Contents |
+|------|-------|----------|
+| `index.html` | ~850 | HTML + CSS + two `<script src>` tags |
+| `challenges.js` | ~3,555 | `challenges` array (296 objects) + `CHAPTERS` array (41 objects) |
+| `engine.js` | ~900 | Constants, Firebase config/auth, game state, all functions, `init()` |
 
 ### External CDN dependencies
 - **Skulpt** - Python interpreter in browser
@@ -74,13 +72,13 @@ Google Sign-In requires `http://localhost` or an authorized domain (not `file://
 
 GitHub Pages from `main` branch. Push to deploy:
 ```bash
-git add index.html && git commit -m "message" && git push origin main
+git add index.html challenges.js engine.js && git commit -m "message" && git push origin main
 ```
 
 Custom domain `goronny.codes` configured via CNAME file + DNS.
 
 ## Firebase
 
-Project: `goronny`. Config is in `index.html` (public API key - this is normal for Firebase client SDK).
+Project: `goronny`. Config is in `engine.js` (public API key - this is normal for Firebase client SDK).
 
 Firestore rules restrict users to their own data only.
