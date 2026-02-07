@@ -591,12 +591,8 @@ function mobileBack() {
 }
 
 function heroChooseChapter() {
-  // Expand first section and scroll sidebar into view (no sign-in required)
-  const firstSection = ALL_SECTIONS[0].name;
-  if (collapsedSections[firstSection]) { toggleSection(firstSection); }
-  document.querySelector('.sidebar').classList.remove('mobile-hidden');
-  document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
-  renderChapterList();
+  showChapterChallenges(1);
+  selectChallenge(0);
 }
 
 function updateStats() {
