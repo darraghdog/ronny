@@ -2250,6 +2250,7 @@ const db = firebase.firestore();
 db.enablePersistence().catch(() => {});
 
 let currentUser = null;
+let authReady = false;
 const codeCache = {};
 
 function signInWithGoogle() {
@@ -2405,6 +2406,7 @@ function clearSavedCode(challengeId) {
 
 auth.onAuthStateChanged(async (user) => {
   currentUser = user;
+  authReady = true;
   updateAuthUI(user);
   if (user) {
     const hasCloud = await hasCloudData(user.uid);
@@ -2613,7 +2615,7 @@ function renderChallengeList(chapterId) {
 
 function selectChallenge(index) {
   if (index < 0 || index >= challenges.length) return;
-  if (!currentUser) { signInWithGoogle(); return; }
+  if (authReady && !currentUser) { signInWithGoogle(); return; }
 
   // Save code from previous challenge before switching
   if (state.currentChallenge >= 0) {
@@ -2696,7 +2698,7 @@ function hideHero() {
 }
 
 function heroChooseChapter() {
-  if (!currentUser) { signInWithGoogle(); return; }
+  if (authReady && !currentUser) { signInWithGoogle(); return; }
   document.getElementById('sidebarContent').scrollIntoView({ behavior: 'smooth' });
   renderChapterList();
 }
