@@ -556,7 +556,17 @@
   }
   .btn-signout:hover { color: var(--accent-pink); }
 
+  .mobile-back-btn {
+    display: none;
+    background: var(--panel-border); color: var(--neon-blue);
+    border: none; border-radius: 20px; padding: 6px 14px;
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600;
+    cursor: pointer; margin-bottom: 8px;
+  }
+  .mobile-back-btn:active { background: #444; }
+
   @media (max-width: 900px) {
+    .mobile-back-btn { display: inline-block; }
     .main-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
     .sidebar { max-height: 250px; border-right: none; border-bottom: 1px solid var(--panel-border); }
     .hero-splash { padding: 24px 16px; gap: 16px; }
@@ -734,6 +744,7 @@
     </div>
 
     <div class="challenge-header" id="challengeHeader">
+      <button class="mobile-back-btn" id="mobileBackBtn" onclick="mobileBack()">&#x2190; Back</button>
       <div class="challenge-title" id="challengeTitle">Select a Challenge</div>
       <div class="challenge-desc" id="challengeDesc">Choose a chapter from the sidebar, then pick a challenge to begin!</div>
       <div class="challenge-hint" id="challengeHint"></div>
@@ -4516,6 +4527,10 @@ function hideHero() {
   document.getElementById('heroSplash').style.display = 'none';
   document.getElementById('challengeHeader').style.display = '';
   document.getElementById('editorConsoleSplit').style.display = '';
+}
+
+function mobileBack() {
+  document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
 }
 
 function heroChooseChapter() {
