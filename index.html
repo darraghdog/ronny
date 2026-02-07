@@ -4520,7 +4520,10 @@ function hideHero() {
 
 function heroChooseChapter() {
   if (authReady && !currentUser) { signInWithGoogle(); return; }
-  document.getElementById('sidebarContent').scrollIntoView({ behavior: 'smooth' });
+  // On mobile, expand first section and scroll sidebar into view
+  const firstSection = ALL_SECTIONS[0].name;
+  if (collapsedSections[firstSection]) { toggleSection(firstSection); }
+  document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
   renderChapterList();
 }
 
