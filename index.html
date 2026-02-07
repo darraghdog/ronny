@@ -664,9 +664,10 @@
     <div class="xp-bar-container">
       <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
     </div>
-    <div class="stat-item">
+    <div class="stat-item" title="Daily streak">
       <span class="stat-icon">&#x1F525;</span>
       <span class="stat-value" id="streakCount">0</span>
+      <span style="color:#666;font-size:9px">days</span>
     </div>
     <div class="stat-item">
       <span class="stat-icon">&#x1F3C6;</span>
@@ -809,58 +810,578 @@
 <script>
 // ===== CHALLENGE DATA =====
 const challenges = [
-{id:1,chapter:1,name:"Hello World",difficulty:1,desc:"<p>Print the classic greeting <code>Hello, World!</code> to the screen.</p>",hint:"Use the print() function with the exact string.",starter:"# Print Hello, World!\n",check:(o)=>o.trim()==="Hello, World!",successMsg:"Welcome to Python! You just ran your first program."},
-{id:2,chapter:1,name:"Print a Number",difficulty:1,desc:"<p>Print the number <code>42</code> to the screen.</p>",hint:"You can pass a number directly to print().",starter:"# Print the number 42\n",check:(o)=>o.trim()==="42",successMsg:"Numbers work too! Python prints them without quotes."},
-{id:3,chapter:1,name:"Print Two Lines",difficulty:1,desc:"<p>Print <code>Hello</code> on the first line and <code>World</code> on the second line.</p>",hint:"Use two separate print() statements.",starter:"# Print Hello on one line, then World on the next\n",check:(o)=>o.trim()==="Hello\nWorld",successMsg:"Each print() starts a new line by default."},
-{id:4,chapter:1,name:"Escape Characters",difficulty:1,desc:"<p>Print a string that contains a <strong>tab character</strong> between two words: the output should be <code>Hello&#9;World</code> (with a tab, not spaces).</p>",hint:"Use \\t inside a string to insert a tab character.",starter:"# Print Hello and World separated by a tab character\n",check:(o)=>o.trim()==="Hello\tWorld",successMsg:"Escape characters like \\t let you insert special characters."},
-{id:5,chapter:1,name:"Multi-line String",difficulty:1,desc:"<p>Use <strong>triple quotes</strong> to print exactly two lines:<br><code>Line 1</code><br><code>Line 2</code></p>",hint:"Triple quotes (\"\"\" or ''') let you write strings that span multiple lines.",starter:"# Use triple quotes to print two lines\n",check:(o)=>o.trim()==="Line 1\nLine 2",successMsg:"Triple quotes are great for multi-line text!"},
-{id:6,chapter:1,name:"String Repeat",difficulty:1,desc:"<p>Use the <code>*</code> operator to repeat the string <code>Ha</code> three times and print the result: <code>HaHaHa</code></p>",hint:"In Python, \"text\" * 3 repeats the string 3 times.",starter:"# Repeat the string \"Ha\" three times and print it\n",check:(o)=>o.trim()==="HaHaHa",successMsg:"The * operator repeats strings — handy trick!"},
-{id:7,chapter:1,name:"Sep Parameter",difficulty:2,desc:"<p>Use the <code>sep</code> parameter of <code>print()</code> to print <code>1</code>, <code>2</code>, and <code>3</code> separated by dashes: <code>1-2-3</code></p>",hint:"print() accepts a sep parameter: print(a, b, c, sep=\"-\")",starter:"# Use print with sep parameter to output: 1-2-3\n",check:(o)=>o.trim()==="1-2-3",successMsg:"The sep parameter controls what goes between printed values."},
-{id:8,chapter:1,name:"End Parameter",difficulty:2,desc:"<p>Use two <code>print()</code> statements to print <code>Hello World</code> on a <strong>single line</strong>. The first print outputs <code>Hello</code> and the second outputs <code>World</code>.</p>",hint:"Use end=\" \" in the first print() so it doesn't add a newline.",starter:"# Use two print statements to output \"Hello World\" on one line\n# Hint: the end parameter controls what print() adds at the end\n",check:(o)=>o.trim()==="Hello World",successMsg:"The end parameter controls what comes after each print!"},
-{id:9,chapter:2,name:"Store and Print",difficulty:1,desc:"<p>Create a variable <code>x</code> with the value <code>7</code>, then print it.</p>",hint:"Assign with x = 7, then use print(x).",starter:"# Create variable x with value 7 and print it\n",check:(o)=>o.trim()==="7",successMsg:"Variables store values for later use!"},
-{id:10,chapter:2,name:"Two Variables",difficulty:1,desc:"<p>Create variables <code>a = 3</code> and <code>b = 5</code>, then print their sum.</p>",hint:"Use print(a + b) after creating both variables.",starter:"# Create a = 3 and b = 5, then print their sum\n",check:(o)=>o.trim()==="8",successMsg:"You can use variables in expressions just like numbers."},
-{id:11,chapter:2,name:"String Variable",difficulty:1,desc:"<p>Create a variable <code>name</code> with the value <code>Python</code> and print it.</p>",hint:"Strings need quotes: name = \"Python\"",starter:"# Create a string variable called name and print it\n",check:(o)=>o.trim()==="Python",successMsg:"Strings are text data — always wrapped in quotes."},
-{id:12,chapter:2,name:"Float Variable",difficulty:1,desc:"<p>Create a variable <code>pi</code> with the value <code>3.14</code> and print it.</p>",hint:"Floats are numbers with decimal points: pi = 3.14",starter:"# Create a float variable pi and print it\n",check:(o)=>o.trim()==="3.14",successMsg:"Floats represent decimal numbers in Python."},
-{id:13,chapter:2,name:"Boolean Variable",difficulty:1,desc:"<p>Create a variable <code>flag</code> with the value <code>True</code> and print it.</p>",hint:"Booleans are True or False (capitalized!).",starter:"# Create a boolean variable flag set to True and print it\n",check:(o)=>o.trim()==="True",successMsg:"Booleans are either True or False — note the capital letter!"},
-{id:14,chapter:2,name:"Type Check",difficulty:1,desc:"<p>Use the <code>type()</code> function to print the type of the number <code>42</code>.</p>",hint:"Wrap type() around 42 inside print().",starter:"# Print the type of the number 42\n",check:(o)=>o.trim()==="<class 'int'>",successMsg:"type() reveals what kind of data you're working with."},
-{id:15,chapter:2,name:"Int Casting",difficulty:2,desc:"<p>The variable <code>x</code> contains the string <code>\"10\"</code>. Convert it to an integer, add <code>5</code>, and print the result.</p>",hint:"Use int() to convert a string to an integer.",starter:"x = \"10\"\n# Convert x to an integer, add 5, and print the result\n",check:(o)=>o.trim()==="15",successMsg:"int() converts strings to integers so you can do math."},
-{id:16,chapter:2,name:"Float to Int",difficulty:2,desc:"<p>Convert the float <code>3.9</code> to an integer using <code>int()</code> and print the result.</p>",hint:"int() truncates (cuts off) the decimal part — it does NOT round.",starter:"# Convert 3.9 to an int and print the result\n",check:(o)=>o.trim()==="3",successMsg:"int() truncates floats — it always rounds toward zero!"},
-{id:17,chapter:2,name:"String Casting",difficulty:2,desc:"<p>The variable <code>age</code> is set to <code>16</code>. Print <code>Age: 16</code> by converting <code>age</code> to a string and concatenating.</p>",hint:"Use str() to convert a number to a string before concatenating with +.",starter:"age = 16\n# Print \"Age: 16\" using string concatenation\n",check:(o)=>o.trim()==="Age: 16",successMsg:"str() converts numbers to strings for concatenation!"},
-{id:18,chapter:2,name:"Multiple Types",difficulty:2,desc:"<p>Given <code>x = 10</code> (int) and <code>y = 3.5</code> (float), print their sum.</p>",hint:"Python automatically promotes int to float when you mix them.",starter:"x = 10\ny = 3.5\n# Print the sum of x and y\n",check:(o)=>o.trim()==="13.5",successMsg:"Python auto-converts int + float to float. No casting needed!"},
-{id:19,chapter:3,name:"Addition",difficulty:1,desc:"<p>Print the result of <code>15 + 27</code>.</p>",hint:"Use print() with the expression inside.",starter:"# Print the result of 15 + 27\n",check:(o)=>o.trim()==="42",successMsg:"The answer to everything — and basic addition!"},
-{id:20,chapter:3,name:"Floor Division",difficulty:1,desc:"<p>Print the result of <code>17 // 3</code> (floor division).</p>",hint:"// divides and rounds DOWN to the nearest whole number.",starter:"# Print the result of 17 // 3\n",check:(o)=>o.trim()==="5",successMsg:"Floor division (//) drops the remainder entirely."},
-{id:21,chapter:3,name:"Modulo",difficulty:1,desc:"<p>Print the result of <code>17 % 5</code> (modulo — the remainder).</p>",hint:"The % operator gives you the remainder after division.",starter:"# Print the remainder of 17 divided by 5\n",check:(o)=>o.trim()==="2",successMsg:"Modulo (%) gives the remainder — super useful for divisibility checks!"},
-{id:22,chapter:3,name:"Exponent",difficulty:1,desc:"<p>Print the result of <code>2 ** 10</code> (2 to the power of 10).</p>",hint:"** is the exponentiation operator in Python.",starter:"# Print 2 raised to the power of 10\n",check:(o)=>o.trim()==="1024",successMsg:"2^10 = 1024. The ** operator handles exponentiation!"},
-{id:23,chapter:3,name:"Comparison",difficulty:1,desc:"<p>Print the result of <code>10 &gt; 5</code>.</p>",hint:"Comparison operators return True or False.",starter:"# Print the result of 10 > 5\n",check:(o)=>o.trim()==="True",successMsg:"Comparisons evaluate to boolean True or False."},
-{id:24,chapter:3,name:"Equality",difficulty:1,desc:"<p>Print the result of <code>10 == 10</code>.</p>",hint:"Use == (double equals) to check equality, not = (single equals).",starter:"# Print the result of 10 == 10\n",check:(o)=>o.trim()==="True",successMsg:"== checks equality. = assigns values. Don't mix them up!"},
-{id:25,chapter:3,name:"Logical And",difficulty:2,desc:"<p>Print the result of <code>True and False</code>.</p>",hint:"'and' returns True only when BOTH sides are True.",starter:"# Print the result of True and False\n",check:(o)=>o.trim()==="False",successMsg:"'and' requires both sides to be True — one False makes it False."},
-{id:26,chapter:3,name:"Logical Or",difficulty:2,desc:"<p>Print the result of <code>True or False</code>.</p>",hint:"'or' returns True when at least one side is True.",starter:"# Print the result of True or False\n",check:(o)=>o.trim()==="True",successMsg:"'or' only needs one True to return True."},
-{id:27,chapter:3,name:"Not Operator",difficulty:2,desc:"<p>Print the result of <code>not True</code>.</p>",hint:"'not' flips True to False and vice versa.",starter:"# Print the result of not True\n",check:(o)=>o.trim()==="False",successMsg:"'not' inverts the boolean — simple but powerful!"},
-{id:28,chapter:3,name:"Operator Precedence",difficulty:3,desc:"<p>Print the result of <code>2 + 3 * 4</code>. Think about which operation happens first!</p>",hint:"Multiplication (*) happens before addition (+), just like in math.",starter:"# Print the result of 2 + 3 * 4\n# Think: does + or * happen first?\n",check:(o)=>o.trim()==="14",successMsg:"Multiplication before addition — PEMDAS applies in Python too!"},
-{id:29,chapter:4,name:"Concatenation",difficulty:1,desc:"<p>Given <code>first = \"Hello\"</code> and <code>second = \"World\"</code>, concatenate them with a space in between and print: <code>Hello World</code></p>",hint:"Use the + operator to join strings. Don't forget the space!",starter:"first = \"Hello\"\nsecond = \"World\"\n# Concatenate first and second with a space and print\n",check:(o)=>o.trim()==="Hello World",successMsg:"The + operator joins strings together!"},
-{id:30,chapter:4,name:"String Length",difficulty:1,desc:"<p>Print the length of the string <code>\"Python\"</code> using <code>len()</code>.</p>",hint:"len() returns the number of characters in a string.",starter:"# Print the length of \"Python\"\n",check:(o)=>o.trim()==="6",successMsg:"len() counts every character in the string."},
-{id:31,chapter:4,name:"f-String Basics",difficulty:1,desc:"<p>Given <code>name = \"Ronny\"</code>, use an f-string to print <code>Hi Ronny!</code></p>",hint:"f-strings use curly braces: f\"Hi {name}!\"",starter:"name = \"Ronny\"\n# Use an f-string to print: Hi Ronny!\n",check:(o)=>o.trim()==="Hi Ronny!",successMsg:"f-strings make it easy to embed variables in text!"},
-{id:32,chapter:4,name:"Upper and Lower",difficulty:1,desc:"<p>Given <code>msg = \"Hello\"</code>, print the uppercase version: <code>HELLO</code></p>",hint:"Use the .upper() method on the string.",starter:"msg = \"Hello\"\n# Print msg in all uppercase\n",check:(o)=>o.trim()==="HELLO",successMsg:".upper() converts every character to uppercase."},
-{id:33,chapter:4,name:"String Indexing",difficulty:2,desc:"<p>Given <code>word = \"Python\"</code>, print the <strong>first character</strong>.</p>",hint:"Strings are indexed starting at 0: word[0] is the first character.",starter:"word = \"Python\"\n# Print the first character of word\n",check:(o)=>o.trim()==="P",successMsg:"Python indexes start at 0 — word[0] is the first character."},
-{id:34,chapter:4,name:"String Slicing",difficulty:2,desc:"<p>Given <code>word = \"Python\"</code>, print the first three characters: <code>Pyt</code></p>",hint:"Use slicing: word[start:end] — end is exclusive.",starter:"word = \"Python\"\n# Print the first 3 characters of word\n",check:(o)=>o.trim()==="Pyt",successMsg:"Slicing with [0:3] gives characters at index 0, 1, and 2."},
-{id:35,chapter:4,name:"Find Method",difficulty:2,desc:"<p>Given <code>s = \"Hello World\"</code>, use <code>.find()</code> to print the index where <code>\"World\"</code> starts.</p>",hint:".find() returns the index of the first occurrence of a substring.",starter:"s = \"Hello World\"\n# Print the index where \"World\" starts\n",check:(o)=>o.trim()==="6",successMsg:".find() returns the starting index of a substring."},
-{id:36,chapter:4,name:"Replace Method",difficulty:2,desc:"<p>Given <code>s = \"Hello World\"</code>, replace <code>\"World\"</code> with <code>\"Python\"</code> and print the result.</p>",hint:"Use s.replace(old, new) to swap substrings.",starter:"s = \"Hello World\"\n# Replace \"World\" with \"Python\" and print\n",check:(o)=>o.trim()==="Hello Python",successMsg:".replace() swaps one substring for another."},
-{id:37,chapter:4,name:"Split Method",difficulty:3,desc:"<p>Given <code>s = \"a,b,c\"</code>, split it on commas and print the resulting list.</p>",hint:"Use s.split(\",\") to break a string into a list.",starter:"s = \"a,b,c\"\n# Split s on commas and print the result\n",check:(o)=>o.trim()==="['a', 'b', 'c']",successMsg:".split() breaks strings into lists — essential for parsing data!"},
-{id:38,chapter:4,name:"Join Method",difficulty:3,desc:"<p>Given <code>words = [\"Hello\", \"World\"]</code>, join them with a space and print: <code>Hello World</code></p>",hint:"Use \" \".join(words) — the separator goes before .join().",starter:"words = [\"Hello\", \"World\"]\n# Join words with a space and print\n",check:(o)=>o.trim()==="Hello World",successMsg:".join() is the opposite of .split() — it combines list items!"},
-{id:39,chapter:4,name:"String Formatting",difficulty:3,desc:"<p>Given <code>x = 3.14159</code>, use an f-string to print it rounded to 2 decimal places: <code>3.14</code></p>",hint:"Use f\"{x:.2f}\" to format a float to 2 decimal places.",starter:"x = 3.14159\n# Print x with exactly 2 decimal places\n",check:(o)=>o.trim()==="3.14",successMsg:"Format specifiers like :.2f give you precise control over output!"},
-{id:40,chapter:4,name:"Reverse a String",difficulty:4,desc:"<p>Given <code>s = \"hello\"</code>, print the string reversed: <code>olleh</code></p>",hint:"Use slicing with a step of -1: s[::-1]",starter:"s = \"hello\"\n# Print s reversed\n",check:(o)=>o.trim()==="olleh",successMsg:"s[::-1] reverses a string using slice step — a classic Python trick!"},
-{id:41,chapter:5,name:"Simple If",difficulty:1,desc:"<p>Given <code>x = 10</code>, print <code>Big</code> if <code>x</code> is greater than 5.</p>",hint:"Use: if x > 5: followed by an indented print().",starter:"x = 10\n# If x is greater than 5, print \"Big\"\n",check:(o)=>o.trim()==="Big",successMsg:"The if statement runs code only when the condition is True."},
-{id:42,chapter:5,name:"If-Else",difficulty:1,desc:"<p>Given <code>x = 3</code>, print <code>Big</code> if x &gt; 5, otherwise print <code>Small</code>.</p>",hint:"Use if/else to handle both cases.",starter:"x = 3\n# Print \"Big\" if x > 5, otherwise print \"Small\"\n",check:(o)=>o.trim()==="Small",successMsg:"else catches everything the if condition misses."},
-{id:43,chapter:5,name:"If-Elif-Else",difficulty:2,desc:"<p>Given <code>score = 75</code>, print the letter grade:<br>&gt;= 90: <code>A</code>, &gt;= 80: <code>B</code>, &gt;= 70: <code>C</code>, otherwise: <code>F</code></p>",hint:"Use if/elif/elif/else to check each range from highest to lowest.",starter:"score = 75\n# Print the letter grade: A (>=90), B (>=80), C (>=70), F (else)\n",check:(o)=>o.trim()==="C",successMsg:"elif lets you chain multiple conditions in order!"},
-{id:44,chapter:5,name:"Nested If",difficulty:2,desc:"<p>Given <code>x = 15</code>, first check if it's positive. If so, check if it's even or odd. Print <code>Positive and Odd</code>.</p>",hint:"Nest an if/else inside the first if block. Use x % 2 to check even/odd.",starter:"x = 15\n# Check if positive, then check if even or odd\n# Print \"Positive and Even\" or \"Positive and Odd\"\n",check:(o)=>o.trim()==="Positive and Odd",successMsg:"Nested ifs let you check conditions within conditions!"},
-{id:45,chapter:5,name:"And Condition",difficulty:2,desc:"<p>Given <code>age = 20</code> and <code>has_id = True</code>, print <code>Entry allowed</code> if <strong>both</strong> conditions are met (age &gt;= 18 and has_id is True).</p>",hint:"Use 'and' to combine two conditions: if age >= 18 and has_id:",starter:"age = 20\nhas_id = True\n# Print \"Entry allowed\" if age >= 18 AND has_id is True\n",check:(o)=>o.trim()==="Entry allowed",successMsg:"'and' ensures ALL conditions must be True."},
-{id:46,chapter:5,name:"Or Condition",difficulty:2,desc:"<p>Given <code>day = \"Saturday\"</code>, print <code>Weekend</code> if day is <code>\"Saturday\"</code> or <code>\"Sunday\"</code>.</p>",hint:"Use 'or' to check either condition.",starter:"day = \"Saturday\"\n# Print \"Weekend\" if day is Saturday or Sunday\n",check:(o)=>o.trim()==="Weekend",successMsg:"'or' is True when at least one condition matches."},
-{id:47,chapter:5,name:"Not Condition",difficulty:2,desc:"<p>Given <code>raining = False</code>, print <code>Go outside</code> if it is <strong>not</strong> raining.</p>",hint:"Use 'not' to invert a boolean: if not raining:",starter:"raining = False\n# Print \"Go outside\" if it's not raining\n",check:(o)=>o.trim()==="Go outside",successMsg:"'not' flips the condition — great for negative checks!"},
-{id:48,chapter:5,name:"Ternary Expression",difficulty:2,desc:"<p>Given <code>x = 7</code>, use a <strong>ternary expression</strong> (one-line if/else) to set result to <code>\"Even\"</code> if x is even, or <code>\"Odd\"</code> if x is odd. Print result.</p>",hint:"Ternary syntax: result = \"Even\" if x % 2 == 0 else \"Odd\"",starter:"x = 7\n# Use a ternary expression to set result to \"Even\" or \"Odd\"\n# Then print result\n",check:(o)=>o.trim()==="Odd",successMsg:"Ternary expressions are compact one-line conditionals!"},
-{id:49,chapter:5,name:"Temperature Classifier",difficulty:3,desc:"<p>Given <code>temp = 25</code>, classify the temperature:<br>&lt;= 0: <code>Freezing</code>, &lt;= 15: <code>Cold</code>, &lt;= 25: <code>Mild</code>, else: <code>Hot</code></p>",hint:"Use if/elif/elif/else checking from coldest to hottest.",starter:"temp = 25\n# Classify: Freezing (<=0), Cold (<=15), Mild (<=25), Hot (>25)\n",check:(o)=>o.trim()==="Mild",successMsg:"Multi-branch conditionals can classify values into ranges!"},
-{id:50,chapter:5,name:"FizzBuzz Check",difficulty:3,desc:"<p>Given <code>n = 15</code>, print:<br><code>FizzBuzz</code> if divisible by both 3 and 5,<br><code>Fizz</code> if divisible by 3 only,<br><code>Buzz</code> if divisible by 5 only,<br>otherwise print the number.</p>",hint:"Check divisibility by both 3 AND 5 first, then by 3, then by 5.",starter:"n = 15\n# FizzBuzz: divisible by 3 and 5 -> \"FizzBuzz\"\n# divisible by 3 only -> \"Fizz\"\n# divisible by 5 only -> \"Buzz\"\n# otherwise -> print the number\n",check:(o)=>o.trim()==="FizzBuzz",successMsg:"FizzBuzz — the classic coding interview question, solved!"},
-{id:51,chapter:5,name:"Min of Three",difficulty:3,desc:"<p>Given <code>a = 7</code>, <code>b = 3</code>, <code>c = 9</code>, find and print the minimum value <strong>without using</strong> the built-in <code>min()</code> function.</p>",hint:"Use if/elif/else to compare all three values against each other.",starter:"a = 7\nb = 3\nc = 9\n# Find and print the minimum of a, b, c without using min()\n",check:(o)=>o.trim()==="3",successMsg:"You can find the minimum with comparisons — that's what min() does internally!"},
-{id:52,chapter:5,name:"Triangle Check",difficulty:4,desc:"<p>Given sides <code>a = 3</code>, <code>b = 4</code>, <code>c = 5</code>, check if they form a valid triangle. A triangle is valid if each side is less than the sum of the other two. Print <code>Valid triangle</code> or <code>Not a triangle</code>.</p>",hint:"Check all three conditions: a < b+c AND b < a+c AND c < a+b.",starter:"a = 3\nb = 4\nc = 5\n# Check if these sides form a valid triangle\n# Print \"Valid triangle\" or \"Not a triangle\"\n",check:(o)=>o.trim()==="Valid triangle",successMsg:"The triangle inequality theorem — geometry meets code!"},
+{
+  id: 1,
+  chapter: 1,
+  name: "Hello World",
+  difficulty: 1,
+  desc: "<p>Print the classic greeting <code>Hello, World!</code> to the screen.</p>",
+  hint: "Use the print() function with the exact string.",
+  starter: '# Print Hello, World!\n',
+  check: (o)=>o.trim()==="Hello, World!",
+  successMsg: "Welcome to Python! You just ran your first program."
+},
+{
+  id: 2,
+  chapter: 1,
+  name: "Print a Number",
+  difficulty: 1,
+  desc: "<p>Print the number <code>42</code> to the screen.</p>",
+  hint: "You can pass a number directly to print().",
+  starter: '# Print the number 42\n',
+  check: (o)=>o.trim()==="42",
+  successMsg: "Numbers work too! Python prints them without quotes."
+},
+{
+  id: 3,
+  chapter: 1,
+  name: "Print Two Lines",
+  difficulty: 1,
+  desc: "<p>Print <code>Hello</code> on the first line and <code>World</code> on the second line.</p>",
+  hint: "Use two separate print() statements.",
+  starter: '# Print Hello on one line, then World on the next\n',
+  check: (o)=>o.trim()==="Hello\nWorld",
+  successMsg: "Each print() starts a new line by default."
+},
+{
+  id: 4,
+  chapter: 1,
+  name: "Escape Characters",
+  difficulty: 1,
+  desc: "<p>Print a string that contains a <strong>tab character</strong> between two words: the output should be <code>Hello&#9;World</code> (with a tab, not spaces).</p>",
+  hint: "Use \\t inside a string to insert a tab character.",
+  starter: '# Print Hello and World separated by a tab character\n',
+  check: (o)=>o.trim()==="Hello\tWorld",
+  successMsg: "Escape characters like \\t let you insert special characters."
+},
+{
+  id: 5,
+  chapter: 1,
+  name: "Multi-line String",
+  difficulty: 1,
+  desc: "<p>Use <strong>triple quotes</strong> to print exactly two lines:<br><code>Line 1</code><br><code>Line 2</code></p>",
+  hint: "Triple quotes (\"\"\" or ''') let you write strings that span multiple lines.",
+  starter: '# Use triple quotes to print two lines\n',
+  check: (o)=>o.trim()==="Line 1\nLine 2",
+  successMsg: "Triple quotes are great for multi-line text!"
+},
+{
+  id: 6,
+  chapter: 1,
+  name: "String Repeat",
+  difficulty: 1,
+  desc: "<p>Use the <code>*</code> operator to repeat the string <code>Ha</code> three times and print the result: <code>HaHaHa</code></p>",
+  hint: "In Python, \"text\" * 3 repeats the string 3 times.",
+  starter: '# Repeat the string \"Ha\" three times and print it\n',
+  check: (o)=>o.trim()==="HaHaHa",
+  successMsg: "The * operator repeats strings — handy trick!"
+},
+{
+  id: 7,
+  chapter: 1,
+  name: "Sep Parameter",
+  difficulty: 2,
+  desc: "<p>Use the <code>sep</code> parameter of <code>print()</code> to print <code>1</code>, <code>2</code>, and <code>3</code> separated by dashes: <code>1-2-3</code></p>",
+  hint: "print() accepts a sep parameter: print(a, b, c, sep=\"-\")",
+  starter: '# Use print with sep parameter to output: 1-2-3\n',
+  check: (o)=>o.trim()==="1-2-3",
+  successMsg: "The sep parameter controls what goes between printed values."
+},
+{
+  id: 8,
+  chapter: 1,
+  name: "End Parameter",
+  difficulty: 2,
+  desc: "<p>Use two <code>print()</code> statements to print <code>Hello World</code> on a <strong>single line</strong>. The first print outputs <code>Hello</code> and the second outputs <code>World</code>.</p>",
+  hint: "Use end=\" \" in the first print() so it doesn't add a newline.",
+  starter: '# Use two print statements to output \"Hello World\" on one line\n# Hint: the end parameter controls what print() adds at the end\n',
+  check: (o)=>o.trim()==="Hello World",
+  successMsg: "The end parameter controls what comes after each print!"
+},
+{
+  id: 9,
+  chapter: 2,
+  name: "Store and Print",
+  difficulty: 1,
+  desc: "<p>Create a variable <code>x</code> with the value <code>7</code>, then print it.</p>",
+  hint: "Assign with x = 7, then use print(x).",
+  starter: '# Create variable x with value 7 and print it\n',
+  check: (o)=>o.trim()==="7",
+  successMsg: "Variables store values for later use!"
+},
+{
+  id: 10,
+  chapter: 2,
+  name: "Two Variables",
+  difficulty: 1,
+  desc: "<p>Create variables <code>a = 3</code> and <code>b = 5</code>, then print their sum.</p>",
+  hint: "Use print(a + b) after creating both variables.",
+  starter: '# Create a = 3 and b = 5, then print their sum\n',
+  check: (o)=>o.trim()==="8",
+  successMsg: "You can use variables in expressions just like numbers."
+},
+{
+  id: 11,
+  chapter: 2,
+  name: "String Variable",
+  difficulty: 1,
+  desc: "<p>Create a variable <code>name</code> with the value <code>Python</code> and print it.</p>",
+  hint: "Strings need quotes: name = \"Python\"",
+  starter: '# Create a string variable called name and print it\n',
+  check: (o)=>o.trim()==="Python",
+  successMsg: "Strings are text data — always wrapped in quotes."
+},
+{
+  id: 12,
+  chapter: 2,
+  name: "Float Variable",
+  difficulty: 1,
+  desc: "<p>Create a variable <code>pi</code> with the value <code>3.14</code> and print it.</p>",
+  hint: "Floats are numbers with decimal points: pi = 3.14",
+  starter: '# Create a float variable pi and print it\n',
+  check: (o)=>o.trim()==="3.14",
+  successMsg: "Floats represent decimal numbers in Python."
+},
+{
+  id: 13,
+  chapter: 2,
+  name: "Boolean Variable",
+  difficulty: 1,
+  desc: "<p>Create a variable <code>flag</code> with the value <code>True</code> and print it.</p>",
+  hint: "Booleans are True or False (capitalized!).",
+  starter: '# Create a boolean variable flag set to True and print it\n',
+  check: (o)=>o.trim()==="True",
+  successMsg: "Booleans are either True or False — note the capital letter!"
+},
+{
+  id: 14,
+  chapter: 2,
+  name: "Type Check",
+  difficulty: 1,
+  desc: "<p>Use the <code>type()</code> function to print the type of the number <code>42</code>.</p>",
+  hint: "Wrap type() around 42 inside print().",
+  starter: '# Print the type of the number 42\n',
+  check: (o)=>o.trim()==="<class 'int'>",
+  successMsg: "type() reveals what kind of data you're working with."
+},
+{
+  id: 15,
+  chapter: 2,
+  name: "Int Casting",
+  difficulty: 2,
+  desc: "<p>The variable <code>x</code> contains the string <code>\"10\"</code>. Convert it to an integer, add <code>5</code>, and print the result.</p>",
+  hint: "Use int() to convert a string to an integer.",
+  starter: 'x = \"10\"\n# Convert x to an integer, add 5, and print the result\n',
+  check: (o)=>o.trim()==="15",
+  successMsg: "int() converts strings to integers so you can do math."
+},
+{
+  id: 16,
+  chapter: 2,
+  name: "Float to Int",
+  difficulty: 2,
+  desc: "<p>Convert the float <code>3.9</code> to an integer using <code>int()</code> and print the result.</p>",
+  hint: "int() truncates (cuts off) the decimal part — it does NOT round.",
+  starter: '# Convert 3.9 to an int and print the result\n',
+  check: (o)=>o.trim()==="3",
+  successMsg: "int() truncates floats — it always rounds toward zero!"
+},
+{
+  id: 17,
+  chapter: 2,
+  name: "String Casting",
+  difficulty: 2,
+  desc: "<p>The variable <code>age</code> is set to <code>16</code>. Print <code>Age: 16</code> by converting <code>age</code> to a string and concatenating.</p>",
+  hint: "Use str() to convert a number to a string before concatenating with +.",
+  starter: 'age = 16\n# Print \"Age: 16\" using string concatenation\n',
+  check: (o)=>o.trim()==="Age: 16",
+  successMsg: "str() converts numbers to strings for concatenation!"
+},
+{
+  id: 18,
+  chapter: 2,
+  name: "Multiple Types",
+  difficulty: 2,
+  desc: "<p>Given <code>x = 10</code> (int) and <code>y = 3.5</code> (float), print their sum.</p>",
+  hint: "Python automatically promotes int to float when you mix them.",
+  starter: 'x = 10\ny = 3.5\n# Print the sum of x and y\n',
+  check: (o)=>o.trim()==="13.5",
+  successMsg: "Python auto-converts int + float to float. No casting needed!"
+},
+{
+  id: 19,
+  chapter: 3,
+  name: "Addition",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>15 + 27</code>.</p>",
+  hint: "Use print() with the expression inside.",
+  starter: '# Print the result of 15 + 27\n',
+  check: (o)=>o.trim()==="42",
+  successMsg: "The answer to everything — and basic addition!"
+},
+{
+  id: 20,
+  chapter: 3,
+  name: "Floor Division",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>17 // 3</code> (floor division).</p>",
+  hint: "// divides and rounds DOWN to the nearest whole number.",
+  starter: '# Print the result of 17 // 3\n',
+  check: (o)=>o.trim()==="5",
+  successMsg: "Floor division (//) drops the remainder entirely."
+},
+{
+  id: 21,
+  chapter: 3,
+  name: "Modulo",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>17 % 5</code> (modulo — the remainder).</p>",
+  hint: "The % operator gives you the remainder after division.",
+  starter: '# Print the remainder of 17 divided by 5\n',
+  check: (o)=>o.trim()==="2",
+  successMsg: "Modulo (%) gives the remainder — super useful for divisibility checks!"
+},
+{
+  id: 22,
+  chapter: 3,
+  name: "Exponent",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>2 ** 10</code> (2 to the power of 10).</p>",
+  hint: "** is the exponentiation operator in Python.",
+  starter: '# Print 2 raised to the power of 10\n',
+  check: (o)=>o.trim()==="1024",
+  successMsg: "2^10 = 1024. The ** operator handles exponentiation!"
+},
+{
+  id: 23,
+  chapter: 3,
+  name: "Comparison",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>10 &gt; 5</code>.</p>",
+  hint: "Comparison operators return True or False.",
+  starter: '# Print the result of 10 > 5\n',
+  check: (o)=>o.trim()==="True",
+  successMsg: "Comparisons evaluate to boolean True or False."
+},
+{
+  id: 24,
+  chapter: 3,
+  name: "Equality",
+  difficulty: 1,
+  desc: "<p>Print the result of <code>10 == 10</code>.</p>",
+  hint: "Use == (double equals) to check equality, not = (single equals).",
+  starter: '# Print the result of 10 == 10\n',
+  check: (o)=>o.trim()==="True",
+  successMsg: "== checks equality. = assigns values. Don't mix them up!"
+},
+{
+  id: 25,
+  chapter: 3,
+  name: "Logical And",
+  difficulty: 2,
+  desc: "<p>Print the result of <code>True and False</code>.</p>",
+  hint: "'and' returns True only when BOTH sides are True.",
+  starter: '# Print the result of True and False\n',
+  check: (o)=>o.trim()==="False",
+  successMsg: "'and' requires both sides to be True — one False makes it False."
+},
+{
+  id: 26,
+  chapter: 3,
+  name: "Logical Or",
+  difficulty: 2,
+  desc: "<p>Print the result of <code>True or False</code>.</p>",
+  hint: "'or' returns True when at least one side is True.",
+  starter: '# Print the result of True or False\n',
+  check: (o)=>o.trim()==="True",
+  successMsg: "'or' only needs one True to return True."
+},
+{
+  id: 27,
+  chapter: 3,
+  name: "Not Operator",
+  difficulty: 2,
+  desc: "<p>Print the result of <code>not True</code>.</p>",
+  hint: "'not' flips True to False and vice versa.",
+  starter: '# Print the result of not True\n',
+  check: (o)=>o.trim()==="False",
+  successMsg: "'not' inverts the boolean — simple but powerful!"
+},
+{
+  id: 28,
+  chapter: 3,
+  name: "Operator Precedence",
+  difficulty: 3,
+  desc: "<p>Print the result of <code>2 + 3 * 4</code>. Think about which operation happens first!</p>",
+  hint: "Multiplication (*) happens before addition (+), just like in math.",
+  starter: '# Print the result of 2 + 3 * 4\n# Think: does + or * happen first?\n',
+  check: (o)=>o.trim()==="14",
+  successMsg: "Multiplication before addition — PEMDAS applies in Python too!"
+},
+{
+  id: 29,
+  chapter: 4,
+  name: "Concatenation",
+  difficulty: 1,
+  desc: "<p>Given <code>first = \"Hello\"</code> and <code>second = \"World\"</code>, concatenate them with a space in between and print: <code>Hello World</code></p>",
+  hint: "Use the + operator to join strings. Don't forget the space!",
+  starter: 'first = \"Hello\"\nsecond = \"World\"\n# Concatenate first and second with a space and print\n',
+  check: (o)=>o.trim()==="Hello World",
+  successMsg: "The + operator joins strings together!"
+},
+{
+  id: 30,
+  chapter: 4,
+  name: "String Length",
+  difficulty: 1,
+  desc: "<p>Print the length of the string <code>\"Python\"</code> using <code>len()</code>.</p>",
+  hint: "len() returns the number of characters in a string.",
+  starter: '# Print the length of \"Python\"\n',
+  check: (o)=>o.trim()==="6",
+  successMsg: "len() counts every character in the string."
+},
+{
+  id: 31,
+  chapter: 4,
+  name: "f-String Basics",
+  difficulty: 1,
+  desc: "<p>Given <code>name = \"Ronny\"</code>, use an f-string to print <code>Hi Ronny!</code></p>",
+  hint: "f-strings use curly braces: f\"Hi {name}!\"",
+  starter: 'name = \"Ronny\"\n# Use an f-string to print: Hi Ronny!\n',
+  check: (o)=>o.trim()==="Hi Ronny!",
+  successMsg: "f-strings make it easy to embed variables in text!"
+},
+{
+  id: 32,
+  chapter: 4,
+  name: "Upper and Lower",
+  difficulty: 1,
+  desc: "<p>Given <code>msg = \"Hello\"</code>, print the uppercase version: <code>HELLO</code></p>",
+  hint: "Use the .upper() method on the string.",
+  starter: 'msg = \"Hello\"\n# Print msg in all uppercase\n',
+  check: (o)=>o.trim()==="HELLO",
+  successMsg: ".upper() converts every character to uppercase."
+},
+{
+  id: 33,
+  chapter: 4,
+  name: "String Indexing",
+  difficulty: 2,
+  desc: "<p>Given <code>word = \"Python\"</code>, print the <strong>first character</strong>.</p>",
+  hint: "Strings are indexed starting at 0: word[0] is the first character.",
+  starter: 'word = \"Python\"\n# Print the first character of word\n',
+  check: (o)=>o.trim()==="P",
+  successMsg: "Python indexes start at 0 — word[0] is the first character."
+},
+{
+  id: 34,
+  chapter: 4,
+  name: "String Slicing",
+  difficulty: 2,
+  desc: "<p>Given <code>word = \"Python\"</code>, print the first three characters: <code>Pyt</code></p>",
+  hint: "Use slicing: word[start:end] — end is exclusive.",
+  starter: 'word = \"Python\"\n# Print the first 3 characters of word\n',
+  check: (o)=>o.trim()==="Pyt",
+  successMsg: "Slicing with [0:3] gives characters at index 0, 1, and 2."
+},
+{
+  id: 35,
+  chapter: 4,
+  name: "Find Method",
+  difficulty: 2,
+  desc: "<p>Given <code>s = \"Hello World\"</code>, use <code>.find()</code> to print the index where <code>\"World\"</code> starts.</p>",
+  hint: ".find() returns the index of the first occurrence of a substring.",
+  starter: 's = \"Hello World\"\n# Print the index where \"World\" starts\n',
+  check: (o)=>o.trim()==="6",
+  successMsg: ".find() returns the starting index of a substring."
+},
+{
+  id: 36,
+  chapter: 4,
+  name: "Replace Method",
+  difficulty: 2,
+  desc: "<p>Given <code>s = \"Hello World\"</code>, replace <code>\"World\"</code> with <code>\"Python\"</code> and print the result.</p>",
+  hint: "Use s.replace(old, new) to swap substrings.",
+  starter: 's = \"Hello World\"\n# Replace \"World\" with \"Python\" and print\n',
+  check: (o)=>o.trim()==="Hello Python",
+  successMsg: ".replace() swaps one substring for another."
+},
+{
+  id: 37,
+  chapter: 4,
+  name: "Split Method",
+  difficulty: 3,
+  desc: "<p>Given <code>s = \"a,b,c\"</code>, split it on commas and print the resulting list.</p>",
+  hint: "Use s.split(\",\") to break a string into a list.",
+  starter: 's = \"a,b,c\"\n# Split s on commas and print the result\n',
+  check: (o)=>o.trim()==="['a', 'b', 'c']",
+  successMsg: ".split() breaks strings into lists — essential for parsing data!"
+},
+{
+  id: 38,
+  chapter: 4,
+  name: "Join Method",
+  difficulty: 3,
+  desc: "<p>Given <code>words = [\"Hello\", \"World\"]</code>, join them with a space and print: <code>Hello World</code></p>",
+  hint: "Use \" \".join(words) — the separator goes before .join().",
+  starter: 'words = [\"Hello\", \"World\"]\n# Join words with a space and print\n',
+  check: (o)=>o.trim()==="Hello World",
+  successMsg: ".join() is the opposite of .split() — it combines list items!"
+},
+{
+  id: 39,
+  chapter: 4,
+  name: "String Formatting",
+  difficulty: 3,
+  desc: "<p>Given <code>x = 3.14159</code>, use an f-string to print it rounded to 2 decimal places: <code>3.14</code></p>",
+  hint: "Use f\"{x:.2f}\" to format a float to 2 decimal places.",
+  starter: 'x = 3.14159\n# Print x with exactly 2 decimal places\n',
+  check: (o)=>o.trim()==="3.14",
+  successMsg: "Format specifiers like :.2f give you precise control over output!"
+},
+{
+  id: 40,
+  chapter: 4,
+  name: "Reverse a String",
+  difficulty: 4,
+  desc: "<p>Given <code>s = \"hello\"</code>, print the string reversed: <code>olleh</code></p>",
+  hint: "Use slicing with a step of -1: s[::-1]",
+  starter: 's = \"hello\"\n# Print s reversed\n',
+  check: (o)=>o.trim()==="olleh",
+  successMsg: "s[::-1] reverses a string using slice step — a classic Python trick!"
+},
+{
+  id: 41,
+  chapter: 5,
+  name: "Simple If",
+  difficulty: 1,
+  desc: "<p>Given <code>x = 10</code>, print <code>Big</code> if <code>x</code> is greater than 5.</p>",
+  hint: "Use: if x > 5: followed by an indented print().",
+  starter: 'x = 10\n# If x is greater than 5, print \"Big\"\n',
+  check: (o)=>o.trim()==="Big",
+  successMsg: "The if statement runs code only when the condition is True."
+},
+{
+  id: 42,
+  chapter: 5,
+  name: "If-Else",
+  difficulty: 1,
+  desc: "<p>Given <code>x = 3</code>, print <code>Big</code> if x &gt; 5, otherwise print <code>Small</code>.</p>",
+  hint: "Use if/else to handle both cases.",
+  starter: 'x = 3\n# Print \"Big\" if x > 5, otherwise print \"Small\"\n',
+  check: (o)=>o.trim()==="Small",
+  successMsg: "else catches everything the if condition misses."
+},
+{
+  id: 43,
+  chapter: 5,
+  name: "If-Elif-Else",
+  difficulty: 2,
+  desc: "<p>Given <code>score = 75</code>, print the letter grade:<br>&gt;= 90: <code>A</code>, &gt;= 80: <code>B</code>, &gt;= 70: <code>C</code>, otherwise: <code>F</code></p>",
+  hint: "Use if/elif/elif/else to check each range from highest to lowest.",
+  starter: 'score = 75\n# Print the letter grade: A (>=90), B (>=80), C (>=70), F (else)\n',
+  check: (o)=>o.trim()==="C",
+  successMsg: "elif lets you chain multiple conditions in order!"
+},
+{
+  id: 44,
+  chapter: 5,
+  name: "Nested If",
+  difficulty: 2,
+  desc: "<p>Given <code>x = 15</code>, first check if it's positive. If so, check if it's even or odd. Print <code>Positive and Odd</code>.</p>",
+  hint: "Nest an if/else inside the first if block. Use x % 2 to check even/odd.",
+  starter: 'x = 15\n# Check if positive, then check if even or odd\n# Print \"Positive and Even\" or \"Positive and Odd\"\n',
+  check: (o)=>o.trim()==="Positive and Odd",
+  successMsg: "Nested ifs let you check conditions within conditions!"
+},
+{
+  id: 45,
+  chapter: 5,
+  name: "And Condition",
+  difficulty: 2,
+  desc: "<p>Given <code>age = 20</code> and <code>has_id = True</code>, print <code>Entry allowed</code> if <strong>both</strong> conditions are met (age &gt;= 18 and has_id is True).</p>",
+  hint: "Use 'and' to combine two conditions: if age >= 18 and has_id:",
+  starter: 'age = 20\nhas_id = True\n# Print \"Entry allowed\" if age >= 18 AND has_id is True\n',
+  check: (o)=>o.trim()==="Entry allowed",
+  successMsg: "'and' ensures ALL conditions must be True."
+},
+{
+  id: 46,
+  chapter: 5,
+  name: "Or Condition",
+  difficulty: 2,
+  desc: "<p>Given <code>day = \"Saturday\"</code>, print <code>Weekend</code> if day is <code>\"Saturday\"</code> or <code>\"Sunday\"</code>.</p>",
+  hint: "Use 'or' to check either condition.",
+  starter: 'day = \"Saturday\"\n# Print \"Weekend\" if day is Saturday or Sunday\n',
+  check: (o)=>o.trim()==="Weekend",
+  successMsg: "'or' is True when at least one condition matches."
+},
+{
+  id: 47,
+  chapter: 5,
+  name: "Not Condition",
+  difficulty: 2,
+  desc: "<p>Given <code>raining = False</code>, print <code>Go outside</code> if it is <strong>not</strong> raining.</p>",
+  hint: "Use 'not' to invert a boolean: if not raining:",
+  starter: 'raining = False\n# Print \"Go outside\" if it's not raining\n',
+  check: (o)=>o.trim()==="Go outside",
+  successMsg: "'not' flips the condition — great for negative checks!"
+},
+{
+  id: 48,
+  chapter: 5,
+  name: "Ternary Expression",
+  difficulty: 2,
+  desc: "<p>Given <code>x = 7</code>, use a <strong>ternary expression</strong> (one-line if/else) to set result to <code>\"Even\"</code> if x is even, or <code>\"Odd\"</code> if x is odd. Print result.</p>",
+  hint: "Ternary syntax: result = \"Even\" if x % 2 == 0 else \"Odd\"",
+  starter: 'x = 7\n# Use a ternary expression to set result to \"Even\" or \"Odd\"\n# Then print result\n',
+  check: (o)=>o.trim()==="Odd",
+  successMsg: "Ternary expressions are compact one-line conditionals!"
+},
+{
+  id: 49,
+  chapter: 5,
+  name: "Temperature Classifier",
+  difficulty: 3,
+  desc: "<p>Given <code>temp = 25</code>, classify the temperature:<br>&lt;= 0: <code>Freezing</code>, &lt;= 15: <code>Cold</code>, &lt;= 25: <code>Mild</code>, else: <code>Hot</code></p>",
+  hint: "Use if/elif/elif/else checking from coldest to hottest.",
+  starter: 'temp = 25\n# Classify: Freezing (<=0), Cold (<=15), Mild (<=25), Hot (>25)\n',
+  check: (o)=>o.trim()==="Mild",
+  successMsg: "Multi-branch conditionals can classify values into ranges!"
+},
+{
+  id: 50,
+  chapter: 5,
+  name: "FizzBuzz Check",
+  difficulty: 3,
+  desc: "<p>Given <code>n = 15</code>, print:<br><code>FizzBuzz</code> if divisible by both 3 and 5,<br><code>Fizz</code> if divisible by 3 only,<br><code>Buzz</code> if divisible by 5 only,<br>otherwise print the number.</p>",
+  hint: "Check divisibility by both 3 AND 5 first, then by 3, then by 5.",
+  starter: 'n = 15\n# FizzBuzz: divisible by 3 and 5 -> \"FizzBuzz\"\n# divisible by 3 only -> \"Fizz\"\n# divisible by 5 only -> \"Buzz\"\n# otherwise -> print the number\n',
+  check: (o)=>o.trim()==="FizzBuzz",
+  successMsg: "FizzBuzz — the classic coding interview question, solved!"
+},
+{
+  id: 51,
+  chapter: 5,
+  name: "Min of Three",
+  difficulty: 3,
+  desc: "<p>Given <code>a = 7</code>, <code>b = 3</code>, <code>c = 9</code>, find and print the minimum value <strong>without using</strong> the built-in <code>min()</code> function.</p>",
+  hint: "Use if/elif/else to compare all three values against each other.",
+  starter: 'a = 7\nb = 3\nc = 9\n# Find and print the minimum of a, b, c without using min()\n',
+  check: (o)=>o.trim()==="3",
+  successMsg: "You can find the minimum with comparisons — that's what min() does internally!"
+},
+{
+  id: 52,
+  chapter: 5,
+  name: "Triangle Check",
+  difficulty: 4,
+  desc: "<p>Given sides <code>a = 3</code>, <code>b = 4</code>, <code>c = 5</code>, check if they form a valid triangle. A triangle is valid if each side is less than the sum of the other two. Print <code>Valid triangle</code> or <code>Not a triangle</code>.</p>",
+  hint: "Check all three conditions: a < b+c AND b < a+c AND c < a+b.",
+  starter: 'a = 3\nb = 4\nc = 5\n# Check if these sides form a valid triangle\n# Print \"Valid triangle\" or \"Not a triangle\"\n',
+  check: (o)=>o.trim()==="Valid triangle",
+  successMsg: "The triangle inequality theorem — geometry meets code!"
+},
 {
   id: 53,
   chapter: 6,
@@ -3919,6 +4440,7 @@ function saveStateToLocalStorage() {
   try {
     localStorage.setItem('ronnyState', JSON.stringify({
       xp: state.xp, level: state.level, streak: state.streak,
+      dailyStreak: state.dailyStreak, lastActiveDate: state.lastActiveDate,
       completed: [...state.completed],
       achievements: [...state.achievements],
       hintUsed: [...state.hintUsed]
@@ -3931,6 +4453,8 @@ function saveStateToFirestore(uid) {
     xp: state.xp,
     level: state.level,
     streak: state.streak,
+    dailyStreak: state.dailyStreak,
+    lastActiveDate: state.lastActiveDate,
     completed: [...state.completed],
     achievements: [...state.achievements],
     hintUsed: [...state.hintUsed],
@@ -3948,6 +4472,8 @@ async function loadStateFromFirestore(uid) {
       state.xp = s.xp || 0;
       state.level = s.level || 1;
       state.streak = s.streak || 0;
+      state.dailyStreak = s.dailyStreak || 0;
+      state.lastActiveDate = s.lastActiveDate || '';
       state.completed = new Set(s.completed || []);
       state.achievements = new Set(s.achievements || []);
       state.hintUsed = new Set(s.hintUsed || []);
@@ -4040,7 +4566,7 @@ auth.onAuthStateChanged(async (user) => {
   updateAuthUI(user);
   if (!user) {
     // Reset state on sign-out to prevent data leaking between users
-    state.xp = 0; state.level = 1; state.streak = 0;
+    state.xp = 0; state.level = 1; state.streak = 0; state.dailyStreak = 0; state.lastActiveDate = '';
     state.completed = new Set(); state.achievements = new Set(); state.hintUsed = new Set();
     loadState(); // reload from localStorage
     updateStats();
@@ -4077,6 +4603,8 @@ let state = {
   xp: 0,
   level: 1,
   streak: 0,
+  dailyStreak: 0,
+  lastActiveDate: '',
   completed: new Set(),
   achievements: new Set(),
   hintUsed: new Set()
@@ -4143,6 +4671,8 @@ function loadState() {
       state.xp = s.xp || 0;
       state.level = s.level || 1;
       state.streak = s.streak || 0;
+      state.dailyStreak = s.dailyStreak || 0;
+      state.lastActiveDate = s.lastActiveDate || '';
       state.completed = new Set(s.completed || []);
       state.achievements = new Set(s.achievements || []);
       state.hintUsed = new Set(s.hintUsed || []);
@@ -4279,15 +4809,18 @@ function renderChallengeList(chapterId) {
   html += chs.map(ch => {
     const globalIdx = challenges.indexOf(ch);
     const done = state.completed.has(ch.id);
+    const hinted = state.hintUsed.has(ch.id);
     const active = globalIdx === state.currentChallenge;
     const stars = '\u2605'.repeat(ch.difficulty);
     const isBoss = ch.chapter === 15;
     const localNum = chs.indexOf(ch) + 1;
+    const statusIcon = done ? (hinted ? '\u2714\uFE0F' : '\u2705') : (isBoss ? '\u{1F47E}' : '\u26AA');
+    const statusStyle = done && hinted ? ' style="opacity:0.6"' : '';
     return `
       <div class="challenge-item ${active ? 'active' : ''} ${done ? 'completed' : ''}"
            onclick="selectChallenge(${globalIdx})">
         <span class="ci-num">#${localNum}</span>
-        <span class="ci-status">${done ? '\u2705' : (isBoss ? '\u{1F47E}' : '\u26AA')}</span>
+        <span class="ci-status"${statusStyle}>${statusIcon}</span>
         <div class="ci-info">
           <div class="ci-name">${ch.name}</div>
           <div class="ci-diff"><span class="diff-star">${stars}</span></div>
@@ -4425,7 +4958,7 @@ function heroChooseChapter() {
 
 function updateStats() {
   document.getElementById('totalXP').textContent = state.xp;
-  document.getElementById('streakCount').textContent = state.streak;
+  document.getElementById('streakCount').textContent = state.dailyStreak;
   document.getElementById('completedCount').textContent = state.completed.size;
   document.getElementById('levelBadge').textContent = 'LV ' + state.level;
 
@@ -4478,6 +5011,18 @@ function runCode() {
     });
 }
 
+function updateDailyStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (state.lastActiveDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (state.lastActiveDate === yesterday) {
+    state.dailyStreak++;
+  } else {
+    state.dailyStreak = 1;
+  }
+  state.lastActiveDate = today;
+}
+
 function checkAnswer(output) {
   const ch = challenges[state.currentChallenge];
   if (ch.check(output)) {
@@ -4489,6 +5034,7 @@ function checkAnswer(output) {
       state.xp += earned;
       state.streak++;
       state.completed.add(ch.id);
+      updateDailyStreak();
 
       let newLevel = state.level;
       for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
@@ -4661,8 +5207,11 @@ function checkAchievements() {
     { key: 'quarter', cond: state.completed.size >= Math.floor(challenges.length * 0.25), icon: '\u{1F4AA}', name: 'Quarter Way - 25% complete!' },
     { key: 'half', cond: state.completed.size >= Math.floor(challenges.length * 0.5), icon: '\u{1F947}', name: 'Halfway Hero - 50% complete!' },
     { key: 'century', cond: state.completed.size >= 100, icon: '\u{1F4AF}', name: 'Century Club - 100 challenges!' },
-    { key: 'streak5', cond: state.streak >= 5, icon: '\u{1F525}', name: 'On Fire - 5 streak!' },
-    { key: 'streak10', cond: state.streak >= 10, icon: '\u{1F30B}', name: 'Inferno - 10 streak!' },
+    { key: 'streak5', cond: state.streak >= 5, icon: '\u{1F525}', name: 'On Fire - 5 combo streak!' },
+    { key: 'streak10', cond: state.streak >= 10, icon: '\u{1F30B}', name: 'Inferno - 10 combo streak!' },
+    { key: 'daily3', cond: state.dailyStreak >= 3, icon: '\u{1F4C5}', name: '3 Day Streak!' },
+    { key: 'daily7', cond: state.dailyStreak >= 7, icon: '\u{1F5D3}\uFE0F', name: 'Week Warrior - 7 day streak!' },
+    { key: 'daily30', cond: state.dailyStreak >= 30, icon: '\u{1F3C6}', name: 'Monthly Master - 30 day streak!' },
     { key: 'boss1', cond: challenges.filter(c => c.chapter === 15 && state.completed.has(c.id)).length >= 1, icon: '\u{1F409}', name: 'Boss Slayer - Beat a boss!' },
     { key: 'bossAll', cond: challenges.filter(c => c.chapter === 15).every(c => state.completed.has(c.id)), icon: '\u{1F451}', name: 'Boss Master - All bosses beaten!' },
   ];
