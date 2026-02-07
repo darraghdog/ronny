@@ -1323,7 +1323,7 @@ const challenges = [
   difficulty: 2,
   desc: "<p>Given <code>raining = False</code>, print <code>Go outside</code> if it is <strong>not</strong> raining.</p>",
   hint: "Use 'not' to invert a boolean: if not raining:",
-  starter: 'raining = False\n# Print \"Go outside\" if it's not raining\n',
+  starter: 'raining = False\n# Print \"Go outside\" if it\'s not raining\n',
   check: (o)=>o.trim()==="Go outside",
   successMsg: "'not' flips the condition — great for negative checks!"
 },
@@ -4405,14 +4405,11 @@ const codeCache = {};
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    auth.signInWithRedirect(provider);
-  } else {
-    auth.signInWithPopup(provider).catch((err) => {
+  auth.signInWithPopup(provider).catch((err) => {
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
       auth.signInWithRedirect(provider);
-    });
-  }
+    }
+  });
 }
 
 function signOutUser() {
