@@ -4405,11 +4405,14 @@ const codeCache = {};
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch((err) => {
-    if (err.code === 'auth/popup-blocked') {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    auth.signInWithRedirect(provider);
+  } else {
+    auth.signInWithPopup(provider).catch((err) => {
       auth.signInWithRedirect(provider);
-    }
-  });
+    });
+  }
 }
 
 function signOutUser() {
