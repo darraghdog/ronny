@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ronny - Python Challenges for Leaving Cert CS</title>
+<script src="https://skulpt.org/js/skulpt.min.js"></script>
+<script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Press+Start+2P&family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700;900&display=swap');
+
+  :root {
+    --neon-pink: #ff2d95;
+    --neon-blue: #00d4ff;
+    --neon-green: #39ff14;
+    --neon-yellow: #ffe600;
+    --neon-orange: #ff6b00;
+    --neon-purple: #b026ff;
+    --dark-bg: #0a0a1a;
+    --panel-bg: #12122a;
+    --panel-border: #2a2a5a;
+    --text-light: #e0e0ff;
+    --gold: #ffd700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark-bg);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255,45,149,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(176,38,255,0.06) 0%, transparent 50%);
+    z-index: -1;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+
+  .speed-lines {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.3s;
+  }
+  .speed-lines.active { opacity: 0.15; animation: speedFlash 0.6s ease-out; }
+  @keyframes speedFlash { 0% { opacity: 0.4; } 100% { opacity: 0; } }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+    border-bottom: 3px solid var(--neon-pink);
+    padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; overflow: hidden; z-index: 10;
+  }
+  .header::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue), var(--neon-purple), var(--neon-pink));
+    background-size: 200% 100%;
+    animation: rainbowSlide 3s linear infinite;
+  }
+  @keyframes rainbowSlide { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    font-size: 36px;
+    filter: drop-shadow(0 0 10px var(--neon-pink));
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+  @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .logo-text {
+    font-family: 'Bangers', cursive; font-size: 32px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 3px;
+  }
+  .logo-sub { font-size: 11px; color: var(--neon-blue); opacity: 0.8; letter-spacing: 4px; }
+
+  .stats-bar { display: flex; align-items: center; gap: 20px; }
+  .stat-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Press Start 2P', monospace; font-size: 11px;
+  }
+  .stat-icon { font-size: 18px; }
+  .stat-value { color: var(--neon-yellow); text-shadow: 0 0 8px var(--neon-yellow); }
+
+  .level-badge {
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+    border: 2px solid var(--neon-pink); border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    color: white; box-shadow: 0 0 15px rgba(255,45,149,0.3);
+  }
+
+  .xp-bar-container {
+    width: 120px; height: 12px; background: #1a1a3a;
+    border-radius: 6px; border: 1px solid var(--panel-border); overflow: hidden;
+  }
+  .xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+    border-radius: 6px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .xp-bar-fill::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 50%; background: rgba(255,255,255,0.2); border-radius: 6px 6px 0 0;
+  }
+
+  /* MAIN LAYOUT */
+  .main-container {
+    display: grid; grid-template-columns: 340px 1fr;
+    height: calc(100vh - 62px); position: relative; z-index: 1;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--panel-bg);
+    border-right: 2px solid var(--panel-border);
+    overflow-y: auto; display: flex; flex-direction: column;
+    scrollbar-width: thin; scrollbar-color: var(--neon-pink) var(--panel-bg);
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--panel-bg); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
+
+  .sensei-panel {
+    padding: 15px; border-bottom: 2px solid var(--panel-border);
+    text-align: center;
+    background: linear-gradient(180deg, rgba(176,38,255,0.1) 0%, transparent 100%);
+    flex-shrink: 0;
+  }
+  .sensei-avatar {
+    font-size: 64px; display: block; margin-bottom: 5px;
+    transition: transform 0.3s;
+    filter: drop-shadow(0 0 15px rgba(176,38,255,0.4));
+  }
+  .sensei-avatar.celebrate { animation: senseiCelebrate 0.6s ease-out; }
+  @keyframes senseiCelebrate {
+    0% { transform: scale(1) rotate(0); }
+    25% { transform: scale(1.2) rotate(-10deg); }
+    50% { transform: scale(1.1) rotate(10deg); }
+    75% { transform: scale(1.15) rotate(-5deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .sensei-speech {
+    background: white; color: #1a1a2e; border-radius: 15px;
+    padding: 8px 12px; font-size: 13px; font-weight: 700;
+    position: relative; margin-top: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    min-height: 36px; display: flex; align-items: center; justify-content: center;
+  }
+  .sensei-speech::before {
+    content: ''; position: absolute; top: -8px; left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent; border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+  }
+  .rank-display { font-size: 11px; color: #b0b0d0; text-align: center; margin-top: 4px; }
+
+  .sidebar-content { flex: 1; overflow-y: auto; padding: 8px; }
+
+  /* CHAPTER LIST */
+  .chapter-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px; margin-bottom: 6px; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s;
+    border: 2px solid transparent; position: relative;
+  }
+  .chapter-item:hover {
+    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
+  }
+  .chapter-item.all-done { border-color: rgba(57,255,20,0.3); }
+  .ch-num {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: var(--neon-blue); min-width: 30px;
+  }
+  .ch-info { flex: 1; min-width: 0; }
+  .ch-title { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ch-progress-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .ch-progress-bar { flex: 1; height: 6px; background: #1a1a3a; border-radius: 3px; overflow: hidden; }
+  .ch-progress-fill {
+    height: 100%; border-radius: 3px; transition: width 0.5s;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+  }
+  .ch-progress-text { font-size: 10px; color: #888; min-width: 36px; text-align: right; }
+  .ch-points-earned {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: var(--gold); text-shadow: 0 0 5px rgba(255,215,0,0.3);
+    min-width: 50px; text-align: right;
+  }
+
+  /* BACK BUTTON */
+  .back-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; margin-bottom: 8px;
+    font-size: 13px; font-weight: 700; color: var(--neon-blue);
+    cursor: pointer; border-radius: 8px; transition: all 0.2s;
+    border: none; background: rgba(0,212,255,0.1); width: 100%;
+  }
+  .back-btn:hover { background: rgba(0,212,255,0.2); }
+
+  .ch-header-info {
+    padding: 8px 12px 12px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .ch-header-title {
+    font-family: 'Bangers', cursive; font-size: 20px;
+    color: var(--neon-pink); letter-spacing: 1px;
+  }
+  .ch-header-progress { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .ch-header-bar { flex: 1; height: 8px; background: #1a1a3a; border-radius: 4px; overflow: hidden; }
+  .ch-header-fill {
+    height: 100%; border-radius: 4px; transition: width 0.5s;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+  }
+  .ch-header-text { font-size: 11px; color: #aaa; }
+
+  /* CHALLENGE ITEMS (inside chapter drill-down) */
+  .challenge-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; margin-bottom: 4px; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s;
+    border: 2px solid transparent; position: relative;
+  }
+  .challenge-item:hover {
+    background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
+  }
+  .challenge-item.active {
+    background: rgba(0,212,255,0.1); border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0,212,255,0.15);
+  }
+  .challenge-item.completed { opacity: 0.7; }
+  .challenge-item.completed .ci-status { color: var(--neon-green); text-shadow: 0 0 8px var(--neon-green); }
+
+  .ci-num { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #666; min-width: 24px; }
+  .ci-status { font-size: 18px; min-width: 22px; text-align: center; }
+  .ci-info { flex: 1; min-width: 0; }
+  .ci-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ci-diff { font-size: 10px; opacity: 0.6; margin-top: 2px; }
+  .ci-points {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: var(--gold); text-shadow: 0 0 5px rgba(255,215,0,0.3); white-space: nowrap;
+  }
+  .diff-star { color: var(--neon-yellow); font-size: 10px; }
+
+  /* PROGRESS SECTION */
+  .progress-section {
+    padding: 12px 15px; border-top: 2px solid var(--panel-border);
+    background: rgba(0,0,0,0.3); flex-shrink: 0;
+  }
+  .progress-label {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: #888; margin-bottom: 6px; display: flex; justify-content: space-between;
+  }
+  .progress-bar { height: 8px; background: #1a1a3a; border-radius: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    border-radius: 4px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* EDITOR AREA */
+  .editor-area { display: flex; flex-direction: column; overflow: hidden; }
+
+  .challenge-header {
+    background: linear-gradient(135deg, rgba(255,45,149,0.1), rgba(0,212,255,0.1));
+    border-bottom: 2px solid var(--panel-border);
+    padding: 12px 20px; flex-shrink: 0;
+  }
+  .challenge-title { font-family: 'Bangers', cursive; font-size: 22px; color: var(--neon-pink); letter-spacing: 1px; }
+  .challenge-desc { font-size: 13px; margin-top: 4px; line-height: 1.5; color: #b0b0d0; }
+  .challenge-hint { font-size: 12px; color: var(--neon-blue); margin-top: 6px; font-style: italic; opacity: 0.8; }
+  .challenge-points-display { font-family: 'Press Start 2P', monospace; font-size: 11px; color: var(--gold); margin-top: 6px; }
+
+  .editor-console-split { flex: 1; display: grid; grid-template-rows: 1fr 200px; overflow: hidden; }
+
+  .editor-panel { position: relative; border-bottom: 2px solid var(--panel-border); }
+  .editor-tab-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #0d0d20; padding: 0 10px; height: 36px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+  .editor-tab { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--neon-blue); display: flex; align-items: center; gap: 6px; }
+
+  .btn-group { display: flex; gap: 6px; }
+  .btn {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    padding: 6px 14px; border: 2px solid; border-radius: 6px;
+    cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    position: relative; overflow: hidden;
+  }
+  .btn::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: rgba(255,255,255,0.1); }
+  .btn-run {
+    background: linear-gradient(180deg, #00c853, #009624);
+    border-color: var(--neon-green); color: white;
+    box-shadow: 0 0 15px rgba(57,255,20,0.3);
+  }
+  .btn-run:hover { box-shadow: 0 0 25px rgba(57,255,20,0.5); transform: translateY(-1px); }
+  .btn-run:active { transform: translateY(1px); }
+  .btn-reset { background: linear-gradient(180deg, #424242, #212121); border-color: #555; color: #ccc; }
+  .btn-reset:hover { border-color: #888; }
+  .btn-hint {
+    background: linear-gradient(180deg, #e65100, #bf360c);
+    border-color: var(--neon-orange); color: white;
+    box-shadow: 0 0 10px rgba(255,107,0,0.2);
+  }
+  .btn-hint:hover { box-shadow: 0 0 20px rgba(255,107,0,0.4); }
+
+  #codeEditor {
+    width: 100%; height: calc(100% - 36px);
+    background: #0d0d20; color: #e0e0ff;
+    font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.6;
+    padding: 15px; border: none; outline: none; resize: none; tab-size: 4;
+  }
+  #codeEditor::selection { background: rgba(0,212,255,0.3); }
+
+  .console-panel { background: #080818; display: flex; flex-direction: column; }
+  .console-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 10px; height: 30px; background: #0a0a1e;
+    border-bottom: 1px solid var(--panel-border);
+    font-family: 'Fira Code', monospace; font-size: 12px; color: var(--neon-green);
+  }
+  .console-clear { cursor: pointer; color: #666; font-size: 11px; border: none; background: none; font-family: inherit; }
+  .console-clear:hover { color: #aaa; }
+
+  #consoleOutput {
+    flex: 1; padding: 10px 15px;
+    font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.5;
+    overflow-y: auto; white-space: pre-wrap; word-break: break-all;
+  }
+  .console-line { margin-bottom: 2px; }
+  .console-line.error { color: #ff5252; }
+  .console-line.success { color: var(--neon-green); }
+  .console-line.info { color: var(--neon-blue); }
+  .console-line.output { color: #e0e0ff; }
+
+  /* OVERLAYS */
+  .overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .overlay.active { opacity: 1; pointer-events: all; }
+
+  .success-popup {
+    background: linear-gradient(135deg, #1a0a2e, #16213e);
+    border: 3px solid var(--neon-green); border-radius: 20px;
+    padding: 30px 40px; text-align: center;
+    box-shadow: 0 0 60px rgba(57,255,20,0.3);
+    transform: scale(0.8); transition: transform 0.3s; max-width: 400px;
+  }
+  .overlay.active .success-popup { transform: scale(1); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes popIn {
+    0% { transform: scale(0.5) rotate(-5deg); }
+    60% { transform: scale(1.1) rotate(2deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+
+  .success-emoji { font-size: 64px; margin-bottom: 10px; animation: bounceEmoji 0.6s ease-out; }
+  @keyframes bounceEmoji { 0% { transform: translateY(-30px); opacity: 0; } 60% { transform: translateY(5px); } 100% { transform: translateY(0); opacity: 1; } }
+  .success-title { font-family: 'Bangers', cursive; font-size: 32px; color: var(--neon-green); letter-spacing: 2px; text-shadow: 0 0 20px rgba(57,255,20,0.5); }
+  .success-points { font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--gold); margin: 10px 0; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+  .success-msg { font-size: 14px; color: #b0b0d0; margin-bottom: 15px; }
+  .btn-next {
+    background: linear-gradient(180deg, var(--neon-blue), #0088cc);
+    border: 2px solid var(--neon-blue); border-radius: 10px;
+    padding: 10px 30px; color: white;
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    cursor: pointer; box-shadow: 0 0 20px rgba(0,212,255,0.3); transition: all 0.2s;
+  }
+  .btn-next:hover { box-shadow: 0 0 30px rgba(0,212,255,0.5); transform: translateY(-2px); }
+
+  .combo-display {
+    position: fixed; top: 80px; right: 20px;
+    font-family: 'Bangers', cursive; font-size: 24px;
+    color: var(--neon-orange); text-shadow: 0 0 15px rgba(255,107,0,0.5);
+    opacity: 0; transform: scale(0.5); transition: all 0.3s; z-index: 50; pointer-events: none;
+  }
+  .combo-display.active { opacity: 1; transform: scale(1); }
+
+  .particle {
+    position: fixed; pointer-events: none; z-index: 200; font-size: 24px;
+    animation: particleFloat 1.5s ease-out forwards;
+  }
+  @keyframes particleFloat { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(0.5); } }
+
+  .level-up-flash {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(255,215,0,0.3), transparent 70%);
+    z-index: 90; opacity: 0; pointer-events: none;
+  }
+  .level-up-flash.active { animation: levelFlash 1s ease-out; }
+  @keyframes levelFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+  .achievement-toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, #1a0a2e, #2a1a4e);
+    border: 2px solid var(--gold); border-radius: 12px;
+    padding: 12px 24px; display: flex; align-items: center; gap: 12px;
+    z-index: 150; box-shadow: 0 0 30px rgba(255,215,0,0.3);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .achievement-toast.show { transform: translateX(-50%) translateY(0); }
+  .achievement-toast .ach-icon { font-size: 28px; }
+  .achievement-toast .ach-text { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--gold); line-height: 1.6; }
+  .achievement-toast .ach-name { font-size: 11px; color: white; }
+
+  /* Scrollbars */
+  #codeEditor::-webkit-scrollbar { width: 8px; }
+  #codeEditor::-webkit-scrollbar-track { background: #0d0d20; }
+  #codeEditor::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  #consoleOutput::-webkit-scrollbar { width: 6px; }
+  #consoleOutput::-webkit-scrollbar-track { background: #080818; }
+  #consoleOutput::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+  @media (max-width: 900px) {
+    .main-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .sidebar { max-height: 250px; border-right: none; border-bottom: 2px solid var(--panel-border); }
+  }
+</style>
+</head>
+<body>
+
+<div class="speed-lines" id="speedLines">
+  <svg width="100%" height="100%">
+    <line x1="0" y1="30%" x2="100%" y2="30%" stroke="white" stroke-width="1" opacity="0.3"/>
+    <line x1="0" y1="50%" x2="100%" y2="48%" stroke="white" stroke-width="2" opacity="0.2"/>
+    <line x1="0" y1="70%" x2="100%" y2="72%" stroke="white" stroke-width="1" opacity="0.3"/>
+  </svg>
+</div>
+
+<div class="level-up-flash" id="levelUpFlash"></div>
+<div class="combo-display" id="comboDisplay"></div>
+
+<div class="header">
+  <div class="logo">
+    <span class="logo-icon">&#x1F40D;</span>
+    <div>
+      <div class="logo-text">RONNY</div>
+      <div class="logo-sub">PYTHON CHALLENGES</div>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="level-badge" id="levelBadge">LV 1</div>
+    <div class="stat-item">
+      <span class="stat-icon">&#x2B50;</span>
+      <span class="stat-value" id="totalXP">0</span>
+      <span style="color:#666;font-size:9px">XP</span>
+    </div>
+    <div class="xp-bar-container">
+      <div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">&#x1F525;</span>
+      <span class="stat-value" id="streakCount">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">&#x1F3C6;</span>
+      <span class="stat-value" id="completedCount">0</span>
+      <span style="color:#666;font-size:9px" id="totalChallenges">/150</span>
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="sidebar">
+    <div class="sensei-panel">
+      <span class="sensei-avatar" id="senseiAvatar">&#x1F40D;</span>
+      <div class="rank-display" id="rankDisplay">Rank: Beginner</div>
+      <div class="sensei-speech" id="senseiSpeech">Welcome! Choose a chapter to start!</div>
+    </div>
+    <div class="sidebar-content" id="sidebarContent"></div>
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>TOTAL MASTERY</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="editor-area">
+    <div class="challenge-header">
+      <div class="challenge-title" id="challengeTitle">Select a Challenge</div>
+      <div class="challenge-desc" id="challengeDesc">Choose a chapter from the sidebar, then pick a challenge to begin!</div>
+      <div class="challenge-hint" id="challengeHint"></div>
+      <div class="challenge-points-display" id="challengePoints"></div>
+    </div>
+    <div class="editor-console-split">
+      <div class="editor-panel">
+        <div class="editor-tab-bar">
+          <div class="editor-tab"><span>&#x1F40D;</span> solution.py</div>
+          <div class="btn-group">
+            <button class="btn btn-hint" onclick="showHint()" title="Show hint">HINT</button>
+            <button class="btn btn-reset" onclick="resetCode()">RESET</button>
+            <button class="btn btn-run" onclick="runCode()" title="Ctrl+Enter">&#x25B6; RUN</button>
+          </div>
+        </div>
+        <textarea id="codeEditor" spellcheck="false" placeholder="# Write your Python code here...&#10;# Press Ctrl+Enter or click RUN to execute"></textarea>
+      </div>
+      <div class="console-panel">
+        <div class="console-header">
+          <span>&#x1F4DF; CONSOLE OUTPUT</span>
+          <button class="console-clear" onclick="clearConsole()">CLEAR</button>
+        </div>
+        <div id="consoleOutput"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="success-popup">
+    <div class="success-emoji" id="successEmoji">&#x1F389;</div>
+    <div class="success-title" id="successTitle">CHALLENGE CLEAR!</div>
+    <div class="success-points" id="successPoints">+100 XP</div>
+    <div class="success-msg" id="successMsg">Great work!</div>
+    <button class="btn-next" id="btnNext" onclick="nextChallenge()">NEXT CHALLENGE &#x27A1;</button>
+  </div>
+</div>
+
+<div class="achievement-toast" id="achievementToast">
+  <span class="ach-icon" id="achIcon">&#x1F3C5;</span>
+  <div>
+    <div class="ach-text">ACHIEVEMENT UNLOCKED</div>
+    <div class="ach-name" id="achName">First Steps</div>
+  </div>
+</div>
+
+<script>
+// ===== CHALLENGE DATA =====
+const challenges = [
+{id:1,chapter:1,name:"Hello World",difficulty:1,desc:"<p>Print the classic greeting <code>Hello, World!</code> to the screen.</p>",hint:"Use the print() function with the exact string.",starter:"# Print Hello, World!\n",check:(o)=>o.trim()==="Hello, World!",successMsg:"Welcome to Python! You just ran your first program."},
+{id:2,chapter:1,name:"Print a Number",difficulty:1,desc:"<p>Print the number <code>42</code> to the screen.</p>",hint:"You can pass a number directly to print().",starter:"# Print the number 42\n",check:(o)=>o.trim()==="42",successMsg:"Numbers work too! Python prints them without quotes."},
+{id:3,chapter:1,name:"Print Two Lines",difficulty:1,desc:"<p>Print <code>Hello</code> on the first line and <code>World</code> on the second line.</p>",hint:"Use two separate print() statements.",starter:"# Print Hello on one line, then World on the next\n",check:(o)=>o.trim()==="Hello\nWorld",successMsg:"Each print() starts a new line by default."},
+{id:4,chapter:1,name:"Escape Characters",difficulty:1,desc:"<p>Print a string that contains a <strong>tab character</strong> between two words: the output should be <code>Hello&#9;World</code> (with a tab, not spaces).</p>",hint:"Use \\t inside a string to insert a tab character.",starter:"# Print Hello and World separated by a tab character\n",check:(o)=>o.trim()==="Hello\tWorld",successMsg:"Escape characters like \\t let you insert special characters."},
+{id:5,chapter:1,name:"Multi-line String",difficulty:1,desc:"<p>Use <strong>triple quotes</strong> to print exactly two lines:<br><code>Line 1</code><br><code>Line 2</code></p>",hint:"Triple quotes (\"\"\" or ''') let you write strings that span multiple lines.",starter:"# Use triple quotes to print two lines\n",check:(o)=>o.trim()==="Line 1\nLine 2",successMsg:"Triple quotes are great for multi-line text!"},
+{id:6,chapter:1,name:"String Repeat",difficulty:1,desc:"<p>Use the <code>*</code> operator to repeat the string <code>Ha</code> three times and print the result: <code>HaHaHa</code></p>",hint:"In Python, \"text\" * 3 repeats the string 3 times.",starter:"# Repeat the string \"Ha\" three times and print it\n",check:(o)=>o.trim()==="HaHaHa",successMsg:"The * operator repeats strings — handy trick!"},
+{id:7,chapter:1,name:"Sep Parameter",difficulty:2,desc:"<p>Use the <code>sep</code> parameter of <code>print()</code> to print <code>1</code>, <code>2</code>, and <code>3</code> separated by dashes: <code>1-2-3</code></p>",hint:"print() accepts a sep parameter: print(a, b, c, sep=\"-\")",starter:"# Use print with sep parameter to output: 1-2-3\n",check:(o)=>o.trim()==="1-2-3",successMsg:"The sep parameter controls what goes between printed values."},
+{id:8,chapter:1,name:"End Parameter",difficulty:2,desc:"<p>Use two <code>print()</code> statements to print <code>Hello World</code> on a <strong>single line</strong>. The first print outputs <code>Hello</code> and the second outputs <code>World</code>.</p>",hint:"Use end=\" \" in the first print() so it doesn't add a newline.",starter:"# Use two print statements to output \"Hello World\" on one line\n# Hint: the end parameter controls what print() adds at the end\n",check:(o)=>o.trim()==="Hello World",successMsg:"The end parameter controls what comes after each print!"},
+{id:9,chapter:2,name:"Store and Print",difficulty:1,desc:"<p>Create a variable <code>x</code> with the value <code>7</code>, then print it.</p>",hint:"Assign with x = 7, then use print(x).",starter:"# Create variable x with value 7 and print it\n",check:(o)=>o.trim()==="7",successMsg:"Variables store values for later use!"},
+{id:10,chapter:2,name:"Two Variables",difficulty:1,desc:"<p>Create variables <code>a = 3</code> and <code>b = 5</code>, then print their sum.</p>",hint:"Use print(a + b) after creating both variables.",starter:"# Create a = 3 and b = 5, then print their sum\n",check:(o)=>o.trim()==="8",successMsg:"You can use variables in expressions just like numbers."},
+{id:11,chapter:2,name:"String Variable",difficulty:1,desc:"<p>Create a variable <code>name</code> with the value <code>Python</code> and print it.</p>",hint:"Strings need quotes: name = \"Python\"",starter:"# Create a string variable called name and print it\n",check:(o)=>o.trim()==="Python",successMsg:"Strings are text data — always wrapped in quotes."},
+{id:12,chapter:2,name:"Float Variable",difficulty:1,desc:"<p>Create a variable <code>pi</code> with the value <code>3.14</code> and print it.</p>",hint:"Floats are numbers with decimal points: pi = 3.14",starter:"# Create a float variable pi and print it\n",check:(o)=>o.trim()==="3.14",successMsg:"Floats represent decimal numbers in Python."},
+{id:13,chapter:2,name:"Boolean Variable",difficulty:1,desc:"<p>Create a variable <code>flag</code> with the value <code>True</code> and print it.</p>",hint:"Booleans are True or False (capitalized!).",starter:"# Create a boolean variable flag set to True and print it\n",check:(o)=>o.trim()==="True",successMsg:"Booleans are either True or False — note the capital letter!"},
+{id:14,chapter:2,name:"Type Check",difficulty:1,desc:"<p>Use the <code>type()</code> function to print the type of the number <code>42</code>.</p>",hint:"Wrap type() around 42 inside print().",starter:"# Print the type of the number 42\n",check:(o)=>o.trim()==="<class 'int'>",successMsg:"type() reveals what kind of data you're working with."},
+{id:15,chapter:2,name:"Int Casting",difficulty:2,desc:"<p>The variable <code>x</code> contains the string <code>\"10\"</code>. Convert it to an integer, add <code>5</code>, and print the result.</p>",hint:"Use int() to convert a string to an integer.",starter:"x = \"10\"\n# Convert x to an integer, add 5, and print the result\n",check:(o)=>o.trim()==="15",successMsg:"int() converts strings to integers so you can do math."},
+{id:16,chapter:2,name:"Float to Int",difficulty:2,desc:"<p>Convert the float <code>3.9</code> to an integer using <code>int()</code> and print the result.</p>",hint:"int() truncates (cuts off) the decimal part — it does NOT round.",starter:"# Convert 3.9 to an int and print the result\n",check:(o)=>o.trim()==="3",successMsg:"int() truncates floats — it always rounds toward zero!"},
+{id:17,chapter:2,name:"String Casting",difficulty:2,desc:"<p>The variable <code>age</code> is set to <code>16</code>. Print <code>Age: 16</code> by converting <code>age</code> to a string and concatenating.</p>",hint:"Use str() to convert a number to a string before concatenating with +.",starter:"age = 16\n# Print \"Age: 16\" using string concatenation\n",check:(o)=>o.trim()==="Age: 16",successMsg:"str() converts numbers to strings for concatenation!"},
+{id:18,chapter:2,name:"Multiple Types",difficulty:2,desc:"<p>Given <code>x = 10</code> (int) and <code>y = 3.5</code> (float), print their sum.</p>",hint:"Python automatically promotes int to float when you mix them.",starter:"x = 10\ny = 3.5\n# Print the sum of x and y\n",check:(o)=>o.trim()==="13.5",successMsg:"Python auto-converts int + float to float. No casting needed!"},
+{id:19,chapter:3,name:"Addition",difficulty:1,desc:"<p>Print the result of <code>15 + 27</code>.</p>",hint:"Use print() with the expression inside.",starter:"# Print the result of 15 + 27\n",check:(o)=>o.trim()==="42",successMsg:"The answer to everything — and basic addition!"},
+{id:20,chapter:3,name:"Floor Division",difficulty:1,desc:"<p>Print the result of <code>17 // 3</code> (floor division).</p>",hint:"// divides and rounds DOWN to the nearest whole number.",starter:"# Print the result of 17 // 3\n",check:(o)=>o.trim()==="5",successMsg:"Floor division (//) drops the remainder entirely."},
+{id:21,chapter:3,name:"Modulo",difficulty:1,desc:"<p>Print the result of <code>17 % 5</code> (modulo — the remainder).</p>",hint:"The % operator gives you the remainder after division.",starter:"# Print the remainder of 17 divided by 5\n",check:(o)=>o.trim()==="2",successMsg:"Modulo (%) gives the remainder — super useful for divisibility checks!"},
+{id:22,chapter:3,name:"Exponent",difficulty:1,desc:"<p>Print the result of <code>2 ** 10</code> (2 to the power of 10).</p>",hint:"** is the exponentiation operator in Python.",starter:"# Print 2 raised to the power of 10\n",check:(o)=>o.trim()==="1024",successMsg:"2^10 = 1024. The ** operator handles exponentiation!"},
+{id:23,chapter:3,name:"Comparison",difficulty:1,desc:"<p>Print the result of <code>10 &gt; 5</code>.</p>",hint:"Comparison operators return True or False.",starter:"# Print the result of 10 > 5\n",check:(o)=>o.trim()==="True",successMsg:"Comparisons evaluate to boolean True or False."},
+{id:24,chapter:3,name:"Equality",difficulty:1,desc:"<p>Print the result of <code>10 == 10</code>.</p>",hint:"Use == (double equals) to check equality, not = (single equals).",starter:"# Print the result of 10 == 10\n",check:(o)=>o.trim()==="True",successMsg:"== checks equality. = assigns values. Don't mix them up!"},
+{id:25,chapter:3,name:"Logical And",difficulty:2,desc:"<p>Print the result of <code>True and False</code>.</p>",hint:"'and' returns True only when BOTH sides are True.",starter:"# Print the result of True and False\n",check:(o)=>o.trim()==="False",successMsg:"'and' requires both sides to be True — one False makes it False."},
+{id:26,chapter:3,name:"Logical Or",difficulty:2,desc:"<p>Print the result of <code>True or False</code>.</p>",hint:"'or' returns True when at least one side is True.",starter:"# Print the result of True or False\n",check:(o)=>o.trim()==="True",successMsg:"'or' only needs one True to return True."},
+{id:27,chapter:3,name:"Not Operator",difficulty:2,desc:"<p>Print the result of <code>not True</code>.</p>",hint:"'not' flips True to False and vice versa.",starter:"# Print the result of not True\n",check:(o)=>o.trim()==="False",successMsg:"'not' inverts the boolean — simple but powerful!"},
+{id:28,chapter:3,name:"Operator Precedence",difficulty:3,desc:"<p>Print the result of <code>2 + 3 * 4</code>. Think about which operation happens first!</p>",hint:"Multiplication (*) happens before addition (+), just like in math.",starter:"# Print the result of 2 + 3 * 4\n# Think: does + or * happen first?\n",check:(o)=>o.trim()==="14",successMsg:"Multiplication before addition — PEMDAS applies in Python too!"},
+{id:29,chapter:4,name:"Concatenation",difficulty:1,desc:"<p>Given <code>first = \"Hello\"</code> and <code>second = \"World\"</code>, concatenate them with a space in between and print: <code>Hello World</code></p>",hint:"Use the + operator to join strings. Don't forget the space!",starter:"first = \"Hello\"\nsecond = \"World\"\n# Concatenate first and second with a space and print\n",check:(o)=>o.trim()==="Hello World",successMsg:"The + operator joins strings together!"},
+{id:30,chapter:4,name:"String Length",difficulty:1,desc:"<p>Print the length of the string <code>\"Python\"</code> using <code>len()</code>.</p>",hint:"len() returns the number of characters in a string.",starter:"# Print the length of \"Python\"\n",check:(o)=>o.trim()==="6",successMsg:"len() counts every character in the string."},
+{id:31,chapter:4,name:"f-String Basics",difficulty:1,desc:"<p>Given <code>name = \"Ronny\"</code>, use an f-string to print <code>Hi Ronny!</code></p>",hint:"f-strings use curly braces: f\"Hi {name}!\"",starter:"name = \"Ronny\"\n# Use an f-string to print: Hi Ronny!\n",check:(o)=>o.trim()==="Hi Ronny!",successMsg:"f-strings make it easy to embed variables in text!"},
+{id:32,chapter:4,name:"Upper and Lower",difficulty:1,desc:"<p>Given <code>msg = \"Hello\"</code>, print the uppercase version: <code>HELLO</code></p>",hint:"Use the .upper() method on the string.",starter:"msg = \"Hello\"\n# Print msg in all uppercase\n",check:(o)=>o.trim()==="HELLO",successMsg:".upper() converts every character to uppercase."},
+{id:33,chapter:4,name:"String Indexing",difficulty:2,desc:"<p>Given <code>word = \"Python\"</code>, print the <strong>first character</strong>.</p>",hint:"Strings are indexed starting at 0: word[0] is the first character.",starter:"word = \"Python\"\n# Print the first character of word\n",check:(o)=>o.trim()==="P",successMsg:"Python indexes start at 0 — word[0] is the first character."},
+{id:34,chapter:4,name:"String Slicing",difficulty:2,desc:"<p>Given <code>word = \"Python\"</code>, print the first three characters: <code>Pyt</code></p>",hint:"Use slicing: word[start:end] — end is exclusive.",starter:"word = \"Python\"\n# Print the first 3 characters of word\n",check:(o)=>o.trim()==="Pyt",successMsg:"Slicing with [0:3] gives characters at index 0, 1, and 2."},
+{id:35,chapter:4,name:"Find Method",difficulty:2,desc:"<p>Given <code>s = \"Hello World\"</code>, use <code>.find()</code> to print the index where <code>\"World\"</code> starts.</p>",hint:".find() returns the index of the first occurrence of a substring.",starter:"s = \"Hello World\"\n# Print the index where \"World\" starts\n",check:(o)=>o.trim()==="6",successMsg:".find() returns the starting index of a substring."},
+{id:36,chapter:4,name:"Replace Method",difficulty:2,desc:"<p>Given <code>s = \"Hello World\"</code>, replace <code>\"World\"</code> with <code>\"Python\"</code> and print the result.</p>",hint:"Use s.replace(old, new) to swap substrings.",starter:"s = \"Hello World\"\n# Replace \"World\" with \"Python\" and print\n",check:(o)=>o.trim()==="Hello Python",successMsg:".replace() swaps one substring for another."},
+{id:37,chapter:4,name:"Split Method",difficulty:3,desc:"<p>Given <code>s = \"a,b,c\"</code>, split it on commas and print the resulting list.</p>",hint:"Use s.split(\",\") to break a string into a list.",starter:"s = \"a,b,c\"\n# Split s on commas and print the result\n",check:(o)=>o.trim()==="['a', 'b', 'c']",successMsg:".split() breaks strings into lists — essential for parsing data!"},
+{id:38,chapter:4,name:"Join Method",difficulty:3,desc:"<p>Given <code>words = [\"Hello\", \"World\"]</code>, join them with a space and print: <code>Hello World</code></p>",hint:"Use \" \".join(words) — the separator goes before .join().",starter:"words = [\"Hello\", \"World\"]\n# Join words with a space and print\n",check:(o)=>o.trim()==="Hello World",successMsg:".join() is the opposite of .split() — it combines list items!"},
+{id:39,chapter:4,name:"String Formatting",difficulty:3,desc:"<p>Given <code>x = 3.14159</code>, use an f-string to print it rounded to 2 decimal places: <code>3.14</code></p>",hint:"Use f\"{x:.2f}\" to format a float to 2 decimal places.",starter:"x = 3.14159\n# Print x with exactly 2 decimal places\n",check:(o)=>o.trim()==="3.14",successMsg:"Format specifiers like :.2f give you precise control over output!"},
+{id:40,chapter:4,name:"Reverse a String",difficulty:4,desc:"<p>Given <code>s = \"hello\"</code>, print the string reversed: <code>olleh</code></p>",hint:"Use slicing with a step of -1: s[::-1]",starter:"s = \"hello\"\n# Print s reversed\n",check:(o)=>o.trim()==="olleh",successMsg:"s[::-1] reverses a string using slice step — a classic Python trick!"},
+{id:41,chapter:5,name:"Simple If",difficulty:1,desc:"<p>Given <code>x = 10</code>, print <code>Big</code> if <code>x</code> is greater than 5.</p>",hint:"Use: if x > 5: followed by an indented print().",starter:"x = 10\n# If x is greater than 5, print \"Big\"\n",check:(o)=>o.trim()==="Big",successMsg:"The if statement runs code only when the condition is True."},
+{id:42,chapter:5,name:"If-Else",difficulty:1,desc:"<p>Given <code>x = 3</code>, print <code>Big</code> if x &gt; 5, otherwise print <code>Small</code>.</p>",hint:"Use if/else to handle both cases.",starter:"x = 3\n# Print \"Big\" if x > 5, otherwise print \"Small\"\n",check:(o)=>o.trim()==="Small",successMsg:"else catches everything the if condition misses."},
+{id:43,chapter:5,name:"If-Elif-Else",difficulty:2,desc:"<p>Given <code>score = 75</code>, print the letter grade:<br>&gt;= 90: <code>A</code>, &gt;= 80: <code>B</code>, &gt;= 70: <code>C</code>, otherwise: <code>F</code></p>",hint:"Use if/elif/elif/else to check each range from highest to lowest.",starter:"score = 75\n# Print the letter grade: A (>=90), B (>=80), C (>=70), F (else)\n",check:(o)=>o.trim()==="C",successMsg:"elif lets you chain multiple conditions in order!"},
+{id:44,chapter:5,name:"Nested If",difficulty:2,desc:"<p>Given <code>x = 15</code>, first check if it's positive. If so, check if it's even or odd. Print <code>Positive and Odd</code>.</p>",hint:"Nest an if/else inside the first if block. Use x % 2 to check even/odd.",starter:"x = 15\n# Check if positive, then check if even or odd\n# Print \"Positive and Even\" or \"Positive and Odd\"\n",check:(o)=>o.trim()==="Positive and Odd",successMsg:"Nested ifs let you check conditions within conditions!"},
+{id:45,chapter:5,name:"And Condition",difficulty:2,desc:"<p>Given <code>age = 20</code> and <code>has_id = True</code>, print <code>Entry allowed</code> if <strong>both</strong> conditions are met (age &gt;= 18 and has_id is True).</p>",hint:"Use 'and' to combine two conditions: if age >= 18 and has_id:",starter:"age = 20\nhas_id = True\n# Print \"Entry allowed\" if age >= 18 AND has_id is True\n",check:(o)=>o.trim()==="Entry allowed",successMsg:"'and' ensures ALL conditions must be True."},
+{id:46,chapter:5,name:"Or Condition",difficulty:2,desc:"<p>Given <code>day = \"Saturday\"</code>, print <code>Weekend</code> if day is <code>\"Saturday\"</code> or <code>\"Sunday\"</code>.</p>",hint:"Use 'or' to check either condition.",starter:"day = \"Saturday\"\n# Print \"Weekend\" if day is Saturday or Sunday\n",check:(o)=>o.trim()==="Weekend",successMsg:"'or' is True when at least one condition matches."},
+{id:47,chapter:5,name:"Not Condition",difficulty:2,desc:"<p>Given <code>raining = False</code>, print <code>Go outside</code> if it is <strong>not</strong> raining.</p>",hint:"Use 'not' to invert a boolean: if not raining:",starter:"raining = False\n# Print \"Go outside\" if it's not raining\n",check:(o)=>o.trim()==="Go outside",successMsg:"'not' flips the condition — great for negative checks!"},
+{id:48,chapter:5,name:"Ternary Expression",difficulty:2,desc:"<p>Given <code>x = 7</code>, use a <strong>ternary expression</strong> (one-line if/else) to set result to <code>\"Even\"</code> if x is even, or <code>\"Odd\"</code> if x is odd. Print result.</p>",hint:"Ternary syntax: result = \"Even\" if x % 2 == 0 else \"Odd\"",starter:"x = 7\n# Use a ternary expression to set result to \"Even\" or \"Odd\"\n# Then print result\n",check:(o)=>o.trim()==="Odd",successMsg:"Ternary expressions are compact one-line conditionals!"},
+{id:49,chapter:5,name:"Temperature Classifier",difficulty:3,desc:"<p>Given <code>temp = 25</code>, classify the temperature:<br>&lt;= 0: <code>Freezing</code>, &lt;= 15: <code>Cold</code>, &lt;= 25: <code>Mild</code>, else: <code>Hot</code></p>",hint:"Use if/elif/elif/else checking from coldest to hottest.",starter:"temp = 25\n# Classify: Freezing (<=0), Cold (<=15), Mild (<=25), Hot (>25)\n",check:(o)=>o.trim()==="Mild",successMsg:"Multi-branch conditionals can classify values into ranges!"},
+{id:50,chapter:5,name:"FizzBuzz Check",difficulty:3,desc:"<p>Given <code>n = 15</code>, print:<br><code>FizzBuzz</code> if divisible by both 3 and 5,<br><code>Fizz</code> if divisible by 3 only,<br><code>Buzz</code> if divisible by 5 only,<br>otherwise print the number.</p>",hint:"Check divisibility by both 3 AND 5 first, then by 3, then by 5.",starter:"n = 15\n# FizzBuzz: divisible by 3 and 5 -> \"FizzBuzz\"\n# divisible by 3 only -> \"Fizz\"\n# divisible by 5 only -> \"Buzz\"\n# otherwise -> print the number\n",check:(o)=>o.trim()==="FizzBuzz",successMsg:"FizzBuzz — the classic coding interview question, solved!"},
+{id:51,chapter:5,name:"Min of Three",difficulty:3,desc:"<p>Given <code>a = 7</code>, <code>b = 3</code>, <code>c = 9</code>, find and print the minimum value <strong>without using</strong> the built-in <code>min()</code> function.</p>",hint:"Use if/elif/else to compare all three values against each other.",starter:"a = 7\nb = 3\nc = 9\n# Find and print the minimum of a, b, c without using min()\n",check:(o)=>o.trim()==="3",successMsg:"You can find the minimum with comparisons — that's what min() does internally!"},
+{id:52,chapter:5,name:"Triangle Check",difficulty:4,desc:"<p>Given sides <code>a = 3</code>, <code>b = 4</code>, <code>c = 5</code>, check if they form a valid triangle. A triangle is valid if each side is less than the sum of the other two. Print <code>Valid triangle</code> or <code>Not a triangle</code>.</p>",hint:"Check all three conditions: a < b+c AND b < a+c AND c < a+b.",starter:"a = 3\nb = 4\nc = 5\n# Check if these sides form a valid triangle\n# Print \"Valid triangle\" or \"Not a triangle\"\n",check:(o)=>o.trim()==="Valid triangle",successMsg:"The triangle inequality theorem — geometry meets code!"},
+{
+  id: 53,
+  chapter: 6,
+  name: "Count to 5",
+  difficulty: 1,
+  desc: "<p>Use a <code>for</code> loop with <code>range(1, 6)</code> to print the numbers 1 through 5, each on its own line.</p>",
+  hint: "for i in range(1, 6): will give you 1, 2, 3, 4, 5",
+  starter: "# Print numbers 1 through 5 using a for loop\n",
+  check: (output) => output.trim() === "1\n2\n3\n4\n5",
+  successMsg: "You counted to 5 with a for loop!"
+},
+{
+  id: 54,
+  chapter: 6,
+  name: "Sum 1 to 10",
+  difficulty: 1,
+  desc: "<p>Use a <code>for</code> loop to calculate the sum of numbers 1 through 10. Print the total.</p>",
+  hint: "Start with total = 0, then add each number in range(1, 11) to it.",
+  starter: "# Sum the numbers 1 through 10 and print the result\ntotal = 0\n",
+  check: (output) => output.trim() === "55",
+  successMsg: "The sum of 1 to 10 is 55. Gauss would be proud!"
+},
+{
+  id: 55,
+  chapter: 6,
+  name: "Print List Items",
+  difficulty: 1,
+  desc: "<p>Use a <code>for</code> loop to print each fruit in the list on its own line.</p>",
+  hint: "for fruit in fruits: print(fruit)",
+  starter: "fruits = [\"apple\", \"banana\", \"cherry\"]\n# Print each fruit on its own line\n",
+  check: (output) => output.trim() === "apple\nbanana\ncherry",
+  successMsg: "You iterated through the list perfectly!"
+},
+{
+  id: 56,
+  chapter: 6,
+  name: "Range with Step",
+  difficulty: 2,
+  desc: "<p>Use <code>range()</code> with a step argument to print the even numbers 2, 4, 6, 8, 10, each on its own line.</p>",
+  hint: "range() can take three arguments: start, stop, step. Try range(2, 11, 2).",
+  starter: "# Print even numbers from 2 to 10 using range with a step\n",
+  check: (output) => output.trim() === "2\n4\n6\n8\n10",
+  successMsg: "You mastered the step parameter in range()!"
+},
+{
+  id: 57,
+  chapter: 6,
+  name: "Enumerate",
+  difficulty: 2,
+  desc: "<p>Use <code>enumerate()</code> to print each item in the list with its index, formatted as <code>index: item</code>.</p>",
+  hint: "for i, item in enumerate(items): print(str(i) + \": \" + item)",
+  starter: "items = [\"a\", \"b\", \"c\"]\n# Print each item with its index using enumerate\n",
+  check: (output) => output.trim() === "0: a\n1: b\n2: c",
+  successMsg: "enumerate() is super handy for tracking indices!"
+},
+{
+  id: 58,
+  chapter: 6,
+  name: "String Iteration",
+  difficulty: 2,
+  desc: "<p>Loop through each character in the word and print it on its own line.</p>",
+  hint: "Strings are iterable in Python: for char in word: print(char)",
+  starter: "word = \"Hello\"\n# Print each character on its own line\n",
+  check: (output) => output.trim() === "H\ne\nl\nl\no",
+  successMsg: "You can iterate over strings just like lists!"
+},
+{
+  id: 59,
+  chapter: 6,
+  name: "Nested Loop",
+  difficulty: 3,
+  desc: "<p>Use nested <code>for</code> loops to print a multiplication table. For <code>i</code> in 1..2 and <code>j</code> in 1..3, print <code>ixj=result</code>.</p>",
+  hint: "Use two for loops: the outer for i in range(1,3) and the inner for j in range(1,4).",
+  starter: "# Print multiplication results: ixj=result\n# i goes from 1 to 2, j goes from 1 to 3\n",
+  check: (output) => output.trim() === "1x1=1\n1x2=2\n1x3=3\n2x1=2\n2x2=4\n2x3=6",
+  successMsg: "Nested loops let you combine iterations!"
+},
+{
+  id: 60,
+  chapter: 6,
+  name: "Star Triangle",
+  difficulty: 2,
+  desc: "<p>Print a right triangle made of <code>*</code> characters with 5 rows. Row 1 has 1 star, row 2 has 2 stars, and so on.</p>",
+  hint: "for i in range(1, 6): print(\"*\" * i)",
+  starter: "# Print a right triangle of * with 5 rows\n",
+  check: (output) => output.trim() === "*\n**\n***\n****\n*****",
+  successMsg: "Beautiful triangle! String multiplication is powerful."
+},
+{
+  id: 61,
+  chapter: 6,
+  name: "Accumulate List",
+  difficulty: 2,
+  desc: "<p>Build a new list containing the squares of each number in <code>nums</code>, then print the new list.</p>",
+  hint: "Create an empty list, loop through nums, append n*n (or n**2) to it.",
+  starter: "nums = [1, 2, 3, 4, 5]\n# Build a list of squares and print it\n",
+  check: (output) => output.trim() === "[1, 4, 9, 16, 25]",
+  successMsg: "You built a new list by accumulating values in a loop!"
+},
+{
+  id: 62,
+  chapter: 6,
+  name: "Count Vowels",
+  difficulty: 3,
+  desc: "<p>Count the number of vowels (a, e, i, o, u) in the word and print the count.</p>",
+  hint: "Loop through each character, check if it's in \"aeiou\", and increment a counter.",
+  starter: "word = \"education\"\n# Count the vowels and print the count\n",
+  check: (output) => output.trim() === "5",
+  successMsg: "You counted 5 vowels in 'education'!"
+},
+{
+  id: 63,
+  chapter: 7,
+  name: "Countdown",
+  difficulty: 1,
+  desc: "<p>Use a <code>while</code> loop to count down from 5 to 1, printing each number. After the loop, print <code>Go!</code>.</p>",
+  hint: "Start with n = 5, loop while n > 0, print n, then subtract 1. Print \"Go!\" after the loop.",
+  starter: "# Countdown from 5 to 1, then print Go!\n",
+  check: (output) => output.trim() === "5\n4\n3\n2\n1\nGo!",
+  successMsg: "Liftoff! Your countdown works perfectly."
+},
+{
+  id: 64,
+  chapter: 7,
+  name: "Sum Until",
+  difficulty: 2,
+  desc: "<p>Start with <code>total = 0</code> and <code>n = 1</code>. Keep adding <code>n</code> to <code>total</code> and incrementing <code>n</code> until <code>total >= 15</code>. Print the final total.</p>",
+  hint: "while total < 15: total += n; n += 1. The answer is 15 because 1+2+3+4+5 = 15.",
+  starter: "# Sum 1 + 2 + 3 + ... until the sum is >= 15\ntotal = 0\nn = 1\n",
+  check: (output) => output.trim() === "15",
+  successMsg: "1+2+3+4+5 = 15. Nice accumulation!"
+},
+{
+  id: 65,
+  chapter: 7,
+  name: "Double Until",
+  difficulty: 2,
+  desc: "<p>Start with <code>x = 1</code>. Keep doubling <code>x</code> until it is greater than 100. Print the final value of <code>x</code>.</p>",
+  hint: "while x <= 100: x = x * 2. The sequence is 1, 2, 4, 8, 16, 32, 64, 128.",
+  starter: "# Start at 1 and keep doubling until greater than 100\nx = 1\n",
+  check: (output) => output.trim() === "128",
+  successMsg: "2^7 = 128, the first power of 2 over 100!"
+},
+{
+  id: 66,
+  chapter: 7,
+  name: "Digit Counter",
+  difficulty: 2,
+  desc: "<p>Count how many digits are in the number <code>n</code> using a <code>while</code> loop. Print the count.</p>",
+  hint: "Keep dividing n by 10 (integer division) until it reaches 0, counting each step.",
+  starter: "n = 12345\n# Count the digits in n using a while loop\n",
+  check: (output) => output.trim() === "5",
+  successMsg: "12345 has 5 digits. Well counted!"
+},
+{
+  id: 67,
+  chapter: 7,
+  name: "Digit Sum",
+  difficulty: 2,
+  desc: "<p>Calculate the sum of the digits of <code>n</code> using a <code>while</code> loop. Print the sum.</p>",
+  hint: "Use n % 10 to get the last digit, then n = n // 10 to remove it.",
+  starter: "n = 12345\n# Sum the digits of n using a while loop\n",
+  check: (output) => output.trim() === "15",
+  successMsg: "1+2+3+4+5 = 15. Digit extraction mastered!"
+},
+{
+  id: 68,
+  chapter: 7,
+  name: "Powers of 2",
+  difficulty: 2,
+  desc: "<p>Print all powers of 2 from 1 up to and including 128, each on its own line.</p>",
+  hint: "Start with p = 1, loop while p <= 128, print p, then p = p * 2.",
+  starter: "# Print powers of 2 from 1 to 128\n",
+  check: (output) => output.trim() === "1\n2\n4\n8\n16\n32\n64\n128",
+  successMsg: "All 8 powers of 2 printed perfectly!"
+},
+{
+  id: 69,
+  chapter: 7,
+  name: "Collatz Steps",
+  difficulty: 3,
+  desc: "<p>Starting with <code>n = 6</code>, apply the Collatz rule: if <code>n</code> is even, divide by 2 (integer division); if odd, multiply by 3 and add 1. Count steps until <code>n</code> reaches 1. Print the step count.</p>",
+  hint: "The sequence is: 6, 3, 10, 5, 16, 8, 4, 2, 1 which is 8 steps.",
+  starter: "n = 6\n# Count Collatz steps until n reaches 1\n",
+  check: (output) => output.trim() === "8",
+  successMsg: "6 takes 8 Collatz steps to reach 1!"
+},
+{
+  id: 70,
+  chapter: 7,
+  name: "GCD",
+  difficulty: 3,
+  desc: "<p>Find the Greatest Common Divisor (GCD) of <code>a</code> and <code>b</code> using a <code>while</code> loop (Euclidean algorithm). Print the result.</p>",
+  hint: "While b != 0: a, b = b, a % b. Then a is the GCD.",
+  starter: "a = 48\nb = 18\n# Find the GCD using the Euclidean algorithm\n",
+  check: (output) => output.trim() === "6",
+  successMsg: "GCD(48, 18) = 6. Euclid would approve!"
+},
+{
+  id: 71,
+  chapter: 8,
+  name: "Create & Print",
+  difficulty: 1,
+  desc: "<p>Create a list of numbers and print it.</p>",
+  hint: "Just use print() on the list variable.",
+  starter: "nums = [10, 20, 30]\n# Print the list\n",
+  check: (output) => output.trim() === "[10, 20, 30]",
+  successMsg: "Lists print with square brackets and commas!"
+},
+{
+  id: 72,
+  chapter: 8,
+  name: "Access Index",
+  difficulty: 1,
+  desc: "<p>Print the second item in the list (index 1).</p>",
+  hint: "List indices start at 0, so index 1 is the second item.",
+  starter: "fruits = [\"apple\", \"banana\", \"cherry\"]\n# Print the second item\n",
+  check: (output) => output.trim() === "banana",
+  successMsg: "Index 1 gives you the second element!"
+},
+{
+  id: 73,
+  chapter: 8,
+  name: "Negative Index",
+  difficulty: 1,
+  desc: "<p>Use a negative index to print the last item in the list.</p>",
+  hint: "nums[-1] gives the last element.",
+  starter: "nums = [1, 2, 3, 4, 5]\n# Print the last item using a negative index\n",
+  check: (output) => output.trim() === "5",
+  successMsg: "Negative indexing starts from the end. -1 is always the last item!"
+},
+{
+  id: 74,
+  chapter: 8,
+  name: "Slice",
+  difficulty: 2,
+  desc: "<p>Use slicing to print elements at index 1, 2, and 3 from the list.</p>",
+  hint: "nums[1:4] gives elements from index 1 up to (not including) 4.",
+  starter: "nums = [1, 2, 3, 4, 5]\n# Print a slice containing the 2nd, 3rd, and 4th elements\n",
+  check: (output) => output.trim() === "[2, 3, 4]",
+  successMsg: "Slicing is one of Python's most powerful features!"
+},
+{
+  id: 75,
+  chapter: 8,
+  name: "Append & Remove",
+  difficulty: 2,
+  desc: "<p>Start with the list <code>[1, 2, 3]</code>. Append <code>4</code> to the end, then remove <code>2</code> from the list. Print the result.</p>",
+  hint: "Use .append(4) to add and .remove(2) to remove by value.",
+  starter: "nums = [1, 2, 3]\n# Append 4, remove 2, then print\n",
+  check: (output) => output.trim() === "[1, 3, 4]",
+  successMsg: "append() adds to the end, remove() removes by value!"
+},
+{
+  id: 76,
+  chapter: 8,
+  name: "List Length",
+  difficulty: 1,
+  desc: "<p>Print the number of items in the list using <code>len()</code>.</p>",
+  hint: "len(items) returns the number of elements.",
+  starter: "items = [10, 20, 30, 40, 50]\n# Print the length of the list\n",
+  check: (output) => output.trim() === "5",
+  successMsg: "len() works on lists, strings, and more!"
+},
+{
+  id: 77,
+  chapter: 8,
+  name: "Sort",
+  difficulty: 2,
+  desc: "<p>Sort the list in ascending order and print it.</p>",
+  hint: "Use nums.sort() to sort in place, then print.",
+  starter: "nums = [3, 1, 4, 1, 5]\n# Sort the list and print it\n",
+  check: (output) => output.trim() === "[1, 1, 3, 4, 5]",
+  successMsg: "sort() arranges elements from smallest to largest!"
+},
+{
+  id: 78,
+  chapter: 8,
+  name: "Reverse",
+  difficulty: 2,
+  desc: "<p>Reverse the list and print it.</p>",
+  hint: "Use nums.reverse() to reverse in place, then print.",
+  starter: "nums = [1, 2, 3, 4, 5]\n# Reverse the list and print it\n",
+  check: (output) => output.trim() === "[5, 4, 3, 2, 1]",
+  successMsg: "reverse() flips the list in place!"
+},
+{
+  id: 79,
+  chapter: 8,
+  name: "Min and Max",
+  difficulty: 2,
+  desc: "<p>Print the minimum value and maximum value of the list, each on its own line.</p>",
+  hint: "Use min(nums) and max(nums).",
+  starter: "nums = [3, 7, 1, 9, 4]\n# Print the min and max on separate lines\n",
+  check: (output) => output.trim() === "1\n9",
+  successMsg: "min() and max() are built-in and very handy!"
+},
+{
+  id: 80,
+  chapter: 8,
+  name: "List Comprehension",
+  difficulty: 3,
+  desc: "<p>Use a list comprehension to create a list of squares of numbers 1 through 5. Print the list.</p>",
+  hint: "squares = [x**2 for x in range(1, 6)]",
+  starter: "# Create a list of squares from 1 to 5 using a list comprehension\n",
+  check: (output) => output.trim() === "[1, 4, 9, 16, 25]",
+  successMsg: "List comprehensions are concise and Pythonic!"
+},
+{
+  id: 81,
+  chapter: 8,
+  name: "Filter Comprehension",
+  difficulty: 3,
+  desc: "<p>Use a list comprehension with a condition to keep only the even numbers from the list. Print the result.</p>",
+  hint: "evens = [x for x in nums if x % 2 == 0]",
+  starter: "nums = [1, 2, 3, 4, 5, 6, 7, 8]\n# Filter to keep only even numbers using a list comprehension\n",
+  check: (output) => output.trim() === "[2, 4, 6, 8]",
+  successMsg: "Adding conditions to comprehensions makes them powerful filters!"
+},
+{
+  id: 82,
+  chapter: 8,
+  name: "Flatten",
+  difficulty: 4,
+  desc: "<p>Use a list comprehension to flatten the nested list into a single flat list. Print the result.</p>",
+  hint: "flat = [item for row in matrix for item in row]",
+  starter: "matrix = [[1, 2], [3, 4], [5, 6]]\n# Flatten the matrix into a single list\n",
+  check: (output) => output.trim() === "[1, 2, 3, 4, 5, 6]",
+  successMsg: "Nested comprehensions can flatten lists elegantly!"
+},
+{
+  id: 83,
+  chapter: 9,
+  name: "Simple Function",
+  difficulty: 2,
+  desc: "<p>Define a function called <code>greet</code> that takes no arguments and prints <code>Hello!</code>. Then call it.</p>",
+  hint: "def greet(): print(\"Hello!\") then call greet()",
+  starter: "# Define a function greet() that prints Hello!, then call it\n",
+  check: (output) => output.trim() === "Hello!",
+  successMsg: "You defined and called your first function!"
+},
+{
+  id: 84,
+  chapter: 9,
+  name: "With Parameter",
+  difficulty: 2,
+  desc: "<p>Define a function <code>greet(name)</code> that prints <code>Hello, name!</code>. Call it with <code>\"Ronny\"</code>.</p>",
+  hint: "def greet(name): print(\"Hello, \" + name + \"!\")",
+  starter: "# Define greet(name) and call it with \"Ronny\"\n",
+  check: (output) => output.trim() === "Hello, Ronny!",
+  successMsg: "Parameters let functions work with different inputs!"
+},
+{
+  id: 85,
+  chapter: 9,
+  name: "Return Value",
+  difficulty: 2,
+  desc: "<p>Define a function <code>square(n)</code> that returns <code>n * n</code>. Print the result of calling <code>square(7)</code>.</p>",
+  hint: "def square(n): return n * n",
+  starter: "# Define square(n) that returns n squared, then print square(7)\n",
+  check: (output) => output.trim() === "49",
+  successMsg: "return sends a value back to the caller!"
+},
+{
+  id: 86,
+  chapter: 9,
+  name: "Two Parameters",
+  difficulty: 2,
+  desc: "<p>Define a function <code>add(a, b)</code> that returns the sum of <code>a</code> and <code>b</code>. Print <code>add(3, 5)</code>.</p>",
+  hint: "def add(a, b): return a + b",
+  starter: "# Define add(a, b) and print add(3, 5)\n",
+  check: (output) => output.trim() === "8",
+  successMsg: "Functions can take multiple parameters!"
+},
+{
+  id: 87,
+  chapter: 9,
+  name: "Default Parameter",
+  difficulty: 2,
+  desc: "<p>Define <code>power(base, exp=2)</code> that returns <code>base ** exp</code>. Print <code>power(3)</code> and <code>power(2, 10)</code> on separate lines.</p>",
+  hint: "def power(base, exp=2): return base ** exp",
+  starter: "# Define power(base, exp=2) and test it\n",
+  check: (output) => output.trim() === "9\n1024",
+  successMsg: "Default parameters make functions flexible!"
+},
+{
+  id: 88,
+  chapter: 9,
+  name: "Multiple Returns",
+  difficulty: 3,
+  desc: "<p>Define <code>min_max(lst)</code> that returns both the minimum and maximum. Unpack the result and print each on its own line.</p>",
+  hint: "return min(lst), max(lst) returns a tuple. Unpack with a, b = min_max(lst).",
+  starter: "# Define min_max(lst) that returns min and max\n# Test with [3, 7, 1, 9]\n",
+  check: (output) => output.trim() === "1\n9",
+  successMsg: "Python functions can return multiple values as tuples!"
+},
+{
+  id: 89,
+  chapter: 9,
+  name: "Scope",
+  difficulty: 3,
+  desc: "<p>Set <code>x = 10</code>. Define a function <code>change()</code> that sets a local <code>x = 20</code> and prints it. Call the function, then print the outer <code>x</code>.</p>",
+  hint: "Variables inside a function are local. The outer x stays unchanged.",
+  starter: "x = 10\n# Define change() that creates a local x=20 and prints it\n# Call change(), then print x\n",
+  check: (output) => output.trim() === "20\n10",
+  successMsg: "Local variables don't affect outer scope!"
+},
+{
+  id: 90,
+  chapter: 9,
+  name: "Lambda",
+  difficulty: 3,
+  desc: "<p>Create a lambda function called <code>double</code> that multiplies its input by 2. Print <code>double(5)</code>.</p>",
+  hint: "double = lambda x: x * 2",
+  starter: "# Create a lambda called double and print double(5)\n",
+  check: (output) => output.trim() === "10",
+  successMsg: "Lambdas are anonymous one-line functions!"
+},
+{
+  id: 91,
+  chapter: 9,
+  name: "Map with Lambda",
+  difficulty: 3,
+  desc: "<p>Use <code>map()</code> with a lambda to double each number in the list. Print the result as a list.</p>",
+  hint: "list(map(lambda x: x * 2, nums))",
+  starter: "nums = [1, 2, 3, 4]\n# Use map with a lambda to double each number, print as list\n",
+  check: (output) => output.trim() === "[2, 4, 6, 8]",
+  successMsg: "map() applies a function to every element!"
+},
+{
+  id: 92,
+  chapter: 9,
+  name: "Recursive Factorial",
+  difficulty: 4,
+  desc: "<p>Define a recursive function <code>factorial(n)</code> that returns <code>1</code> if <code>n <= 1</code>, otherwise <code>n * factorial(n-1)</code>. Print <code>factorial(5)</code>.</p>",
+  hint: "Base case: if n <= 1: return 1. Recursive case: return n * factorial(n - 1).",
+  starter: "# Define recursive factorial(n) and print factorial(5)\n",
+  check: (output) => output.trim() === "120",
+  successMsg: "5! = 120. Recursion calls itself until the base case!"
+},
+{
+  id: 93,
+  chapter: 9,
+  name: "Fibonacci",
+  difficulty: 4,
+  desc: "<p>Define a recursive <code>fib(n)</code> function (fib(0)=0, fib(1)=1, fib(n)=fib(n-1)+fib(n-2)). Print <code>fib(0)</code> through <code>fib(7)</code>, each on its own line.</p>",
+  hint: "Base cases: if n == 0: return 0, if n == 1: return 1. Then return fib(n-1) + fib(n-2).",
+  starter: "# Define recursive fib(n) and print fib(0) through fib(7)\n",
+  check: (output) => output.trim() === "0\n1\n1\n2\n3\n5\n8\n13",
+  successMsg: "The Fibonacci sequence appears everywhere in nature!"
+},
+{
+  id: 94,
+  chapter: 9,
+  name: "Function as Argument",
+  difficulty: 5,
+  desc: "<p>Define <code>repeat(func, n)</code> that calls <code>func()</code> exactly <code>n</code> times. Define <code>say_hi()</code> that prints <code>Hi</code>. Call <code>repeat(say_hi, 3)</code>.</p>",
+  hint: "def repeat(func, n): for _ in range(n): func(). Functions can be passed as arguments!",
+  starter: "# Define repeat(func, n) and say_hi(), then call repeat(say_hi, 3)\n",
+  check: (output) => output.trim() === "Hi\nHi\nHi",
+  successMsg: "Passing functions as arguments is a powerful pattern!"
+},
+{
+  id: 95,
+  chapter: 10,
+  name: "Create & Access",
+  difficulty: 1,
+  desc: "<p>Create a dictionary and access a value by its key.</p>",
+  hint: "Use d[\"name\"] to access the value for the key \"name\".",
+  starter: "d = {\"name\": \"Ronny\", \"age\": 16}\n# Print the value for the key \"name\"\n",
+  check: (output) => output.trim() === "Ronny",
+  successMsg: "Dictionaries map keys to values!"
+},
+{
+  id: 96,
+  chapter: 10,
+  name: "Add Key",
+  difficulty: 1,
+  desc: "<p>Add a new key-value pair to the dictionary and print it.</p>",
+  hint: "d[\"b\"] = 2 adds a new key.",
+  starter: "d = {\"a\": 1}\n# Add key \"b\" with value 2, then print the dictionary\n",
+  check: (output) => output.trim() === "{'a': 1, 'b': 2}",
+  successMsg: "Adding to dictionaries is as simple as assignment!"
+},
+{
+  id: 97,
+  chapter: 10,
+  name: "Get Method",
+  difficulty: 2,
+  desc: "<p>Use the <code>.get()</code> method to safely access a key that doesn't exist, providing a default value of <code>0</code>.</p>",
+  hint: "d.get(\"y\", 0) returns 0 if \"y\" is not in d.",
+  starter: "d = {\"x\": 10}\n# Use .get() to print the value for \"y\" with default 0\n",
+  check: (output) => output.trim() === "0",
+  successMsg: ".get() prevents KeyError by providing a default!"
+},
+{
+  id: 98,
+  chapter: 10,
+  name: "Loop Keys",
+  difficulty: 2,
+  desc: "<p>Loop through the dictionary and print each key on its own line.</p>",
+  hint: "for key in d: print(key)",
+  starter: "d = {\"a\": 1, \"b\": 2, \"c\": 3}\n# Print each key on its own line\n",
+  check: (output) => output.trim() === "a\nb\nc",
+  successMsg: "Looping over a dict iterates through its keys!"
+},
+{
+  id: 99,
+  chapter: 10,
+  name: "Loop Items",
+  difficulty: 2,
+  desc: "<p>Use <code>.items()</code> to loop through the dictionary and print each pair as <code>key: value</code>.</p>",
+  hint: "for key, value in d.items(): print(key + \": \" + str(value))",
+  starter: "d = {\"name\": \"Ronny\", \"score\": 100}\n# Print each key-value pair as \"key: value\"\n",
+  check: (output) => output.trim() === "name: Ronny\nscore: 100",
+  successMsg: ".items() gives you both keys and values!"
+},
+{
+  id: 100,
+  chapter: 10,
+  name: "Dict Length",
+  difficulty: 1,
+  desc: "<p>Print the number of key-value pairs in the dictionary using <code>len()</code>.</p>",
+  hint: "len(d) returns the number of keys.",
+  starter: "d = {\"a\": 1, \"b\": 2, \"c\": 3, \"d\": 4}\n# Print the length of the dictionary\n",
+  check: (output) => output.trim() === "4",
+  successMsg: "len() works on dictionaries too!"
+},
+{
+  id: 101,
+  chapter: 10,
+  name: "Check Key",
+  difficulty: 2,
+  desc: "<p>Check if the key <code>\"a\"</code> exists in the dictionary using the <code>in</code> operator. Print the result.</p>",
+  hint: "\"a\" in d returns True or False.",
+  starter: "d = {\"a\": 1, \"b\": 2}\n# Check if \"a\" is in the dictionary and print the result\n",
+  check: (output) => output.trim() === "True",
+  successMsg: "The 'in' operator checks for key existence!"
+},
+{
+  id: 102,
+  chapter: 10,
+  name: "Values Sum",
+  difficulty: 3,
+  desc: "<p>Sum all the values in the dictionary and print the total.</p>",
+  hint: "sum(d.values()) gives the sum of all values.",
+  starter: "d = {\"math\": 85, \"english\": 92, \"science\": 78}\n# Sum all values and print the total\n",
+  check: (output) => output.trim() === "255",
+  successMsg: ".values() returns all values, and sum() adds them up!"
+},
+{
+  id: 103,
+  chapter: 10,
+  name: "Dict Comprehension",
+  difficulty: 3,
+  desc: "<p>Use a dictionary comprehension to create a dictionary mapping numbers 1-5 to their squares. Print it.</p>",
+  hint: "squares = {x: x**2 for x in range(1, 6)}",
+  starter: "# Create a dict of {number: square} for 1-5 using a comprehension\n",
+  check: (output) => output.trim() === "{1: 1, 2: 4, 3: 9, 4: 16, 5: 25}",
+  successMsg: "Dict comprehensions are just like list comprehensions but with key: value!"
+},
+{
+  id: 104,
+  chapter: 10,
+  name: "Nested Dict",
+  difficulty: 4,
+  desc: "<p>Loop through the nested dictionary and print each student's name and grade as <code>name: grade</code>.</p>",
+  hint: "for name, info in students.items(): print(name + \": \" + str(info[\"grade\"]))",
+  starter: "students = {\"alice\": {\"grade\": 90}, \"bob\": {\"grade\": 85}}\n# Print each student as \"name: grade\"\n",
+  check: (output) => output.trim() === "alice: 90\nbob: 85",
+  successMsg: "Nested dictionaries let you store structured data!"
+},
+{
+  id: 105,
+  chapter: 11,
+  name: "Create a 2D List",
+  difficulty: 2,
+  desc: "<p>A <b>2D list</b> (list of lists) lets you store data in rows and columns, like a grid or table.</p><p>Create the 2D list <code>grid</code> shown below and print it.</p>",
+  hint: "A 2D list is just a list where each element is itself a list: [[1,2,3],[4,5,6],[7,8,9]]",
+  starter: `grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# Print the entire grid
+`,
+  check: (output) => output.trim() === "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]",
+  successMsg: "You created your first 2D list! Each inner list is a row in the grid."
+},
+{
+  id: 106,
+  chapter: 11,
+  name: "Access a 2D Element",
+  difficulty: 2,
+  desc: "<p>To access an element in a 2D list, use <b>two indices</b>: <code>grid[row][col]</code>.</p><p>Given the grid below, print the element at row 1, column 2.</p>",
+  hint: "grid[1] gives you the second row [4,5,6], and grid[1][2] gives you the third element of that row.",
+  starter: `grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# Print the element at row 1, column 2
+`,
+  check: (output) => output.trim() === "6",
+  successMsg: "Correct! grid[1][2] = 6. Remember: indexing starts at 0."
+},
+{
+  id: 107,
+  chapter: 11,
+  name: "Print Each Row",
+  difficulty: 2,
+  desc: "<p>Use a <code>for</code> loop to print each row of a 2D list on its own line.</p>",
+  hint: "Loop through the grid with: for row in grid: print(row)",
+  starter: `grid = [[1, 2], [3, 4], [5, 6]]
+# Print each row on its own line
+`,
+  check: (output) => output.trim() === "[1, 2]\n[3, 4]\n[5, 6]",
+  successMsg: "Nice! Looping through a 2D list gives you one row at a time."
+},
+{
+  id: 108,
+  chapter: 11,
+  name: "Row Sums",
+  difficulty: 3,
+  desc: "<p>Calculate and print the <b>sum of each row</b> in the grid.</p>",
+  hint: "Use sum(row) inside your loop to add up each row's values.",
+  starter: `grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# Print the sum of each row, one per line
+`,
+  check: (output) => output.trim() === "6\n15\n24",
+  successMsg: "Each row sums up correctly: 6, 15, and 24!"
+},
+{
+  id: 109,
+  chapter: 11,
+  name: "Column Sums",
+  difficulty: 3,
+  desc: "<p>Calculate and print the <b>sum of each column</b> in the grid. Column 0 is all the first elements, column 1 is all the second elements, etc.</p>",
+  hint: "Loop through column indices, then sum grid[row][col] for each row. The number of columns is len(grid[0]).",
+  starter: `grid = [[1, 2], [3, 4], [5, 6]]
+# Print the sum of each column, one per line
+`,
+  check: (output) => output.trim() === "9\n12",
+  successMsg: "Column sums: 1+3+5=9 and 2+4+6=12. You navigated rows and columns!"
+},
+{
+  id: 110,
+  chapter: 11,
+  name: "Transpose a Matrix",
+  difficulty: 3,
+  desc: "<p><b>Transposing</b> a matrix means swapping its rows and columns. Row 0 becomes column 0, row 1 becomes column 1, etc.</p><p>Transpose the given matrix and print the result.</p>",
+  hint: "Create a new list where each row is built from one column of the original: [[matrix[r][c] for r in range(rows)] for c in range(cols)]",
+  starter: `matrix = [[1, 2, 3], [4, 5, 6]]
+# Transpose the matrix and print the result
+`,
+  check: (output) => output.trim() === "[[1, 4], [2, 5], [3, 6]]",
+  successMsg: "Perfect transpose! The 2x3 matrix became a 3x2 matrix."
+},
+{
+  id: 111,
+  chapter: 11,
+  name: "Flatten a 2D List",
+  difficulty: 3,
+  desc: "<p><b>Flattening</b> converts a 2D list into a single 1D list containing all elements in order.</p>",
+  hint: "Use a nested loop or a list comprehension: [item for row in grid for item in row]",
+  starter: `grid = [[1, 2], [3, 4], [5, 6]]
+# Flatten the grid into a single list and print it
+`,
+  check: (output) => output.trim() === "[1, 2, 3, 4, 5, 6]",
+  successMsg: "Flattened! All elements are now in one list."
+},
+{
+  id: 112,
+  chapter: 11,
+  name: "Matrix Multiplication",
+  difficulty: 4,
+  desc: "<p><b>Matrix multiplication</b> combines two matrices. For each element in the result, multiply corresponding elements from a row of A and a column of B, then sum them.</p><p>Compute A * B and print the result.</p>",
+  hint: "result[i][j] = sum(A[i][k] * B[k][j] for k in range(len(B))). Use three nested loops: rows of A, cols of B, shared dimension.",
+  starter: `A = [[1, 2], [3, 4]]
+B = [[5, 6], [7, 8]]
+# Multiply A * B and print the result
+`,
+  check: (output) => output.trim() === "[[19, 22], [43, 50]]",
+  successMsg: "Matrix multiplication mastered! A powerful operation used everywhere in computing."
+},
+{
+  id: 113,
+  chapter: 12,
+  name: "Basic Try/Except",
+  difficulty: 2,
+  desc: "<p><b>Try/except</b> lets you handle errors gracefully instead of crashing. Wrap risky code in a <code>try</code> block and handle errors in the <code>except</code> block.</p><p>Try dividing 10 by 0 and catch the error.</p>",
+  hint: "Use: try: ... except ZeroDivisionError: print('Cannot divide by zero!')",
+  starter: `# Try to divide 10 by 0
+# Catch the ZeroDivisionError and print "Cannot divide by zero!"
+`,
+  check: (output) => output.trim() === "Cannot divide by zero!",
+  successMsg: "You caught the ZeroDivisionError! No more crashes from bad division."
+},
+{
+  id: 114,
+  chapter: 12,
+  name: "Type Error",
+  difficulty: 2,
+  desc: "<p>A <code>TypeError</code> occurs when you try an operation on incompatible types, like adding a string and an integer.</p><p>Try adding <code>\"hello\" + 5</code> and catch the error.</p>",
+  hint: "Use: try: result = 'hello' + 5 except TypeError: print('Type error caught!')",
+  starter: `# Try to add "hello" + 5
+# Catch the TypeError and print "Type error caught!"
+`,
+  check: (output) => output.trim() === "Type error caught!",
+  successMsg: "TypeError caught! Python won't automatically convert types for you."
+},
+{
+  id: 115,
+  chapter: 12,
+  name: "Index Error",
+  difficulty: 2,
+  desc: "<p>An <code>IndexError</code> occurs when you try to access a list index that doesn't exist.</p><p>Try accessing index 10 of a 3-element list and catch the error.</p>",
+  hint: "Use: try: x = lst[10] except IndexError: print('Index out of range!')",
+  starter: `lst = [1, 2, 3]
+# Try to access lst[10]
+# Catch the IndexError and print "Index out of range!"
+`,
+  check: (output) => output.trim() === "Index out of range!",
+  successMsg: "IndexError caught! Always check list length before accessing by index."
+},
+{
+  id: 116,
+  chapter: 12,
+  name: "Value Error",
+  difficulty: 2,
+  desc: "<p>A <code>ValueError</code> occurs when a function gets the right type but an invalid value, like converting <code>\"abc\"</code> to an integer.</p>",
+  hint: "Use: try: int('abc') except ValueError: print('Invalid number!')",
+  starter: `# Try to convert "abc" to an integer with int()
+# Catch the ValueError and print "Invalid number!"
+`,
+  check: (output) => output.trim() === "Invalid number!",
+  successMsg: "ValueError caught! Always validate data before converting types."
+},
+{
+  id: 117,
+  chapter: 12,
+  name: "Multiple Except Blocks",
+  difficulty: 3,
+  desc: "<p>You can have <b>multiple except blocks</b> to handle different error types differently. Python catches the <b>first</b> matching error.</p><p>Try converting <code>\"abc\"</code> to int then dividing by zero. Which error fires first?</p>",
+  hint: "int('abc') raises ValueError before the division ever happens. Handle both ValueError and ZeroDivisionError separately.",
+  starter: `# Try: int("abc") / 0
+# Catch ValueError -> print "Invalid number!"
+# Catch ZeroDivisionError -> print "Cannot divide by zero!"
+`,
+  check: (output) => output.trim() === "Invalid number!",
+  successMsg: "Correct! The ValueError fires first because int('abc') fails before division is attempted."
+},
+{
+  id: 118,
+  chapter: 12,
+  name: "Try/Except/Else",
+  difficulty: 3,
+  desc: "<p>The <code>else</code> clause runs only when <b>no exception</b> occurred in the try block. It's perfect for code that should only run on success.</p>",
+  hint: "try: result = 10/2 except: print('Error') else: print('Result: ' + str(result))",
+  starter: `# Try: result = 10 / 2
+# Except: print "Error"
+# Else (no error): print "Result: 5.0"
+`,
+  check: (output) => output.trim() === "Result: 5.0",
+  successMsg: "The else block ran because no error occurred! Great for success-only logic."
+},
+{
+  id: 119,
+  chapter: 12,
+  name: "Finally Block",
+  difficulty: 3,
+  desc: "<p>The <code>finally</code> block <b>always runs</b>, whether an error occurred or not. It's used for cleanup tasks.</p>",
+  hint: "try: x = 1/0 except ZeroDivisionError: print('Error') finally: print('Done')",
+  starter: `# Try: x = 1 / 0
+# Except ZeroDivisionError: print "Error"
+# Finally: print "Done"
+`,
+  check: (output) => output.trim() === "Error\nDone",
+  successMsg: "The finally block always executes! Perfect for cleanup like closing files."
+},
+{
+  id: 120,
+  chapter: 12,
+  name: "Raise an Exception",
+  difficulty: 4,
+  desc: "<p>You can <b>raise</b> your own exceptions with the <code>raise</code> keyword. This is useful for validating inputs in your functions.</p><p>Write a function that raises a <code>ValueError</code> if age is negative.</p>",
+  hint: "def check_age(age): if age < 0: raise ValueError('Negative age'). Then use try/except to catch it.",
+  starter: `# Define check_age(age) that raises ValueError("Negative age") if age < 0
+# Then try calling check_age(-1) and catch the ValueError, printing the error message
+`,
+  check: (output) => output.trim() === "Negative age",
+  successMsg: "You raised and caught your own exception! Custom errors make your code more robust."
+},
+{
+  id: 121,
+  chapter: 13,
+  name: "Linear Search",
+  difficulty: 2,
+  desc: "<p><b>Linear search</b> checks each element one by one until the target is found. It's simple but works on any list.</p><p>Find the index of <code>7</code> in the list.</p>",
+  hint: "Loop through the list with enumerate(). When you find the target, print the index.",
+  starter: `nums = [4, 2, 7, 1, 9]
+target = 7
+# Find and print the index of target in nums using a loop (not .index())
+`,
+  check: (output) => output.trim() === "2",
+  successMsg: "Found it at index 2! Linear search checks each element in order."
+},
+{
+  id: 122,
+  chapter: 13,
+  name: "Count Occurrences",
+  difficulty: 2,
+  desc: "<p>Count how many times a value appears in a list by searching through every element.</p>",
+  hint: "Use a counter variable. Loop through the list and increment the counter each time you find the target.",
+  starter: `nums = [1, 3, 2, 3, 4, 3, 5]
+target = 3
+# Count how many times target appears in nums using a loop (not .count())
+# Print the count
+`,
+  check: (output) => output.trim() === "3",
+  successMsg: "Correct! The value 3 appears 3 times in the list."
+},
+{
+  id: 123,
+  chapter: 13,
+  name: "Find Maximum",
+  difficulty: 2,
+  desc: "<p>Write a function to find the <b>largest value</b> in a list without using the built-in <code>max()</code> function.</p>",
+  hint: "Start with the first element as your current max. Loop through the rest and update whenever you find something bigger.",
+  starter: `nums = [3, 7, 1, 9, 4]
+# Write a function find_max(lst) that returns the largest value
+# Do NOT use the built-in max() function
+# Print the result
+`,
+  check: (output) => output.trim() === "9",
+  successMsg: "You found the max! This is the foundation of many search algorithms."
+},
+{
+  id: 124,
+  chapter: 13,
+  name: "Binary Search",
+  difficulty: 3,
+  desc: "<p><b>Binary search</b> works on sorted lists. It repeatedly halves the search space by comparing with the middle element. Much faster than linear search!</p><p>Find the index of <code>7</code> in the sorted list.</p>",
+  hint: "Set low=0 and high=len(nums)-1. While low <= high: find mid, compare nums[mid] with target. Adjust low or high accordingly.",
+  starter: `nums = [1, 3, 5, 7, 9, 11, 13]
+target = 7
+# Implement binary search to find the index of target
+# Print the index
+`,
+  check: (output) => output.trim() === "3",
+  successMsg: "Binary search found 7 at index 3! It only needed a few comparisons instead of checking every element."
+},
+{
+  id: 125,
+  chapter: 13,
+  name: "Bubble Sort",
+  difficulty: 3,
+  desc: "<p><b>Bubble sort</b> repeatedly steps through the list, compares adjacent elements, and swaps them if they're in the wrong order. The largest values 'bubble' to the end.</p>",
+  hint: "Use two nested loops. Outer loop for passes, inner loop compares adjacent pairs. Swap with: nums[j], nums[j+1] = nums[j+1], nums[j]",
+  starter: `nums = [5, 3, 8, 1, 2]
+# Implement bubble sort on nums
+# Print the sorted list
+`,
+  check: (output) => output.trim() === "[1, 2, 3, 5, 8]",
+  successMsg: "Bubble sort complete! Not the fastest, but easy to understand and implement."
+},
+{
+  id: 126,
+  chapter: 13,
+  name: "Selection Sort",
+  difficulty: 3,
+  desc: "<p><b>Selection sort</b> finds the minimum element in the unsorted portion and places it at the beginning, building the sorted list one element at a time.</p>",
+  hint: "For each position i, find the minimum value in nums[i:] and swap it with nums[i].",
+  starter: `nums = [64, 25, 12, 22, 11]
+# Implement selection sort on nums
+# Print the sorted list
+`,
+  check: (output) => output.trim() === "[11, 12, 22, 25, 64]",
+  successMsg: "Selection sort done! It always makes exactly n-1 swaps."
+},
+{
+  id: 127,
+  chapter: 13,
+  name: "Insertion Sort",
+  difficulty: 3,
+  desc: "<p><b>Insertion sort</b> builds the sorted list one item at a time by inserting each new element into its correct position among the already-sorted elements.</p>",
+  hint: "For each element starting from index 1, save it as 'key'. Shift larger elements right until you find the correct spot for key.",
+  starter: `nums = [5, 2, 4, 6, 1, 3]
+# Implement insertion sort on nums
+# Print the sorted list
+`,
+  check: (output) => output.trim() === "[1, 2, 3, 4, 5, 6]",
+  successMsg: "Insertion sort complete! It's very efficient for nearly-sorted data."
+},
+{
+  id: 128,
+  chapter: 13,
+  name: "Sort Stability",
+  difficulty: 4,
+  desc: "<p>A <b>stable sort</b> preserves the relative order of elements with equal keys. Python's built-in sort is stable!</p><p>Sort the list of tuples by the <b>second element</b> only. Items with the same second element should keep their original order.</p>",
+  hint: "Use sorted() with a key function: sorted(data, key=lambda x: x[1]). Python's sort is stable, so equal elements keep their original order.",
+  starter: `data = [("b", 2), ("a", 1), ("b", 1), ("a", 2)]
+# Sort data by the second element of each tuple
+# Print the sorted list
+`,
+  check: (output) => output.trim() === "[('a', 1), ('b', 1), ('b', 2), ('a', 2)]",
+  successMsg: "Notice how ('a',1) comes before ('b',1) - their original order is preserved! That's stability."
+},
+{
+  id: 129,
+  chapter: 13,
+  name: "Count Sort Steps",
+  difficulty: 4,
+  desc: "<p>Modify bubble sort to <b>count the number of swaps</b> it performs. This measures how 'unsorted' the list was.</p>",
+  hint: "Add a counter variable. Increment it each time you swap two elements. The fully reversed list [4,3,2,1] needs the most swaps.",
+  starter: `nums = [4, 3, 2, 1]
+# Implement bubble sort and count the number of swaps
+# Print only the swap count
+`,
+  check: (output) => output.trim() === "6",
+  successMsg: "6 swaps! A reversed list of length 4 needs n*(n-1)/2 = 4*3/2 = 6 swaps."
+},
+{
+  id: 130,
+  chapter: 13,
+  name: "Merge Sort",
+  difficulty: 5,
+  desc: "<p><b>Merge sort</b> divides the list in half, recursively sorts each half, then merges the sorted halves. It's efficient with O(n log n) time complexity!</p>",
+  hint: "Write two functions: merge_sort(lst) that splits and recurses, and merge(left, right) that combines two sorted lists. Base case: lists of length 0 or 1 are already sorted.",
+  starter: `nums = [38, 27, 43, 3, 9, 82, 10]
+# Implement merge sort
+# Print the sorted list
+`,
+  check: (output) => output.trim() === "[3, 9, 10, 27, 38, 43, 82]",
+  successMsg: "Merge sort mastered! One of the most important algorithms in computer science."
+},
+{
+  id: 131,
+  chapter: 14,
+  name: "Parse a CSV Line",
+  difficulty: 2,
+  desc: "<p>CSV (Comma-Separated Values) data stores fields separated by commas. The <code>split()</code> method can break a line into individual fields.</p><p>Split the line and print each field on a new line.</p>",
+  hint: "Use line.split(',') to get a list of fields, then loop through and print each one.",
+  starter: `line = "Alice,85,92,78"
+# Split the line by commas and print each field on a new line
+`,
+  check: (output) => output.trim() === "Alice\n85\n92\n78",
+  successMsg: "You parsed a CSV line! split(',') is the foundation of text data processing."
+},
+{
+  id: 132,
+  chapter: 14,
+  name: "Parse CSV Data",
+  difficulty: 2,
+  desc: "<p>Parse multi-line CSV data by splitting into rows first, then splitting each row into fields. Skip the header row!</p>",
+  hint: "Split by newline to get rows. Skip the first row (header). Split each remaining row by comma.",
+  starter: `data = "Name,Score\\nAlice,85\\nBob,92"
+# Parse the CSV data (skip the header)
+# Print each person's name and score as "Name: Score"
+`,
+  check: (output) => output.trim() === "Alice: 85\nBob: 92",
+  successMsg: "CSV data parsed! You skipped the header and extracted the fields."
+},
+{
+  id: 133,
+  chapter: 14,
+  name: "Calculate Average",
+  difficulty: 2,
+  desc: "<p>Calculate the <b>average</b> (mean) of a list of numbers. The average is the sum divided by the count.</p>",
+  hint: "Use sum(scores) / len(scores). Round to 1 decimal place with round().",
+  starter: `scores = [85, 92, 78, 90, 88]
+# Calculate and print the average, rounded to 1 decimal place
+`,
+  check: (output) => output.trim() === "86.6",
+  successMsg: "The average is 86.6! Mean is one of the most common data operations."
+},
+{
+  id: 134,
+  chapter: 14,
+  name: "Find Maximum Record",
+  difficulty: 3,
+  desc: "<p>Parse CSV data and find the record with the <b>highest score</b>. Print just the name of the top scorer.</p>",
+  hint: "Parse each row, convert the score to int, track the name with the highest score.",
+  starter: `data = "Alice,85\\nBob,92\\nCarol,78"
+# Parse the data and find who has the highest score
+# Print their name
+`,
+  check: (output) => output.trim() === "Bob",
+  successMsg: "Bob wins with 92! You combined parsing with finding the maximum."
+},
+{
+  id: 135,
+  chapter: 14,
+  name: "Filter Records",
+  difficulty: 3,
+  desc: "<p><b>Filtering</b> means selecting only the records that match a condition. Filter for people aged 18 or older.</p>",
+  hint: "Parse each row, convert age to int, and only print the name if age >= 18.",
+  starter: `data = "Alice,20\\nBob,15\\nCarol,22\\nDave,17"
+# Parse the data and print names of people aged 18 or older
+# One name per line
+`,
+  check: (output) => output.trim() === "Alice\nCarol",
+  successMsg: "Filtered! Only Alice (20) and Carol (22) are 18 or older."
+},
+{
+  id: 136,
+  chapter: 14,
+  name: "Word Frequency",
+  difficulty: 3,
+  desc: "<p>Count how many times each word appears in a text. This is a fundamental <b>natural language processing</b> task.</p>",
+  hint: "Split the text into words. Use a dictionary to count each word. Loop through and print 'word: count'.",
+  starter: `text = "the cat and the dog and the fish"
+# Count the frequency of each word
+# Print each word and its count as "word: count"
+# Print in the order words first appear
+`,
+  check: (output) => output.trim() === "the: 3\ncat: 1\nand: 2\ndog: 1\nfish: 1",
+  successMsg: "Word frequencies counted! Dictionaries are perfect for counting occurrences."
+},
+{
+  id: 137,
+  chapter: 14,
+  name: "Group By and Sum",
+  difficulty: 4,
+  desc: "<p><b>Group by</b> collects records with the same key and performs an aggregate operation (like sum) on each group.</p>",
+  hint: "Use a dictionary where keys are the group names and values accumulate the sums. Convert the second field to int before adding.",
+  starter: `data = "A,10\\nB,20\\nA,30\\nB,40"
+# Group by the first field and sum the second field
+# Print "Key: Sum" for each group in order of first appearance
+`,
+  check: (output) => output.trim() === "A: 40\nB: 60",
+  successMsg: "Group by complete! A totals 40 (10+30) and B totals 60 (20+40)."
+},
+{
+  id: 138,
+  chapter: 14,
+  name: "Moving Average",
+  difficulty: 4,
+  desc: "<p>A <b>moving average</b> smooths data by averaging each window of consecutive values. With window=3, average elements [0:3], then [1:4], then [2:5], etc.</p>",
+  hint: "For each valid starting position i (0 to len-window), compute the average of nums[i:i+window]. Print each rounded to 1 decimal.",
+  starter: `nums = [1, 3, 5, 7, 9, 11]
+window = 3
+# Compute the moving average with the given window size
+# Print each average on a new line, rounded to 1 decimal place
+`,
+  check: (output) => output.trim() === "3.0\n5.0\n7.0\n9.0",
+  successMsg: "Moving averages computed! This technique is used in finance, signal processing, and more."
+},
+{
+  id: 139,
+  chapter: 14,
+  name: "Calculate Percentile",
+  difficulty: 4,
+  desc: "<p>The <b>50th percentile</b> (median) splits data in half. For an even-length sorted list, it's the average of the two middle values.</p>",
+  hint: "Sort the list. For 6 elements, the median is the average of elements at index 2 and 3 (0-indexed).",
+  starter: `scores = [55, 70, 85, 90, 95, 100]
+# Calculate the 50th percentile (median)
+# For even-length lists: average the two middle values
+# Print the result
+`,
+  check: (output) => output.trim() === "87.5",
+  successMsg: "The median is 87.5! Average of 85 (index 2) and 90 (index 3)."
+},
+{
+  id: 140,
+  chapter: 14,
+  name: "Report Card Generator",
+  difficulty: 5,
+  desc: "<p>Build a <b>report card</b>: parse student data with multiple subjects, calculate each student's average, and print them sorted by average (highest first).</p>",
+  hint: "Use a dictionary mapping student names to lists of scores. Compute averages, sort by average descending, and print formatted output.",
+  starter: `data = "Alice,Math,90\\nBob,Math,85\\nAlice,Science,95\\nBob,Science,80\\nAlice,English,88\\nBob,English,92"
+# Parse the data, calculate each student's average across all subjects
+# Print "Name: Average" sorted by average descending, rounded to 1 decimal
+`,
+  check: (output) => output.trim() === "Alice: 91.0\nBob: 85.7",
+  successMsg: "Report cards generated! You combined parsing, grouping, averaging, and sorting."
+},
+{
+  id: 141,
+  chapter: 15,
+  name: "Caesar Cipher",
+  difficulty: 4,
+  desc: "<p>The <b>Caesar cipher</b> shifts each letter by a fixed number. With shift 3: a\u2192d, b\u2192e, ... , z\u2192c (wraps around).</p><p>Encode the message using the given shift.</p>",
+  hint: "Use ord() to get the character code, add the shift, use modulo 26 to wrap around, and chr() to convert back. Only shift lowercase letters.",
+  starter: `message = "hello"
+shift = 3
+# Encode the message using Caesar cipher with the given shift
+# Only shift lowercase letters a-z
+# Print the encoded message
+`,
+  check: (output) => output.trim() === "khoor",
+  successMsg: "Message encoded! Caesar cipher is one of the oldest encryption methods."
+},
+{
+  id: 142,
+  chapter: 15,
+  name: "Stack Implementation",
+  difficulty: 4,
+  desc: "<p>A <b>stack</b> is a Last-In-First-Out (LIFO) data structure. Implement a Stack class with <code>push</code>, <code>pop</code>, and <code>peek</code> methods.</p>",
+  hint: "Use a list internally. push() appends, pop() removes and returns the last element, peek() returns the last element without removing it.",
+  starter: `# Define a Stack class with:
+#   push(item) - add to top
+#   pop() - remove and return top item
+#   peek() - return top item without removing
+#
+# Then demonstrate:
+# Push 10, 20, 30
+# Print peek() result
+# Print pop() result
+# Print pop() result
+`,
+  check: (output) => output.trim() === "30\n30\n20",
+  successMsg: "Stack implemented! LIFO data structures are used everywhere in computing."
+},
+{
+  id: 143,
+  chapter: 15,
+  name: "Palindrome Check",
+  difficulty: 4,
+  desc: "<p>A <b>palindrome</b> reads the same forwards and backwards. Check if the given word is a palindrome.</p>",
+  hint: "Compare the string to its reverse. You can reverse a string with word[::-1].",
+  starter: `word = "racecar"
+# Check if the word is a palindrome
+# Print True or False
+`,
+  check: (output) => output.trim() === "True",
+  successMsg: "racecar is a palindrome! It reads the same forwards and backwards."
+},
+{
+  id: 144,
+  chapter: 15,
+  name: "BankAccount Class",
+  difficulty: 4,
+  desc: "<p>Create a <b>BankAccount</b> class that manages deposits and withdrawals, preventing overdrafts.</p>",
+  hint: "Store balance as an attribute. deposit() adds to balance, withdraw() subtracts only if sufficient funds. get_balance() returns current balance.",
+  starter: `# Define a BankAccount class with:
+#   __init__(self, balance) - set initial balance
+#   deposit(self, amount) - add to balance
+#   withdraw(self, amount) - subtract if sufficient funds, else print "Insufficient funds"
+#   get_balance(self) - return current balance
+#
+# Create account with balance 100
+# Deposit 50
+# Print balance
+# Withdraw 30
+# Print balance
+# Withdraw 200 (should print "Insufficient funds")
+# Print balance
+`,
+  check: (output) => output.trim() === "150\n120\nInsufficient funds\n120",
+  successMsg: "BankAccount class works! Object-oriented programming helps organize complex logic."
+},
+{
+  id: 145,
+  chapter: 15,
+  name: "Matrix Diagonal Sum",
+  difficulty: 4,
+  desc: "<p>Calculate the sum of <b>both diagonals</b> of a square matrix. The primary diagonal goes top-left to bottom-right, and the secondary goes top-right to bottom-left. Don't double-count the center!</p>",
+  hint: "Primary diagonal: matrix[i][i]. Secondary diagonal: matrix[i][n-1-i]. If n is odd, subtract the center element (it's counted twice).",
+  starter: `matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# Sum both diagonals of the matrix
+# Primary: 1 + 5 + 9 = 15
+# Secondary: 3 + 5 + 7 = 15
+# Center (5) is shared, so total = 15 + 15 - 5 = 25
+# Print the total
+`,
+  check: (output) => output.trim() === "25",
+  successMsg: "Both diagonals sum to 25! Remember to handle the shared center element."
+},
+{
+  id: 146,
+  chapter: 15,
+  name: "Roman Numerals",
+  difficulty: 4,
+  desc: "<p>Convert an integer to a <b>Roman numeral</b> string. Use subtractive notation (e.g., 4=IV, 9=IX, 40=XL, 90=XC, 400=CD, 900=CM).</p>",
+  hint: "Create lists of values [1000,900,500,400,100,90,50,40,10,9,5,4,1] and symbols ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I']. Repeatedly subtract the largest possible value.",
+  starter: `num = 1994
+# Convert num to a Roman numeral string
+# Print the result
+`,
+  check: (output) => output.trim() === "MCMXCIV",
+  successMsg: "1994 = MCMXCIV! Roman numeral conversion is a classic algorithm challenge."
+},
+{
+  id: 147,
+  chapter: 15,
+  name: "Prime Number Checker",
+  difficulty: 4,
+  desc: "<p>A <b>prime number</b> is only divisible by 1 and itself. Find and print all primes from 2 to 20.</p>",
+  hint: "For each number n, check if any number from 2 to the square root of n divides it evenly. If none do, it's prime.",
+  starter: `# Find all prime numbers from 2 to 20
+# Print them all on one line separated by spaces
+`,
+  check: (output) => output.trim() === "2 3 5 7 11 13 17 19",
+  successMsg: "All primes found! Prime numbers are fundamental to cryptography and number theory."
+},
+{
+  id: 148,
+  chapter: 15,
+  name: "Text Encryption",
+  difficulty: 5,
+  desc: "<p>Implement a simple <b>character-shift encryption</b> using <code>ord()</code> and <code>chr()</code> with a key. Encrypt a message, then decrypt it to verify they match.</p>",
+  hint: "Encrypt: for each char, new_char = chr(ord(char) + key). Decrypt: reverse by subtracting the key. Print both the encrypted and decrypted text.",
+  starter: `message = "Hello World"
+key = 5
+# Encrypt: shift each character's code by +key
+# Decrypt: shift each character's code by -key
+# Print the encrypted message on line 1
+# Print the decrypted message on line 2
+`,
+  check: (output) => {
+    const lines = output.trim().split("\n");
+    if (lines.length !== 2) return false;
+    const encrypted = lines[0].trim();
+    const decrypted = lines[1].trim();
+    return decrypted === "Hello World" && encrypted !== "Hello World" && encrypted === "Mjqqt%\\twqi";
+  },
+  successMsg: "Encrypted and decrypted! The message survived the round trip."
+},
+{
+  id: 149,
+  chapter: 15,
+  name: "Linked List",
+  difficulty: 5,
+  desc: "<p>A <b>linked list</b> stores data in nodes, where each node points to the next. Implement a basic linked list with <code>append</code> and <code>display</code> methods.</p>",
+  hint: "Create a Node class with data and next attributes. The LinkedList class has a head. append() walks to the end and adds a new node. display() walks through and prints all values.",
+  starter: `# Define a Node class with data and next attributes
+# Define a LinkedList class with:
+#   append(data) - add a node to the end
+#   display() - print all values as "1 -> 2 -> 3 -> None"
+#
+# Create a linked list, append 1, 2, 3
+# Call display()
+`,
+  check: (output) => output.trim() === "1 -> 2 -> 3 -> None",
+  successMsg: "Linked list implemented! A fundamental data structure used throughout computer science."
+},
+{
+  id: 150,
+  chapter: 15,
+  name: "Final Boss: Student Database",
+  difficulty: 5,
+  desc: "<p>Build a <b>StudentDB</b> class that manages students and their grades. Support adding students, calculating averages, and finding honor roll students (average >= 90).</p>",
+  hint: "Use a dictionary mapping names to lists of grades. get_average computes mean for one student. get_honor_roll finds all students with average >= 90.",
+  starter: `# Define a StudentDB class with:
+#   add_student(name, grades) - store student with their list of grades
+#   get_average(name) - return the student's average grade
+#   get_honor_roll() - return sorted list of names with average >= 90
+#
+# Create a database and add:
+#   "Alice" with grades [95, 92, 88]
+#   "Bob" with grades [80, 85, 78]
+#   "Carol" with grades [92, 95, 90]
+#   "Dave" with grades [70, 75, 80]
+#
+# Print Alice's average rounded to 1 decimal
+# Print the honor roll list
+`,
+  check: (output) => {
+    const lines = output.trim().split("\n");
+    if (lines.length !== 2) return false;
+    return lines[0].trim() === "91.7" && lines[1].trim() === "['Alice', 'Carol']";
+  },
+  successMsg: "Final boss defeated! You built a complete database system with classes, lists, dictionaries, and sorting!"
+}
+];
+
+// ===== CHAPTER DEFINITIONS =====
+const CHAPTERS = [
+  { id: 1, name: "Print & Output", icon: "\u{1F4E2}" },
+  { id: 2, name: "Variables & Data Types", icon: "\u{1F4E6}" },
+  { id: 3, name: "Operators", icon: "\u{2795}" },
+  { id: 4, name: "Strings", icon: "\u{1F520}" },
+  { id: 5, name: "Conditionals", icon: "\u{1F6A6}" },
+  { id: 6, name: "For Loops", icon: "\u{1F503}" },
+  { id: 7, name: "While Loops", icon: "\u{1F504}" },
+  { id: 8, name: "Lists", icon: "\u{1F4CB}" },
+  { id: 9, name: "Functions", icon: "\u{2699}\uFE0F" },
+  { id: 10, name: "Dictionaries", icon: "\u{1F4D6}" },
+  { id: 11, name: "2D Lists", icon: "\u{1F4CA}" },
+  { id: 12, name: "Error Handling", icon: "\u{1F6E1}\uFE0F" },
+  { id: 13, name: "Searching & Sorting", icon: "\u{1F50D}" },
+  { id: 14, name: "Data Processing", icon: "\u{1F4C8}" },
+  { id: 15, name: "Boss Challenges", icon: "\u{1F47E}" }
+];
+
+const DIFFICULTY_POINTS = { 1: 50, 2: 75, 3: 100, 4: 150, 5: 200 };
+
+// ===== GAMIFICATION =====
+const LEVEL_THRESHOLDS = [0, 150, 400, 750, 1200, 1800, 2500, 3400, 4500, 5800, 7300, 9000, 10900, 13000, 15500];
+const RANKS = [
+  "Beginner", "Code Cadet", "Script Scribe", "Loop Learner", "String Spinner",
+  "List Wrangler", "Function Forger", "Dict Detective", "Algorithm Ace", "Error Slayer",
+  "Data Wizard", "Code Champion", "Python Pro", "Grand Master", "Ronny Legend"
+];
+
+const SENSEI_MESSAGES = {
+  welcome: "Welcome! Choose a chapter to start!",
+  correct: ["Brilliant!", "Perfect!", "Nailed it!", "You're on fire!", "Excellent work!", "Spot on!"],
+  wrong: ["Not quite... Try again!", "Almost! Check your output.", "Keep at it!", "Close - look carefully!"],
+  streak3: "3x COMBO! Unstoppable!",
+  streak5: "5x COMBO! LEGENDARY!",
+  boss: "Boss challenge! Give it everything!",
+  allDone: "ALL CHALLENGES COMPLETE! You are a Ronny Legend!"
+};
+
+// ===== GAME STATE =====
+let state = {
+  currentChallenge: -1,
+  currentChapter: -1,
+  viewMode: 'chapters',
+  xp: 0,
+  level: 1,
+  streak: 0,
+  completed: new Set(),
+  achievements: new Set(),
+  hintUsed: new Set()
+};
+
+// ===== INIT =====
+function init() {
+  loadState();
+  renderSidebar();
+  updateStats();
+
+  document.getElementById('codeEditor').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runCode(); }
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const ta = e.target;
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = start + 4;
+    }
+  });
+
+  document.getElementById('totalChallenges').textContent = '/' + challenges.length;
+
+  if (state.completed.size > 0) {
+    const first = challenges.findIndex(c => !state.completed.has(c.id));
+    if (first >= 0) {
+      const ch = challenges[first];
+      showChapterChallenges(ch.chapter);
+      selectChallenge(first);
+    }
+  }
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('ronnyState');
+    if (saved) {
+      const s = JSON.parse(saved);
+      state.xp = s.xp || 0;
+      state.level = s.level || 1;
+      state.streak = s.streak || 0;
+      state.completed = new Set(s.completed || []);
+      state.achievements = new Set(s.achievements || []);
+      state.hintUsed = new Set(s.hintUsed || []);
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('ronnyState', JSON.stringify({
+      xp: state.xp, level: state.level, streak: state.streak,
+      completed: [...state.completed],
+      achievements: [...state.achievements],
+      hintUsed: [...state.hintUsed]
+    }));
+  } catch(e) {}
+}
+
+// ===== SIDEBAR RENDERING =====
+function getChapterChallenges(chapterId) {
+  return challenges.filter(c => c.chapter === chapterId);
+}
+
+function getChapterProgress(chapterId) {
+  const chs = getChapterChallenges(chapterId);
+  const done = chs.filter(c => state.completed.has(c.id)).length;
+  return { done, total: chs.length };
+}
+
+function getChapterPoints(chapterId) {
+  const chs = getChapterChallenges(chapterId);
+  return chs.filter(c => state.completed.has(c.id)).reduce((sum, c) => sum + DIFFICULTY_POINTS[c.difficulty], 0);
+}
+
+function renderSidebar() {
+  if (state.viewMode === 'chapters') {
+    renderChapterList();
+  } else {
+    renderChallengeList(state.currentChapter);
+  }
+}
+
+function renderChapterList() {
+  state.viewMode = 'chapters';
+  const container = document.getElementById('sidebarContent');
+  container.innerHTML = CHAPTERS.map(ch => {
+    const prog = getChapterProgress(ch.id);
+    const pts = getChapterPoints(ch.id);
+    const pct = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
+    const allDone = prog.done === prog.total && prog.total > 0;
+    return `
+      <div class="chapter-item ${allDone ? 'all-done' : ''}" onclick="showChapterChallenges(${ch.id})">
+        <span class="ch-num">${ch.icon}</span>
+        <div class="ch-info">
+          <div class="ch-title">Ch ${ch.id}: ${ch.name}</div>
+          <div class="ch-progress-row">
+            <div class="ch-progress-bar"><div class="ch-progress-fill" style="width:${pct}%"></div></div>
+            <span class="ch-progress-text">${prog.done}/${prog.total}</span>
+          </div>
+        </div>
+        <span class="ch-points-earned">${pts > 0 ? pts + 'pt' : ''}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function showChapterChallenges(chapterId) {
+  state.currentChapter = chapterId;
+  state.viewMode = 'challenges';
+  renderChallengeList(chapterId);
+}
+
+function renderChallengeList(chapterId) {
+  const container = document.getElementById('sidebarContent');
+  const chapter = CHAPTERS.find(c => c.id === chapterId);
+  const chs = getChapterChallenges(chapterId);
+  const prog = getChapterProgress(chapterId);
+  const pct = prog.total > 0 ? Math.round((prog.done / prog.total) * 100) : 0;
+
+  let html = `
+    <button class="back-btn" onclick="renderChapterList()">&#x2190; Back to Chapters</button>
+    <div class="ch-header-info">
+      <div class="ch-header-title">${chapter.icon} Ch ${chapter.id}: ${chapter.name}</div>
+      <div class="ch-header-progress">
+        <div class="ch-header-bar"><div class="ch-header-fill" style="width:${pct}%"></div></div>
+        <span class="ch-header-text">${prog.done}/${prog.total}</span>
+      </div>
+    </div>
+  `;
+
+  html += chs.map(ch => {
+    const globalIdx = challenges.indexOf(ch);
+    const done = state.completed.has(ch.id);
+    const active = globalIdx === state.currentChallenge;
+    const stars = '\u2605'.repeat(ch.difficulty);
+    const isBoss = ch.chapter === 15;
+    const localNum = chs.indexOf(ch) + 1;
+    return `
+      <div class="challenge-item ${active ? 'active' : ''} ${done ? 'completed' : ''}"
+           onclick="selectChallenge(${globalIdx})">
+        <span class="ci-num">#${localNum}</span>
+        <span class="ci-status">${done ? '\u2705' : (isBoss ? '\u{1F47E}' : '\u26AA')}</span>
+        <div class="ci-info">
+          <div class="ci-name">${ch.name}</div>
+          <div class="ci-diff"><span class="diff-star">${stars}</span></div>
+        </div>
+        <span class="ci-points">${done ? '\u2713' : DIFFICULTY_POINTS[ch.difficulty] + 'pt'}</span>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function selectChallenge(index) {
+  if (index < 0 || index >= challenges.length) return;
+  state.currentChallenge = index;
+  const ch = challenges[index];
+
+  if (state.currentChapter !== ch.chapter) {
+    state.currentChapter = ch.chapter;
+    state.viewMode = 'challenges';
+  }
+  renderChallengeList(ch.chapter);
+
+  const isBoss = ch.chapter === 15;
+  document.getElementById('challengeTitle').innerHTML =
+    `${isBoss ? '\u{1F47E} ' : ''}${ch.name}`;
+  document.getElementById('challengeDesc').innerHTML = ch.desc;
+  document.getElementById('challengeHint').textContent = '';
+  document.getElementById('challengePoints').textContent =
+    state.completed.has(ch.id) ? '\u2705 COMPLETED' : '\u2B50 ' + DIFFICULTY_POINTS[ch.difficulty] + ' XP';
+  document.getElementById('codeEditor').value = ch.starter;
+  clearConsole();
+
+  if (isBoss) {
+    setSenseiMessage(SENSEI_MESSAGES.boss);
+    document.getElementById('senseiAvatar').textContent = '\u{1F47E}';
+  } else if (state.completed.has(ch.id)) {
+    setSenseiMessage("Already completed! Try another!");
+    document.getElementById('senseiAvatar').textContent = '\u{1F60E}';
+  } else {
+    setSenseiMessage(`${ch.name} - Give it a go!`);
+    document.getElementById('senseiAvatar').textContent = '\u{1F40D}';
+  }
+}
+
+function setSenseiMessage(msg) { document.getElementById('senseiSpeech').textContent = msg; }
+
+function updateStats() {
+  document.getElementById('totalXP').textContent = state.xp;
+  document.getElementById('streakCount').textContent = state.streak;
+  document.getElementById('completedCount').textContent = state.completed.size;
+  document.getElementById('levelBadge').textContent = 'LV ' + state.level;
+
+  const currentLevelXP = LEVEL_THRESHOLDS[state.level - 1] || 0;
+  const nextLevelXP = LEVEL_THRESHOLDS[state.level] || LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1] + 2000;
+  const progress = ((state.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+  document.getElementById('xpBarFill').style.width = Math.min(100, Math.max(0, progress)) + '%';
+
+  const rankIdx = Math.min(state.level - 1, RANKS.length - 1);
+  document.getElementById('rankDisplay').textContent = 'Rank: ' + RANKS[rankIdx];
+
+  const pct = challenges.length > 0 ? Math.round((state.completed.size / challenges.length) * 100) : 0;
+  document.getElementById('progressPercent').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  saveState();
+}
+
+// ===== RUN CODE =====
+function runCode() {
+  if (state.currentChallenge < 0) return;
+  const code = document.getElementById('codeEditor').value;
+  clearConsole();
+  let outputLines = [];
+
+  Sk.configure({
+    output: (text) => { outputLines.push(text); },
+    read: (x) => {
+      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+      return Sk.builtinFiles["files"][x];
+    },
+    __future__: Sk.python3
+  });
+
+  Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true))
+    .then(() => {
+      const output = outputLines.join('');
+      addConsoleLine(output || '(no output)', 'output');
+      checkAnswer(output);
+    })
+    .catch((err) => {
+      addConsoleLine('Error: ' + err.toString(), 'error');
+      setSenseiMessage(SENSEI_MESSAGES.wrong[Math.floor(Math.random() * SENSEI_MESSAGES.wrong.length)]);
+      document.getElementById('senseiAvatar').textContent = '\u{1F630}';
+      state.streak = 0;
+      updateStats();
+    });
+}
+
+function checkAnswer(output) {
+  const ch = challenges[state.currentChallenge];
+  if (ch.check(output)) {
+    if (!state.completed.has(ch.id)) {
+      let bonus = state.hintUsed.has(ch.id) ? 0.5 : 1;
+      let streakBonus = 1 + (state.streak * 0.1);
+      let earned = Math.round(DIFFICULTY_POINTS[ch.difficulty] * bonus * streakBonus);
+
+      state.xp += earned;
+      state.streak++;
+      state.completed.add(ch.id);
+
+      let newLevel = state.level;
+      for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+        if (state.xp >= LEVEL_THRESHOLDS[i]) { newLevel = i + 1; break; }
+      }
+      if (newLevel > state.level) { state.level = newLevel; triggerLevelUp(); }
+
+      updateStats();
+      renderSidebar();
+
+      addConsoleLine('\n\u2705 CORRECT! +' + earned + ' XP', 'success');
+      showSuccessPopup(ch, earned);
+      triggerSpeedLines();
+      spawnParticles();
+
+      document.getElementById('senseiAvatar').textContent = '\u{1F929}';
+      document.getElementById('senseiAvatar').classList.add('celebrate');
+      setTimeout(() => document.getElementById('senseiAvatar').classList.remove('celebrate'), 700);
+
+      const msgs = SENSEI_MESSAGES.correct;
+      setSenseiMessage(msgs[Math.floor(Math.random() * msgs.length)]);
+
+      if (state.streak >= 5) { showCombo(state.streak); setSenseiMessage(SENSEI_MESSAGES.streak5); }
+      else if (state.streak >= 3) { showCombo(state.streak); setSenseiMessage(SENSEI_MESSAGES.streak3); }
+
+      checkAchievements();
+
+      if (state.completed.size === challenges.length) {
+        setTimeout(() => {
+          setSenseiMessage(SENSEI_MESSAGES.allDone);
+          document.getElementById('senseiAvatar').textContent = '\u{1F31F}';
+          showAchievement('\u{1F31F}', 'Ronny Legend - All Challenges Complete!');
+        }, 2000);
+      }
+    } else {
+      addConsoleLine('\n\u2705 Correct! (already completed)', 'success');
+      setSenseiMessage("Still got it!");
+      document.getElementById('senseiAvatar').textContent = '\u{1F60E}';
+    }
+  } else {
+    addConsoleLine('\n\u274C Output doesn\'t match expected result. Keep trying!', 'error');
+    setSenseiMessage(SENSEI_MESSAGES.wrong[Math.floor(Math.random() * SENSEI_MESSAGES.wrong.length)]);
+    document.getElementById('senseiAvatar').textContent = '\u{1F914}';
+    state.streak = 0;
+    updateStats();
+  }
+}
+
+// ===== UI HELPERS =====
+function addConsoleLine(text, cls) {
+  const el = document.getElementById('consoleOutput');
+  const line = document.createElement('div');
+  line.className = 'console-line ' + (cls || '');
+  line.textContent = text;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+function clearConsole() { document.getElementById('consoleOutput').innerHTML = ''; }
+
+function resetCode() {
+  if (state.currentChallenge < 0) return;
+  document.getElementById('codeEditor').value = challenges[state.currentChallenge].starter;
+  clearConsole();
+}
+
+function showHint() {
+  if (state.currentChallenge < 0) return;
+  const ch = challenges[state.currentChallenge];
+  document.getElementById('challengeHint').textContent = '\u{1F4A1} Hint: ' + ch.hint;
+  state.hintUsed.add(ch.id);
+  setSenseiMessage("A hint costs half your XP for this challenge...");
+  document.getElementById('senseiAvatar').textContent = '\u{1F9D0}';
+  saveState();
+}
+
+function showSuccessPopup(ch, earned) {
+  const overlay = document.getElementById('successOverlay');
+  document.getElementById('successEmoji').textContent =
+    ch.chapter === 15 ? '\u{1F3C6}' : ['\u{1F389}', '\u{1F38A}', '\u2728', '\u{1F4AB}', '\u{1F31F}'][Math.floor(Math.random()*5)];
+  document.getElementById('successTitle').textContent =
+    ch.chapter === 15 ? 'BOSS DEFEATED!' : 'CHALLENGE CLEAR!';
+  document.getElementById('successPoints').textContent = '+' + earned + ' XP';
+  document.getElementById('successMsg').textContent = ch.successMsg || 'Great work!';
+
+  const chapterChallenges = getChapterChallenges(ch.chapter);
+  const currentIdxInChapter = chapterChallenges.indexOf(ch);
+  let nextCh = null;
+
+  // Try next in same chapter
+  for (let i = currentIdxInChapter + 1; i < chapterChallenges.length; i++) {
+    if (!state.completed.has(chapterChallenges[i].id)) { nextCh = chapterChallenges[i]; break; }
+  }
+  // Try next chapter
+  if (!nextCh) {
+    for (let i = challenges.indexOf(ch) + 1; i < challenges.length; i++) {
+      if (!state.completed.has(challenges[i].id)) { nextCh = challenges[i]; break; }
+    }
+  }
+  // Try any incomplete
+  if (!nextCh) { nextCh = challenges.find(c => !state.completed.has(c.id)); }
+
+  const btnNext = document.getElementById('btnNext');
+  if (nextCh) {
+    btnNext.textContent = 'NEXT CHALLENGE \u27A1';
+    btnNext.onclick = () => { hideOverlay(); selectChallenge(challenges.indexOf(nextCh)); };
+  } else {
+    btnNext.textContent = 'CELEBRATE! \u{1F389}';
+    btnNext.onclick = () => { hideOverlay(); };
+  }
+  overlay.classList.add('active');
+}
+
+function hideOverlay() { document.getElementById('successOverlay').classList.remove('active'); }
+
+function nextChallenge() {
+  hideOverlay();
+  const nextIdx = challenges.findIndex((c, i) => i > state.currentChallenge && !state.completed.has(c.id));
+  if (nextIdx >= 0) selectChallenge(nextIdx);
+}
+
+function triggerSpeedLines() {
+  const el = document.getElementById('speedLines');
+  el.classList.add('active');
+  setTimeout(() => el.classList.remove('active'), 600);
+}
+
+function triggerLevelUp() {
+  const flash = document.getElementById('levelUpFlash');
+  flash.classList.add('active');
+  setTimeout(() => flash.classList.remove('active'), 1000);
+  showAchievement('\u2B50', 'LEVEL UP! Now Level ' + state.level + ' - ' + RANKS[Math.min(state.level-1, RANKS.length-1)]);
+}
+
+function showCombo(count) {
+  const el = document.getElementById('comboDisplay');
+  el.textContent = count + 'x COMBO! \u{1F525}';
+  el.classList.add('active');
+  setTimeout(() => el.classList.remove('active'), 2000);
+}
+
+function spawnParticles() {
+  const emojis = ['\u2B50', '\u2728', '\u{1F31F}', '\u{1F4AB}', '\u{1F389}'];
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      p.style.left = (20 + Math.random() * 60) + '%';
+      p.style.top = (30 + Math.random() * 40) + '%';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1500);
+    }, i * 100);
+  }
+}
+
+function showAchievement(icon, name) {
+  const toast = document.getElementById('achievementToast');
+  document.getElementById('achIcon').textContent = icon;
+  document.getElementById('achName').textContent = name;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function checkAchievements() {
+  const checks = [
+    { key: 'first', cond: state.completed.size >= 1, icon: '\u{1F331}', name: 'First Steps - Complete 1 challenge!' },
+    { key: 'five', cond: state.completed.size >= 5, icon: '\u{1F3C5}', name: 'High Five - Complete 5 challenges!' },
+    { key: 'ten', cond: state.completed.size >= 10, icon: '\u{1F396}\uFE0F', name: 'Double Digits - 10 challenges!' },
+    { key: 'quarter', cond: state.completed.size >= Math.floor(challenges.length * 0.25), icon: '\u{1F4AA}', name: 'Quarter Way - 25% complete!' },
+    { key: 'half', cond: state.completed.size >= Math.floor(challenges.length * 0.5), icon: '\u{1F947}', name: 'Halfway Hero - 50% complete!' },
+    { key: 'century', cond: state.completed.size >= 100, icon: '\u{1F4AF}', name: 'Century Club - 100 challenges!' },
+    { key: 'streak5', cond: state.streak >= 5, icon: '\u{1F525}', name: 'On Fire - 5 streak!' },
+    { key: 'streak10', cond: state.streak >= 10, icon: '\u{1F30B}', name: 'Inferno - 10 streak!' },
+    { key: 'boss1', cond: challenges.filter(c => c.chapter === 15 && state.completed.has(c.id)).length >= 1, icon: '\u{1F409}', name: 'Boss Slayer - Beat a boss!' },
+    { key: 'bossAll', cond: challenges.filter(c => c.chapter === 15).every(c => state.completed.has(c.id)), icon: '\u{1F451}', name: 'Boss Master - All bosses beaten!' },
+  ];
+
+  // Check for perfect chapter (all done in any chapter)
+  for (const chapter of CHAPTERS) {
+    const key = 'perfect_ch_' + chapter.id;
+    const chs = getChapterChallenges(chapter.id);
+    if (chs.length > 0 && chs.every(c => state.completed.has(c.id)) && !state.achievements.has(key)) {
+      state.achievements.add(key);
+      setTimeout(() => showAchievement('\u{1F48E}', 'Perfect Chapter - ' + chapter.name + '!'), 1500);
+    }
+  }
+
+  for (const check of checks) {
+    if (check.cond && !state.achievements.has(check.key)) {
+      state.achievements.add(check.key);
+      setTimeout(() => showAchievement(check.icon, check.name), 1500);
+    }
+  }
+  saveState();
+}
+
+// Start!
+init();
+</script>
+</body>
+</html>
