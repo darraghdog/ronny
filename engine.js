@@ -483,9 +483,11 @@ function selectChallenge(index) {
 
   hideHero();
   // Mobile view-switching: hide sidebar, show editor
+  const sidebar = document.querySelector('.sidebar');
   if (window.innerWidth <= 900) {
-    document.querySelector('.sidebar').classList.add('mobile-hidden');
+    sidebar.classList.add('mobile-hidden');
   }
+  sidebar.classList.add('has-editor');
   state.currentChallenge = index;
   const ch = challenges[index];
 
@@ -573,7 +575,8 @@ function goHome() {
   state.currentChallenge = -1;
   state.currentChapter = -1;
   state.viewMode = 'chapters';
-  document.querySelector('.sidebar').classList.remove('mobile-hidden');
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.remove('mobile-hidden', 'has-editor');
   showHero();
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -585,7 +588,8 @@ function mobileBack() {
   state.currentChapter = -1;
   state.viewMode = 'chapters';
   // Mobile view-switching: show sidebar again
-  document.querySelector('.sidebar').classList.remove('mobile-hidden');
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.remove('mobile-hidden', 'has-editor');
   renderChapterList();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
