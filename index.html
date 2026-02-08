@@ -576,8 +576,8 @@
     .mobile-back-btn { display: inline-block; }
     .header { position: sticky; top: 0; z-index: 20; }
     .main-container { display: flex; flex-direction: column; height: auto; overflow-x: hidden; }
-    .sidebar { border-right: none; border-bottom: 1px solid var(--panel-border); overflow-y: auto; }
-    .sidebar.has-editor { max-height: 250px; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--panel-border); overflow-y: auto; min-height: calc(100vh - 62px); }
+    .sidebar.has-editor { max-height: 250px; min-height: auto; }
     .hero-splash { display: none !important; }
 
     .editor-area { overflow: visible; }
