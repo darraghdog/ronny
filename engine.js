@@ -684,7 +684,8 @@ function updateDailyStreak() {
 
 function checkAnswer(output) {
   const ch = challenges[state.currentChallenge];
-  if (ch.check(output)) {
+  const normalized = output.split('\n').map(l => l.trimEnd()).join('\n');
+  if (ch.check(normalized)) {
     if (!state.completed.has(ch.id)) {
       let bonus = state.hintUsed.has(ch.id) ? 0.5 : 1;
       let streakBonus = 1 + (state.streak * 0.1);
